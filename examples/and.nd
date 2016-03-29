@@ -1,0 +1,4 @@
+p, q |- p /\ q
+1 p premise
+2 q premise
+3 p /\ q andi 1, 2

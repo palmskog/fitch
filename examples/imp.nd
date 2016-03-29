@@ -1,0 +1,6 @@
+q |- p -> q
+[
+1 p assumption
+2 q premise
+]
+3 p -> q impi 1-2

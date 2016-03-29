@@ -1,0 +1,11 @@
+*.aux
+*.vo
+*.d
+*.glob
+*.cmi
+*.cmo
+Makefile.coq
+fitch.ml
+fitch.mli
+fitch.v
+fitch

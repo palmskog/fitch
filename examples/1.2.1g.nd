@@ -1,0 +1,5 @@
+p -> (p -> q) , p |- q
+1 p -> (p -> q) premise
+2 p premise
+3 p -> q impe 2, 1
+4 q impe 2, 3

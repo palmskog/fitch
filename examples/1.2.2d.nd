@@ -1,0 +1,22 @@
+p \/ q, ~ q \/ r |- p \/ r
+1 p \/ q premise
+2 ~ q \/ r premise
+[
+  3 p assumption
+  4 p \/ r ori1 3
+]
+[
+  5 q assumption
+  [
+    6 ~ q assumption
+    7 q copy 5
+    8 cont nege 7, 6
+    9 r conte 8
+  ]
+  [ 
+    10 r assumption
+  ]
+  11 r ore 2, 6-9, 10-10
+  12 p \/ r ori2 11
+]
+13 p \/ r ore 1, 3-4, 5-12

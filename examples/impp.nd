@@ -1,0 +1,5 @@
+|- p -> p
+[ 
+1 p assumption
+]
+2 p -> p impi 1-1

@@ -1,0 +1,20 @@
+~ (o /\ k), o \/ p, ~ k -> l |- p \/ l
+1 ~ (o /\ k) premise
+2 o \/ p premise
+3 ~ k -> l premise
+[
+  4 o assumption
+  [
+    5 k assumption
+    6 o /\ k andi 4,5
+    7 cont nege 6, 1
+  ]
+  8 ~ k negi 5-7
+  9 l impe 8, 3
+  10 p \/ l ori2 9
+]
+[
+  11 p assumption
+  12 p \/ l ori1 11
+]
+13 p \/ l ore 2, 4-10, 11-12

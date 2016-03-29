@@ -1,0 +1,10 @@
+|- p -> ( q -> p )
+[
+ 1 p assumption
+ [
+  2 q assumption
+  3 p copy 1
+ ]
+ 4 q -> p impi 2-3
+]
+5 p -> ( q -> p ) impi 1-4

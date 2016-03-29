@@ -1,0 +1,20 @@
+~ (k /\ e) |- ~ k \/ ~ e
+1 ~ (k /\ e) premise
+[
+  2 ~ (~ k \/ ~ e) assumption
+  [
+    3 ~ k assumption
+    4 ~ k \/ ~ e ori1 3
+    5 cont nege 4,2
+  ]
+  6 k pbc 3-5
+  [
+   7 ~ e assumption
+   8 ~ k \/ ~ e ori2 7
+   9 cont nege 8,2
+  ]
+  10 e pbc 7-9
+  11 k /\ e andi 6,10
+  12 cont nege 11,1
+]
+13 ~ k \/ ~ e pbc 2-12

@@ -1,0 +1,378 @@
+embed
+{{ tex-preamble 
+\usepackage{stmaryrd} 
+}}
+{{ coq
+Require Export dyadicnat.
+Require Export FMapList.
+Module Map <: FMapInterface.S := FMapList.Make dyadicnat_as_OT.
+
+Module Type PropInterpretation.
+Parameter A : Type.
+End PropInterpretation.
+
+Module Fitch (PI : PropInterpretation) <: 
+   PropInterpretation 
+   with Definition A := PI.A.
+
+Definition A := PI.A.
+}}
+metavar p ::=
+      {{ lex alphanum }}
+      {{ coq A }}
+      {{ com atomic proposition }}
+metavar l ::=
+      {{ lex numeral }}
+      {{ coq nat }}
+      {{ coq-equality }}
+      {{ com proof entry label }}
+indexvar n ::= 
+      {{ lex numeral }}
+      {{ coq nat }}
+      {{ coq-equality }}
+      {{ com index variable (subscript) }}
+grammar
+claim :: claim_ ::=
+      {{ coq-universe Type }}
+      {{ com claim }}
+      | judgment proof :: :: judgment_proof
+
+judgment :: judgment_ ::=
+	 {{ coq-universe Type }}
+	 {{ com judgment }}
+	 | proplist |- prop :: :: follows
+
+prop {{ tex \phi }} :: prop_ ::=
+     {{ coq-universe Type }}
+     {{ com proposition }}
+     | p :: :: p
+     | ~ prop :: :: neg
+     | prop /\ prop' :: :: and
+     | prop \/ prop' :: :: or
+     | prop -> prop' :: :: imp
+     | _|_ :: :: cont
+     | ( prop ) :: S :: parentheses
+       {{ tex ([[prop]]) }}
+       {{ coq ([[prop]]) }}
+
+proplist {{ tex \overline{\phi} }} :: proplist_ ::=	
+        {{ coq-universe Type }}
+        {{ coq list prop }}
+	{{ com list of propositions }}
+	| prop1 , .. , propn :: M :: list
+          {{ coq [[prop1 .. propn]] }}
+
+proof {{ tex \rho }} :: proof_ ::=
+      {{ coq-universe Type }}
+      {{ com proof }}
+      | entry1 .. entryn :: :: entries
+      | () :: M :: empty
+        {{ coq (proof_entries nil) }}
+      | entry proof :: M :: entry
+        {{ coq (proof_entries (cons [[entry]] (proof_list_entry [[proof]]))) }}
+
+entry :: entry_ ::=
+      {{ coq-universe Type }}
+      {{ com proof entry }}
+      | derivation :: :: derivation
+      | [ proof ] :: :: box
+      | invalid :: :: invalid
+      | last ( proof ) :: M :: last
+        {{ com last entry in proof }}
+	{{ coq (last (proof_list_entry [[proof]]) entry_invalid) }}
+
+derivation :: derivation_ ::=
+           {{ coq-universe Type }}
+	   {{ com derivation in proof }}
+	   | l prop reason :: :: deriv
+	     {{ tex [[l]]\; [[prop]]\;\; [[reason]] }}
+
+reason :: reason_ ::=
+       | assumption :: :: assumption
+       | justification :: :: justification
+
+justification :: justification_ ::=
+     {{ com derivation justification }}
+    | premise :: :: premise
+    | lem :: :: lem
+    | copy l :: :: copy
+    | /\i l , l' :: :: andi
+    | /\e1 l :: :: ande1
+    | /\e2 l :: :: ande2
+    | \/i1 l :: :: ori1
+    | \/i2 l :: :: ori2
+    | ->e l , l' :: :: impe
+    | ~e l , l' :: :: nege
+    | _|_e l :: :: conte
+    | ~~i l :: :: negnegi
+    | ~~e l :: :: negnege
+    | mt l , l' :: :: mt
+    | ->i l - l' :: :: impi
+    | ~i l - l' :: :: negi
+    | \/e l1 , l2 - l3 , l4 - l5 :: :: ore
+    | pbc l - l' :: :: pbc
+
+terminals :: terminals_ ::=
+	  | premise :: :: premise {{ tex \mathrm{premise} }}
+     	  | lem :: :: lem {{ tex \mathrm{LEM} }}
+	  | copy :: :: copy {{ tex \mathrm{copy} }}
+	  | /\i :: :: andi {{ tex \land i\, }}
+	  | /\e1 :: :: ande1 {{ tex \land e_1\, }}
+	  | /\e2 :: :: ande2 {{ tex \land e_2\, }}
+	  | \/i1 :: :: ori1 {{ tex \lor i_1\, }}
+	  | \/i2 :: :: ori2 {{ tex \lor i_2\, }}
+	  | ->e :: :: impe {{ tex \rightarrow\!\!e\, }}
+	  | ~e :: :: nege {{ tex \lnot e\, }}
+	  | _|_e :: :: conte {{ tex \bot e\, }}
+	  | ~~i :: :: negnegi {{ tex \lnot\lnot i\, }}
+	  | ~~e :: :: negnege {{ tex \lnot\lnot e\, }}
+     	  | mt :: :: mt {{ tex \mathrm{MT} }}
+	  | ->i :: :: impi {{ tex \rightarrow\!\!i\, }}
+	  | ~i :: :: negi {{ tex \lnot i\, }}
+	  | \/e :: :: ore {{ tex \lor\!e\, }}
+     	  | pbc :: :: pbc {{ tex \mathrm{PBC} }}
+     	  | assumption :: :: assumption {{ tex \mathrm{assumption} }}
+	  | |- :: :: vdash {{ tex \vdash }}
+  	  | ~  :: :: neg {{ tex \lnot }}
+	  | /\  :: :: and {{ tex \land }}
+	  | \/ :: :: or {{ tex \lor }}
+	  | -> :: :: imp {{ tex \rightarrow }}
+	  | _|_ :: :: cont {{ tex \bot }}
+	  | in :: :: in {{ tex \in }}
+	  | |-> :: :: mapsto {{ tex \mapsto }}
+	  | last :: :: last {{ tex \mathrm{last} }}
+	  | |[ :: :: lbracket {{ tex \llbracket }}
+	  | ]| :: :: rbracket {{ tex \rrbracket }}
+	  | invalid :: :: invalid {{ tex \mathrm{invalid} }}
+
+dyadicprop :: dyadicprop_ ::=
+        {{ coq-universe Type }}
+	| prop :: :: prop
+	| ( prop , prop' ) :: :: dyad
+
+G {{ tex \Gamma }} :: G_ ::=
+  {{ com admissible context }}
+  {{ coq Map.t dyadicprop }}
+  {{ coq-universe Type }}
+  | [] :: M :: empty
+    {{ coq (Map.empty dyadicprop) }}
+  | G [ l |-> prop ] :: M :: add_prop
+    {{ coq (Map.add (dyadicnat_nat [[l]]) (dyadicprop_prop [[prop]]) [[G]]) }}
+  | G [ ( l , l' ) |-> ( prop , prop' ) ] :: M :: add_dyad
+    {{ coq (Map.add (dyadicnat_dyad [[l]] [[l']]) (dyadicprop_dyad [[prop]] [[prop']]) [[G]]) }}
+
+formula :: formula_ ::=  
+	{{ com formulas }}
+	| judgement :: :: judgement
+	  {{ com judgement }}
+        | prop in proplist :: M :: prop_in_proplist
+	  {{ com proposition in set of premises }}
+	  {{ coq (In [[prop]] [[proplist]]) }}
+     	| G ( l ) = prop :: M :: G_label
+          {{ com map label to prop }}
+	  {{ coq (Map.find (dyadicnat_nat [[l]]) [[G]] = Some (dyadicprop_prop [[prop]])) }}
+	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
+	  {{ com map tuple of labels to tuple of props }}
+	  {{ coq (Map.find (dyadicnat_dyad [[l]] [[l']]) [[G]] = Some (dyadicprop_dyad [[prop]] [[prop']])) }}
+	| entry = entry' :: M :: entry_eq
+	  {{ com entry equality }}
+	  {{ coq [[entry]] = [[entry']] }}
+
+embed
+{{ coq
+Definition proof_list_entry (proof5 : proof) : list entry :=
+match proof5 with 
+| proof_entries ls => ls
+end.
+}}
+
+defns
+  validity :: '' ::=
+
+defn 
+  claim :: :: valid_claim :: vc_
+  	{{ com valid claim }} by
+
+  last ( proof ) = l prop justification
+  [] , proplist |- proof
+  ------------------------------------- :: claim
+  proplist |- prop proof
+     
+defn
+  G , proplist |- proof :: :: valid_proof :: vp_
+    {{ com valid proof }} by
+  
+  ------------------ :: empty
+  G , proplist |- ()
+
+  :valid_derivation: G , proplist |- l prop justification
+  G [ l |-> prop ] , proplist |- proof
+  ------------------------------------------------------- :: derivation
+  G , proplist |- l prop justification proof
+
+  last ( l prop assumption proof ) = l' prop' reason
+  G [ l |-> prop ] , proplist |- proof
+  G [ ( l , l' ) |-> ( prop , prop' ) ] , proplist |- proof'
+  ---------------------------------------------------------- :: box
+  G , proplist |- [ l prop assumption proof ] proof'
+
+defn
+  G , proplist |- derivation :: :: valid_derivation :: vd_
+    	      {{ com valid derivation }} by
+
+  prop in proplist
+  ------------------------------ :: premise
+  G , proplist |- l prop premise
+
+  ------------------------------------ :: lem
+  G , proplist |- l prop \/ ~ prop lem
+
+  G ( l' ) = prop
+  ------------------------------ :: copy
+  G , proplist |- l prop copy l'
+
+  G ( l' ) = _|_
+  ------------------------------ :: conte
+  G , proplist |- l prop _|_e l'
+
+  G ( l1 ) = prop
+  G ( l2 ) = prop'
+  ------------------------------------------- :: andi
+  G , proplist |- l prop /\ prop' /\i l1 , l2
+
+  G ( l' ) = prop /\ prop'
+  ------------------------------ :: ande1
+  G , proplist |- l prop /\e1 l'
+
+  G ( l' ) = prop /\ prop'
+  ------------------------------- :: ande2
+  G , proplist |- l prop' /\e2 l'
+
+  G ( l' ) = prop
+  --------------------------------------- :: ori1
+  G , proplist |- l prop \/ prop' \/i1 l'
+
+  G ( l' ) = prop'
+  --------------------------------------- :: ori2
+  G , proplist |- l prop \/ prop' \/i2 l'
+
+  G ( l1 ) = prop'
+  G ( l2 ) = prop' -> prop
+  ---------------------------------- :: impe
+  G , proplist |- l prop ->e l1 , l2
+
+  G ( l' ) = prop
+  --------------------------------- :: negnegi
+  G , proplist |- l ~ ~ prop ~~i l'
+
+  G ( l' ) = ~ ~ prop
+  ----------------------------- :: negnege
+  G , proplist |- l prop ~~e l'
+
+  G ( l1 ) = prop -> prop'
+  G ( l2 ) = ~ prop'
+  ----------------------------------- :: mt
+  G , proplist |- l ~ prop mt l1 , l2
+
+  G ( l1 ) = prop
+  G ( l2 ) = ~ prop
+  -------------------------------- :: nege
+  G , proplist |- l _|_ ~e l1 , l2
+
+  G ( l1 , l2 ) = ( prop , prop' ) 
+  ------------------------------------------- :: impi
+  G , proplist |- l prop -> prop' ->i l1 - l2
+
+  G ( l1 , l2 ) = ( prop , _|_ )
+  ----------------------------------- :: negi
+  G , proplist |- l ~ prop ~i l1 - l2
+
+  G ( l1 ) = prop \/ prop'
+  G ( l2 , l3 ) = ( prop , prop'' )
+  G ( l4 , l5 ) = ( prop' , prop'' )
+  --------------------------------------------------- :: ore
+  G , proplist |- l prop'' \/e l1 , l2 - l3 , l4 - l5
+
+  G ( l1 , l2 ) = ( ~ prop , _|_ )
+  ---------------------------------- :: pbc
+  G , proplist |- l prop pbc l1 - l2
+
+embed
+{{ coq
+End Fitch.
+
+Module Type PropMappingInterpretation.
+Parameter A : Type.
+Parameter mapping : A -> Prop.
+End PropMappingInterpretation.
+
+Module FitchMapping (PMI : PropMappingInterpretation) <:
+   PropMappingInterpretation
+   with Definition A := PMI.A
+   with Definition mapping := PMI.mapping.
+
+Definition A := PMI.A.
+Definition mapping := PMI.mapping.
+
+Module FitchA <: PropInterpretation.
+Definition A := A.
+End FitchA.
+
+Module FitchSystem := Fitch FitchA.
+Export FitchSystem.
+}}
+
+grammar
+mprop {{ tex \psi }} :: mprop_ ::=
+     {{ coq-universe Type }}
+     {{ coq Prop }}
+     {{ com meta-language proposition }}
+     | p :: M :: p
+       {{ coq (mapping [[p]]) }}
+     | ~ mprop :: M :: neg
+       {{ coq (~ [[mprop]]) }}
+     | mprop /\ mprop' :: M :: and
+       {{ coq ([[mprop]] /\ [[mprop']]) }}
+     | mprop \/ mprop' :: M :: or
+       {{ coq ([[mprop]] \/ [[mprop']]) }}
+     | mprop -> mprop' :: M :: imp
+       {{ coq ([[mprop]] -> [[mprop']]) }}
+     | _|_ :: M :: cont
+       {{ coq False }}
+
+defns
+  mapping :: '' ::=
+  
+defn 
+  |[ prop ]| = mprop :: :: prop_mapping :: pm_
+       {{ com proposition to meta-proposition mapping }} by
+
+  ----------- :: p
+  |[ p ]| = p  
+
+  |[ prop ]| = mprop
+  ---------------------- :: neg
+  |[ ~ prop ]| = ~ mprop
+
+  |[ prop ]| = mprop
+  |[ prop' ]| = mprop'
+  ------------------------------------- :: and
+  |[ prop /\ prop' ]| = mprop /\ mprop'
+
+  |[ prop ]| = mprop
+  |[ prop' ]| = mprop'
+  ------------------------------------- :: or
+  |[ prop \/ prop' ]| = mprop \/ mprop'
+
+  |[ prop ]| = mprop
+  |[ prop' ]| = mprop'
+  ------------------------------------- :: imp
+  |[ prop -> prop' ]| = mprop -> mprop'
+
+  --------------- :: cont
+  |[ _|_ ]| = _|_
+
+embed 
+{{ coq
+End FitchMapping.
+}}

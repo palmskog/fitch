@@ -1,0 +1,11 @@
+p \/ ( p /\ q ) |- p
+1 p \/ ( p /\ q ) premise
+[ 
+  2 p assumption
+  3 p copy 2 
+]
+[
+  4 p /\ q assumption
+  5 p ande1 4
+]
+6 p ore 1, 2-3, 4-5

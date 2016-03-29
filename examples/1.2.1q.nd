@@ -1,0 +1,18 @@
+|- q -> ( p -> ( p -> ( q -> p ) ) )
+[
+ 1 q assumption
+ [
+   2 p assumption
+   [
+     3 p assumption
+     [
+       4 q assumption
+       5 p copy 2
+     ]
+     6 q -> p impi 4-5
+   ]
+   7 p -> ( q -> p ) impi 3-6
+ ]
+ 8 p -> ( p -> ( q -> p ) ) impi 2-7
+]
+9 q -> ( p -> ( p -> ( q -> p ) ) ) impi 1-8
