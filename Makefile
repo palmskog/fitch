@@ -1,3 +1,5 @@
+default: fitch
+
 fitch: fitch.ml fitch.mli explode.ml parser.ml
 	ocamlfind ocamlc -w x \
 		-linkpkg -syntax camlp4o \
@@ -19,8 +21,18 @@ fitch.v: fitch.ott
 Makefile.coq: _CoqProject
 	coq_makefile -f _CoqProject -o Makefile.coq
 
+fitch_defs.tex: fitch.ott
+	ott -o fitch_defs.tex -tex_wrap false fitch.ott
+
+fitch.tex: fitch.mng fitch.ott
+	ott -tex_filter fitch.mng fitch.tex fitch.ott
+
+fitch.pdf: fitch_defs.tex fitch.tex
+	pdflatex fitch.tex
+	pdflatex fitch.tex
+
 clean:
 	$(MAKE) -f Makefile.coq clean
-	rm -f Makefile.coq fitch.v fitch.ml fitch.mli fitch fitch.prolog explode.cmi explode.cmo fitch.cmi fitch.cmo parser.cmi parser.cmo
+	rm -f Makefile.coq fitch.ml fitch.mli fitch fitch.prolog *.cmi *.cmo fitch.pdf fitch.log fitch.tex fitch_defs.tex
 
 .PHONY: default clean

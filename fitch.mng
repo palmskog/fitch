@@ -1,0 +1,97 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{supertabular}
+\usepackage{color}
+\usepackage{amsthm}
+\usepackage{listings}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\include{fitch_defs}
+
+\renewcommand{\ottformula}{} % do not print the list of formulas
+
+\title{A Certified Propositional Logic Proof System}
+\author{Karl Palmskog}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+We describe an encoding in the Ott metalanguage of the Fitch-style propositional logic proof system from the book \emph{Logic for Computer Science} by Huth and Ryan, and prove its soundness at the meta level. Our definitions of the system have been imported into the Coq proof assistant, where the soundness proof has been checked. We have also defined a decision procedure for proofs in the system in Coq, which has been extracted into OCaml to yield a certified practical proof checker.
+
+\section{Grammar}
+Let $[[p]]$ be a metavariable representing an atomic proposition, $[[l]]$ a metavariable representing a proof-line label and $[[n]]$ an index variable. The syntax of the system is then defined as below.\\
+
+\ottgrammartabular{
+\ottclaim\ottinterrule
+\ottjudgment\ottinterrule
+\ottprop\ottinterrule
+\ottproplist\ottinterrule
+\ottproof\ottinterrule
+\ottentry\ottinterrule
+\ottderivation\ottinterrule
+\ottreason\ottinterrule
+\ottjustification\ottinterrule
+\ottG\ottinterrule
+\ottafterlastrule
+}
+
+\section{Rules}
+We define a valid claim and a valid proof as follows.
+
+\ottusedrule{\ottdrulevcXXclaim{}}
+
+\begin{align*}
+  \ottdrulevpXXempty{} \quad \ottdrulevpXXderivation{}\\
+  \ottdrulevpXXbox{}
+\end{align*}
+
+We define a valid derivation as follows.
+
+\begin{align*}
+\ottdrulevdXXpremise{} \quad \ottdrulevdXXlem{}\\
+\ottdrulevdXXcopy{} \quad \ottdrulevdXXnege{}\\
+\ottdrulevdXXconte{} \quad \ottdrulevdXXandi{}\\
+\ottdrulevdXXandeOne{} \quad \ottdrulevdXXandeTwo{}\\
+\ottdrulevdXXoriOne{} \quad \ottdrulevdXXoriTwo{}\\
+\ottdrulevdXXimpe{} \quad \ottdrulevdXXnegnegi{}\\
+\ottdrulevdXXnegnege{} \quad \ottdrulevdXXpbc{}\\
+\ottdrulevdXXimpi{} \quad \ottdrulevdXXnegi{}\\
+\ottdrulevdXXore{} \quad \ottdrulevdXXmt{}
+\end{align*}
+
+\section{Metatheory}
+We define the mapping of an object-language proposition to a meta-language proposition, $[[|[prop]| = mprop]]$, in the obvious way, and have the following result by rule induction.
+
+\begin{theorem}
+Let $[[proplist]]$ be a list of propositions, $[[prop]]$ a proposition such that $[[|[prop]| = mprop]]$, and $[[proof]]$ a proof in the system. Then, if the mappings of all propositions in $[[proplist]]$ are true and $[[proplist |- prop proof]]$ holds, $[[mprop]]$ is true.
+\end{theorem}
+
+\section{Decision Procedure}
+The following lemma is proved straightforwardly using structural induction on our definitions.
+\begin{lemma}
+Let $[[proplist]]$ be a list of propositions, $[[prop]]$ a proposition and $[[proof]]$ a proof in the system. Then, it is decidable whether $[[proplist |- prop proof]]$ or not.
+\end{lemma}
+
+Using a constructive proof of this lemma and applying the extraction facility in the Coq proof assistant along with the \texttt{camlp4} parser generation facility, we have a practical tool for checking a proof in the system. An example of the surface syntax is shown in the listing below.
+
+\lstset{frame=lines,caption=Surface syntax of a claim}
+\label{surface}
+\lstinputlisting{examples/orel_copy.nd}
+
+Suppose this claim is stored in the file \texttt{orel\_copy.nd}. We can then check its correctness by running the command below and observing the output, which is a boolean.
+
+\begin{verbatim}
+./fitch orel_copy.nd
+\end{verbatim}
+
+
+
+\end{document}

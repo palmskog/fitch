@@ -9,3 +9,8 @@ fitch.ml
 fitch.mli
 fitch.v
 fitch
+fitch.prolog
+fitch.log
+fitch.tex
+fitch.pdf
+fitch_defs.tex
