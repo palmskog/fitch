@@ -33,6 +33,6 @@ fitch.pdf: fitch_defs.tex fitch.tex
 
 clean:
 	$(MAKE) -f Makefile.coq clean
-	rm -f Makefile.coq fitch.ml fitch.mli fitch fitch.prolog *.cmi *.cmo fitch.pdf fitch.log fitch.tex fitch_defs.tex
+	rm -f Makefile.coq fitch.ml fitch.mli fitch fitch.prolog *.cmi *.cmo fitch.pdf fitch.log fitch.tex fitch_defs.tex fitch.aux fitch_defs.aux
 
 .PHONY: default clean

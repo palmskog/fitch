@@ -12,5 +12,7 @@ fitch
 fitch.prolog
 fitch.log
 fitch.tex
+fitch.aux
+fitch_defs.aux
 fitch.pdf
 fitch_defs.tex
