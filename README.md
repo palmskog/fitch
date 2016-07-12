@@ -5,7 +5,7 @@ Certified proof checker for Fitch-style propositional logic proofs as defined in
 
 Requirements:
 
- - [`Coq 8.5`](https://coq.inria.fr/download)
+ - [`Coq 8.5pl2`](https://coq.inria.fr/download)
  - [`Mathematical Components 1.6`](http://math-comp.github.io/math-comp/)
  - [`Ott 0.25`](https://www.cl.cam.ac.uk/~pes20/ott/)
 
