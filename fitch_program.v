@@ -410,14 +410,14 @@ refine
 - by subst; apply vd_ore with (prop5 := prop8) (prop' := prop10).
 - move => H_vp; inversion H_vp; subst.
   rewrite H10 in H_eq_snd; injection H_eq_snd => H_find_snd.
-  by contradict n0.
+  by contradict n.
 - move => H_vp; inversion H_vp; subst.
   rewrite H4 in H_eq_or; injection H_eq_or => H_find_or.  
   rewrite H10 in H_eq_snd; injection H_eq_snd => H_find_snd H_find_snd' H_find_snd''.
   by subst; contradict n.
 - move => H_vp; inversion H_vp; subst.
   rewrite H9 in H_eq_fst; injection H_eq_fst => H_find_fst H_find_fst'.
-  by subst; contradict n0.  
+  by subst; contradict n.
 - move => H_vp; inversion H_vp; subst.
   rewrite H4 in H_eq_or; injection H_eq_or => H_find_or H_find_or'.
   rewrite H9 in H_eq_fst; injection H_eq_fst => H_find_fst H_find_fst'.
