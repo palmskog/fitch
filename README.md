@@ -5,11 +5,12 @@ Certified proof checker for Fitch-style propositional logic proofs as defined in
 
 Requirements:
 
- - [`Coq 8.5pl2`](https://coq.inria.fr/download)
- - [`Mathematical Components 1.6`](http://math-comp.github.io/math-comp/)
- - [`Ott 0.25`](https://www.cl.cam.ac.uk/~pes20/ott/)
+- [`OCaml 4.01.0`](https://ocaml.org) (or later)
+- [`Coq 8.5pl2`](https://coq.inria.fr/download)
+- [`Mathematical Components 1.6`](http://math-comp.github.io/math-comp/)
+- [`Ott 0.25`](https://www.cl.cam.ac.uk/~pes20/ott/)
 
-Run `make` in the root directory. This will compile the Coq syntax and relation definitions, compile them along with the proofs, extract an OCaml program and link it with the default parser. Example proofs (`.nd` files) can then be checked as follows:
+Make sure Ott's Coq auxiliary libraries can be found in either in `../Ott` (default) or set the `Ott_PATH` parameter in `configure` appropriately. Then run `./configure`, followed by `make`. This will compile the Coq syntax and relation definitions, compile them along with the proofs, extract an OCaml program, and link the program with the default parser. Example proofs (`.nd` files) can then be checked as follows:
 
     $ ./fitch examples/imp.nd
 
