@@ -1,8 +1,0 @@
--Q /usr/local/lib/coq/user-contrib/Ott ""
--Q . ""
-
-./fitch.v
-./fitch_metatheory.v
-./dyadicnat.v
-./fitch_program.v
-./fitch_program_extrocaml.v

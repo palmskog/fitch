@@ -1,3 +1,9 @@
+COQPROJECT_EXISTS=$(wildcard _CoqProject)
+
+ifeq "$(COQPROJECT_EXISTS)" ""
+$(error "Run ./configure before running make")
+endif
+
 default: fitch
 
 fitch: fitch.ml fitch.mli explode.ml parser.ml
@@ -33,6 +39,6 @@ fitch.pdf: fitch_defs.tex fitch.tex
 
 clean:
 	$(MAKE) -f Makefile.coq clean
-	rm -f Makefile.coq fitch.ml fitch.mli fitch fitch.prolog *.cmi *.cmo fitch.pdf fitch.log fitch.tex fitch_defs.tex fitch.aux fitch_defs.aux
+	rm -f Makefile.coq fitch.ml fitch.mli fitch fitch.prolog *.cmi *.cmo fitch.pdf fitch.log fitch.tex fitch_defs.tex fitch.aux fitch_defs.aux fitch.v
 
 .PHONY: default clean

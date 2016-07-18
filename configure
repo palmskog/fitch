@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+DEPS=(Ott)
+Ott_NAMESPACE="\"\""
+EXTRA=(./fitch.v)
+source coqproject.sh
