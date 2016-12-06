@@ -1,31 +1,39 @@
-COQPROJECT_EXISTS=$(wildcard _CoqProject)
+COQVERSION = $(shell coqc --version|grep "version 8.5")
+ifeq "$(COQVERSION)" ""
+$(error "fitch is only compatible with Coq version 8.5")
+endif
 
+COQPROJECT_EXISTS = $(wildcard _CoqProject)
 ifeq "$(COQPROJECT_EXISTS)" ""
 $(error "Run ./configure before running make")
 endif
 
-default: fitch
+OCAMLBUILD = ocamlbuild -use-ocamlfind -syntax camlp4o -package camlp4.lib -package camlp4.extend -cflag -g
+OTT = ott
+OTTFILES = fitch.ott
+VFILES = $(OTTFILES:.ott=.v)
+MLFILES = fitch.ml fitch.mli
+MLFILES_DEPS = 'fitch_program_extrocaml.v fitch_program.vo'
+MLFILES_COMMAND = '$$(COQC) $$(COQDEBUG) $$(COQFLAGS) fitch_program_extrocaml.v'
 
-fitch: fitch.ml fitch.mli explode.ml parser.ml
-	ocamlfind ocamlc -w x \
-		-linkpkg -syntax camlp4o \
-		-package camlp4.extend -package camlp4.lib \
-		fitch.mli fitch.ml explode.ml parser.ml -o fitch
+default: checker.native
 
-fitch.prolog: fitch.ml fitch.mli explode.ml prolog.ml
-	ocamlfind ocamlc -w x \
-		-linkpkg -syntax camlp4o \
-		-package camlp4.extend -package camlp4.lib \
-		fitch.mli fitch.ml explode.ml prolog.ml -o fitch.prolog
+checker.native: $(MLFILES) explode.ml checker.ml
+	$(OCAMLBUILD) checker.native
 
-fitch.ml: fitch.v Makefile.coq
-	$(MAKE) -f Makefile.coq
+prolog.native: $(MLFILES) explode.ml prolog.ml
+	$(OCAMLBUILD) prolog.native
 
-fitch.v: fitch.ott
-	ott -o fitch.v -coq_expand_list_types false fitch.ott
+Makefile.coq: $(VFILES)
+	coq_makefile -f _CoqProject -o Makefile.coq \
+          -extra 'fitch.ml' $(MLFILES_DEPS) $(MLFILES_COMMAND) \
+          -extra 'fitch.mli' $(MLFILES_DEPS) $(MLFILES_COMMAND)
 
-Makefile.coq: _CoqProject
-	coq_makefile -f _CoqProject -o Makefile.coq
+$(VFILES): %.v: %.ott
+	$(OTT) -o $@ -coq_expand_list_types false $<
+
+$(MLFILES): Makefile.coq
+	$(MAKE) -f Makefile.coq $@
 
 fitch_defs.tex: fitch.ott
 	ott -o fitch_defs.tex -tex_wrap false fitch.ott
@@ -38,7 +46,10 @@ fitch.pdf: fitch_defs.tex fitch.tex
 	pdflatex fitch.tex
 
 clean:
-	$(MAKE) -f Makefile.coq clean
-	rm -f Makefile.coq fitch.ml fitch.mli fitch fitch.prolog *.cmi *.cmo fitch.pdf fitch.log fitch.tex fitch_defs.tex fitch.aux fitch_defs.aux fitch.v
+	if [ -f Makefile.coq ]; then \
+	  $(MAKE) -f Makefile.coq cleanall; fi
+	rm -f Makefile.coq $(VFILES)
+	$(OCAMLBUILD) checker.native -clean
+	$(OCAMLBUILD) prolog.native -clean
 
 .PHONY: default clean

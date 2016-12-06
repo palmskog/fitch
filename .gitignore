@@ -5,11 +5,13 @@
 *.cmi
 *.cmo
 Makefile.coq
+Makefile.coq.bak
+_build
 fitch.ml
 fitch.mli
 fitch.v
-fitch
-fitch.prolog
+checker.native
+prolog.native
 fitch.log
 fitch.tex
 fitch.aux

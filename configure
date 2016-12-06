@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 DEPS=(Ott)
-Ott_NAMESPACE="\"\""
-#Ott_PATH="/usr/local/lib/coq/user-contrib/Ott"
+NAMESPACE_Ott__="\"\""
 EXTRA=(./fitch.v)
 source coqproject.sh
