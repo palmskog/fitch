@@ -17,6 +17,8 @@ depends: [
   "coq-ott" {= "dev"}
   "ott" {= "dev"}
   "camlp4" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
 ]
 available: [ ocaml-version >= "4.02.3" ]
 
