@@ -1,6 +1,6 @@
-COQVERSION = $(shell coqc --version|grep "version 8.5")
+COQVERSION := $(shell coqc --version|egrep "version (8\\.5|8\\.6)")
 ifeq "$(COQVERSION)" ""
-$(error "fitch is only compatible with Coq version 8.5")
+$(error "Verdi is only compatible with Coq version 8.5 or 8.6")
 endif
 
 COQPROJECT_EXISTS = $(wildcard _CoqProject)
@@ -8,7 +8,7 @@ ifeq "$(COQPROJECT_EXISTS)" ""
 $(error "Run ./configure before running make")
 endif
 
-OCAMLBUILD = ocamlbuild -use-ocamlfind -syntax camlp4o -package camlp4.lib -package camlp4.extend -cflag -g
+OCAMLBUILD = ocamlbuild -use-ocamlfind -syntax camlp4o -pkgs 'camlp4.lib camlp4.extend' -cflag -g
 OTT = ott
 PDFLATEX = pdflatex
 
@@ -25,7 +25,7 @@ prolog.native: $(MLFILES) explode.ml prolog.ml
 	$(OCAMLBUILD) prolog.native
 
 Makefile.coq: $(VFILES)
-	coq_makefile -f _CoqProject -o Makefile.coq \
+	coq_makefile -f _CoqProject -o Makefile.coq -no-install \
           -extra '$(MLFILES)' \
 	    'fitch_program_extrocaml.v fitch_program.vo' \
 	    '$$(COQC) $$(COQDEBUG) $$(COQFLAGS) fitch_program_extrocaml.v'

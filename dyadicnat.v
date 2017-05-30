@@ -89,7 +89,7 @@ Module dyadicnat_as_OT <: OrderedType.
 Definition t := dyadicnat.
 Definition eq := eq (A := dyadicnat).
 Definition lt := dyadicnat_lt.
-Definition eq_refl := eq_refl (A := dyadicnat).
+Definition eq_refl := @eq_refl dyadicnat.
 Definition eq_sym := eq_sym (A := dyadicnat).
 Definition eq_trans := eq_trans (A := dyadicnat).
 Definition lt_trans := dyadicnat_lt_trans.
