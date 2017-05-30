@@ -1,7 +1,7 @@
 open Camlp4.PreCast
 open Fitch
 open FitchString
-open Explode
+open Util
 
 module Gram = MakeGram(Lexer) 
 
@@ -27,7 +27,7 @@ let justification = Gram.Entry.mk "justification"
   [[ 
     "cont" -> Coq_prop_cont
   | "~"; p = prop -> Coq_prop_neg p
-  | p = LIDENT -> Coq_prop_p (explode p)
+  | p = LIDENT -> Coq_prop_p (char_list_of_string p)
   | p1 = prop; "/\\"; p2 = prop -> Coq_prop_and (p1, p2)
   | p1 = prop; "\\/"; p2 = prop -> Coq_prop_or (p1, p2)
   | p1 = prop; "->"; p2 = prop -> Coq_prop_imp (p1, p2)

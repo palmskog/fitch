@@ -8,7 +8,7 @@ ifeq "$(COQPROJECT_EXISTS)" ""
 $(error "Run ./configure before running make")
 endif
 
-OCAMLBUILD = ocamlbuild -use-ocamlfind -syntax camlp4o -pkgs 'camlp4.lib camlp4.extend' -cflag -g
+OCAMLBUILD = ocamlbuild -use-ocamlfind -tag safe_string -syntax camlp4o -pkgs 'camlp4.lib camlp4.extend' -cflag -g
 OTT = ott
 PDFLATEX = pdflatex
 
@@ -18,10 +18,10 @@ MLFILES = fitch.ml fitch.mli
 
 default: checker.native
 
-checker.native: $(MLFILES) explode.ml checker.ml
+checker.native: $(MLFILES) util.ml checker.ml
 	$(OCAMLBUILD) checker.native
 
-prolog.native: $(MLFILES) explode.ml prolog.ml
+prolog.native: $(MLFILES) util.ml prolog.ml
 	$(OCAMLBUILD) prolog.native
 
 Makefile.coq: $(VFILES)
