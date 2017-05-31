@@ -4,24 +4,15 @@ Require Import fitch.
 Require Import fitch_metatheory.
 Require Import mathcomp.ssreflect.ssreflect.
 
-Module SpecMapList 
- (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
- (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST) <: FMapInterface.S with Module E := SUOTD :=
-FMapList.Make SUOTD.
-
-Module NatSpecType <: SpecType. Definition t := nat. End NatSpecType.
+Module NatSpecType. Definition t := nat. End NatSpecType.
 Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
-Module NatDyadicSpec <: DyadicSpecType NatSpecType := DyadicSpec NatSpecType.
-Module NatDyadicSpecUsualOrderedType <: SpecUsualOrderedType NatDyadicSpec :=
- SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
-Module MapList :=
- SpecMapList NatSpecType NatSpecUsualOrderedType NatDyadicSpec NatDyadicSpecUsualOrderedType.
+Module NatDyadicSpec := DyadicSpec NatSpecType.
+Module NatDyadicSpecUsualOrderedType := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
+Module MapList := FMapList.Make NatDyadicSpecUsualOrderedType.
 
 Module FitchPropMetatheoryListMap :=
- FitchPropMetatheory 
-   NatSpecType NatSpecUsualOrderedType
-   NatDyadicSpec NatDyadicSpecUsualOrderedType
-   MapList.
+ FitchPropMetatheory NatSpecType NatSpecUsualOrderedType
+   NatDyadicSpec NatDyadicSpecUsualOrderedType MapList.
 Import FitchPropMetatheoryListMap.
 
 Section TestFitch.

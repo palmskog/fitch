@@ -13,26 +13,19 @@ Module DPIString <: DecidablePropInterpretation PIString.
 Definition A_eq_dec := string_dec.
 End DPIString.
 
-Module SpecMapList 
- (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
- (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST) <: FMapInterface.S with Module E := SUOTD :=
-FMapList.Make SUOTD.
-
 Module NatSpecType <: SpecType. Definition t := nat. End NatSpecType.
 Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
-Module NatDyadicSpec <: DyadicSpecType NatSpecType := DyadicSpec NatSpecType.
-Module NatDyadicSpecUsualOrderedType <: SpecUsualOrderedType NatDyadicSpec :=
- SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
-Module MapList :=
- SpecMapList NatSpecType NatSpecUsualOrderedType NatDyadicSpec NatDyadicSpecUsualOrderedType.
+Module NatDyadicSpec := DyadicSpec NatSpecType.
+Module NatDyadicSpecUsualOrderedType := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
+Module Map := FMapList.Make NatDyadicSpecUsualOrderedType.
 
-Module FitchProgramListMap :=
+Module FitchProgramMap :=
  FitchProgram
    PIString DPIString
    NatSpecType NatSpecUsualOrderedType
    NatDyadicSpec NatDyadicSpecUsualOrderedType
-   MapList.
-Import FitchProgramListMap.
+   Map.
+Import FitchProgramMap.
 
 Definition test_claim_1 : claim := 
   (claim_judgment_proof 

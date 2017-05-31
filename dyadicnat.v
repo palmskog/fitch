@@ -38,7 +38,9 @@ Module DyadicSpec (ST : SpecType) <: DyadicSpecType ST.
   Definition t := @dyadic ST.t.
 End DyadicSpec.
 
-Module SpecDyadicUsualOrderedType (ST : SpecType) (SUOT : SpecUsualOrderedType ST) (DST : DyadicSpecType ST) <: SpecUsualOrderedType DST.
+Module SpecDyadicUsualOrderedType 
+  (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
+  (DST : DyadicSpecType ST) <: SpecUsualOrderedType DST.
   Definition t := @dyadic SUOT.t.
 
   Definition eq := @eq t.
@@ -129,12 +131,11 @@ End SpecDyadicUsualOrderedType.
 
 (*
 Require Import FMapList.
-Module ListMap (ST : SpecType) (SUOT : SpecUsualOrderedType ST) (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST) <: FMapInterface.S with Module E := SUOTD := FMapList.Make SUOTD.
 Module NatSpecType <: SpecType. Definition t := nat. End NatSpecType.
 Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
-Module NatDyadicSpec <: DyadicSpecType NatSpecType := DyadicSpec NatSpecType.
-Module NatDyadicSpecUsualOrderedType <: SpecUsualOrderedType NatDyadicSpec := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
-Module Map := ListMap NatSpecType NatSpecUsualOrderedType NatDyadicSpec NatDyadicSpecUsualOrderedType.
+Module NatDyadicSpec := DyadicSpec NatSpecType.
+Module NatDyadicSpecUsualOrderedType := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
+Module Map := FMapList.Make NatDyadicSpecUsualOrderedType.
 Import Map.
 Eval compute in Map.find (dyadic_dyad 5 3) (Map.add (dyadic_dyad 5 3) 2 (Map.empty nat)).
 *)
