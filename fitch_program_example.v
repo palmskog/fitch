@@ -1,5 +1,4 @@
 Require Import FMapList.
-Require Import dyadicnat.
 Require Import fitch.
 Require Import fitch_program.
 Require Import String.

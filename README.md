@@ -17,7 +17,7 @@ Make sure Ott's Coq auxiliary libraries have been installed in Coq' `user-contri
 
     $ ./checker.native examples/imp.nd
 
-To generate an OCaml program with the alternative Prolog file format parser, run `make fitch.prolog` in the root directory. Example proofs (`.pl` files) can then be checked as follows:
+To generate an OCaml program with the alternative Prolog file format parser, run `make prolog.native` in the root directory. Example proofs (`.pl` files) can then be checked as follows:
 
     $ ./prolog.native examples/imp_perm.pl
 

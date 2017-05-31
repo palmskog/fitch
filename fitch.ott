@@ -3,7 +3,7 @@ embed
 \usepackage{stmaryrd} 
 }}
 {{ coq
-Require Export dyadicnat.
+Require Export dyadic_ordered.
 Require Export Structures.OrderedTypeEx.
 Require Export FMapInterface.
 
