@@ -53,3 +53,4 @@ clean:
 	$(OCAMLBUILD) -clean
 
 .PHONY: default clean
+.NOTPARALLEL: $(MLFILES)
