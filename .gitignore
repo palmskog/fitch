@@ -7,6 +7,7 @@
 Makefile.coq
 Makefile.coq.bak
 _build
+fitch.v
 fitch.ml
 fitch.mli
 checker.native

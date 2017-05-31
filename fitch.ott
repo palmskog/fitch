@@ -4,18 +4,18 @@ embed
 }}
 {{ coq
 Require Export dyadicnat.
-Require Export FMapList.
-Module Map <: FMapInterface.S := FMapList.Make dyadicnat_as_OT.
+Require Export Structures.OrderedTypeEx.
+Require Export FMapInterface.
 
 Module Type PropInterpretation.
 Parameter A : Type.
 End PropInterpretation.
 
-Module Fitch (PI : PropInterpretation) <: 
-   PropInterpretation 
-   with Definition A := PI.A.
-
-Definition A := PI.A.
+Module Fitch
+ (Import PI : PropInterpretation)
+ (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
+ (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST)
+ (Map : FMapInterface.S with Module E := SUOTD).
 }}
 metavar p ::=
       {{ lex alphanum }}
@@ -23,8 +23,7 @@ metavar p ::=
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
-      {{ coq nat }}
-      {{ coq-equality }}
+      {{ coq SUOT.t }}
       {{ com proof entry label }}
 indexvar n ::= 
       {{ lex numeral }}
@@ -88,10 +87,12 @@ derivation :: derivation_ ::=
 	     {{ tex [[l]]\; [[prop]]\;\; [[reason]] }}
 
 reason :: reason_ ::=
+       {{ coq-universe Type }}
        | assumption :: :: assumption
        | justification :: :: justification
 
 justification :: justification_ ::=
+     {{ coq-universe Type }}
      {{ com derivation justification }}
     | premise :: :: premise
     | lem :: :: lem
@@ -157,9 +158,9 @@ G {{ tex \Gamma }} :: G_ ::=
   | [] :: M :: empty
     {{ coq (Map.empty dyadicprop) }}
   | G [ l |-> prop ] :: M :: add_prop
-    {{ coq (Map.add (dyadicnat_nat [[l]]) (dyadicprop_prop [[prop]]) [[G]]) }}
+    {{ coq (Map.add (dyadic_t [[l]]) (dyadicprop_prop [[prop]]) [[G]]) }}
   | G [ ( l , l' ) |-> ( prop , prop' ) ] :: M :: add_dyad
-    {{ coq (Map.add (dyadicnat_dyad [[l]] [[l']]) (dyadicprop_dyad [[prop]] [[prop']]) [[G]]) }}
+    {{ coq (Map.add (dyadic_dyad [[l]] [[l']]) (dyadicprop_dyad [[prop]] [[prop']]) [[G]]) }}
 
 formula :: formula_ ::=  
 	{{ com formulas }}
@@ -170,10 +171,10 @@ formula :: formula_ ::=
 	  {{ coq (In [[prop]] [[proplist]]) }}
      	| G ( l ) = prop :: M :: G_label
           {{ com map label to prop }}
-	  {{ coq (Map.find (dyadicnat_nat [[l]]) [[G]] = Some (dyadicprop_prop [[prop]])) }}
+	  {{ coq (Map.find (dyadic_t [[l]]) [[G]] = Some (dyadicprop_prop [[prop]])) }}
 	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
 	  {{ com map tuple of labels to tuple of props }}
-	  {{ coq (Map.find (dyadicnat_dyad [[l]] [[l']]) [[G]] = Some (dyadicprop_dyad [[prop]] [[prop']])) }}
+	  {{ coq (Map.find (dyadic_dyad [[l]] [[l']]) [[G]] = Some (dyadicprop_dyad [[prop]] [[prop']])) }}
 	| entry = entry' :: M :: entry_eq
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}
@@ -301,25 +302,19 @@ embed
 {{ coq
 End Fitch.
 
-Module Type PropMappingInterpretation.
-Parameter A : Type.
-Parameter mapping : A -> Prop.
+Module Type PropMappingInterpretation (Import PI : PropInterpretation).
+  Parameter mapping : A -> Prop.
 End PropMappingInterpretation.
 
-Module FitchMapping (PMI : PropMappingInterpretation) <:
-   PropMappingInterpretation
-   with Definition A := PMI.A
-   with Definition mapping := PMI.mapping.
+Module FitchMapping
+  (Import PI : PropInterpretation)
+  (Import PMI : PropMappingInterpretation PI)
+  (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
+  (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST)
+  (Map : FMapInterface.S with Module E := SUOTD).
 
-Definition A := PMI.A.
-Definition mapping := PMI.mapping.
-
-Module FitchA <: PropInterpretation.
-Definition A := A.
-End FitchA.
-
-Module FitchSystem := Fitch FitchA.
-Export FitchSystem.
+Module FitchPI := Fitch PI ST SUOT DST SUOTD Map.
+Export FitchPI.
 }}
 
 grammar
