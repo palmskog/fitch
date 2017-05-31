@@ -134,8 +134,12 @@ Require Import FMapList.
 Module NatSpecType <: SpecType. Definition t := nat. End NatSpecType.
 Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
 Module NatDyadicSpec := DyadicSpec NatSpecType.
-Module NatDyadicSpecUsualOrderedType := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
-Module Map := FMapList.Make NatDyadicSpecUsualOrderedType.
+Module NatDyadicSpecUsualOrderedType <: SpecUsualOrderedType NatDyadicSpec := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
+Module MakeMap
+ (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
+ (DST : DyadicSpecType ST) (SDUOT : SpecUsualOrderedType DST) <:
+  FMapInterface.S with Module E := SDUOT := FMapList.Make SDUOT.
+Module Map := MakeMap NatSpecType NatSpecUsualOrderedType NatDyadicSpec NatDyadicSpecUsualOrderedType.
 Import Map.
 Eval compute in Map.find (dyadic_dyad 5 3) (Map.add (dyadic_dyad 5 3) 2 (Map.empty nat)).
 *)
