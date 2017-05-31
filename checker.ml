@@ -1,7 +1,8 @@
 open Camlp4.PreCast
-open Fitch
-open FitchString
 open Util
+open Fitch
+open FitchProgramMap
+open FitchPI
 
 module Gram = MakeGram(Lexer) 
 

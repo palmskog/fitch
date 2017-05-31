@@ -9,7 +9,6 @@ Makefile.coq.bak
 _build
 fitch.ml
 fitch.mli
-fitch.v
 checker.native
 prolog.native
 fitch.log

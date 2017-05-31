@@ -1,106 +1,140 @@
 Require Export OrderedType.
-Require Export OrderedTypeEx.
+Require Export Structures.OrderedTypeEx.
 Require Import mathcomp.ssreflect.ssreflect.
 Require Import Omega.
 
-Inductive dyadicnat : Set :=
-| dyadicnat_nat : nat -> dyadicnat
-| dyadicnat_dyad : nat -> nat -> dyadicnat.
+Inductive dyadic {A : Type} : Type :=
+| dyadic_t : A -> dyadic
+| dyadic_dyad : A -> A -> dyadic.
 
-Definition dyadicnat_eq_dec : forall d d' : dyadicnat, { d = d' }+{ d <> d' }.
-decide equality; auto with arith.
-Defined.
+Inductive dyadic_lt {A : Type} {lt : A -> A -> Prop} : dyadic -> dyadic -> Prop :=
+| dyadic_lt_t_t : forall (l l' : A), lt l l' -> dyadic_lt (dyadic_t l) (dyadic_t l')
+| dyadic_lt_t_dyad : forall (l l1 l1': A), dyadic_lt (dyadic_t l) (dyadic_dyad l1 l1')
+| dyadic_lt_dyad_lt : forall (l0 l0' l1 l1' : A), lt l0 l1 -> dyadic_lt (dyadic_dyad l0 l0') (dyadic_dyad l1 l1')
+| dyadic_lt_dyad_eq : forall (l l0' l1' : A), lt l0' l1' -> dyadic_lt (dyadic_dyad l l0') (dyadic_dyad l l1').
 
-Inductive dyadicnat_lt : dyadicnat -> dyadicnat -> Prop :=
-| dyadicnat_lt_nat_nat : forall (l l' : nat), l < l' -> dyadicnat_lt (dyadicnat_nat l) (dyadicnat_nat l')
-| dyadicnat_lt_nat_dyad : forall (l l1 l1': nat), dyadicnat_lt (dyadicnat_nat l) (dyadicnat_dyad l1 l1')
-| dyadicnat_lt_dyad_lt : forall (l0 l0' l1 l1' : nat), l0 < l1 -> dyadicnat_lt (dyadicnat_dyad l0 l0') (dyadicnat_dyad l1 l1')
-| dyadicnat_lt_dyad_eq : forall (l l0' l1' : nat), l0' < l1' -> dyadicnat_lt (dyadicnat_dyad l l0') (dyadicnat_dyad l l1').
+Module Type SpecType.
+  Parameter t : Type.
+End SpecType.
 
-Theorem dyadicnat_lt_trans : forall x y z, dyadicnat_lt x y -> dyadicnat_lt y z -> dyadicnat_lt x z.
-Proof.
-move => x y z H_xy H_yz.
-inversion H_xy; subst.
-- inversion H_yz; subst.
-  * by apply dyadicnat_lt_nat_nat; apply lt_trans with (m := l').
-  * by apply dyadicnat_lt_nat_dyad.
-- inversion H_yz; subst.
-  * by apply dyadicnat_lt_nat_dyad.
-  * by apply dyadicnat_lt_nat_dyad.
-- inversion H_yz; subst.
-  * by apply dyadicnat_lt_dyad_lt; apply lt_trans with (m := l1).
-  * by apply dyadicnat_lt_dyad_lt.
-- inversion H_yz; subst.
-  * by apply dyadicnat_lt_dyad_lt.
-  * by apply dyadicnat_lt_dyad_eq; apply lt_trans with (m := l1').
-Qed.
+Module Type SpecUsualOrderedType (ST : SpecType) <: UsualOrderedType.
+  Definition t := ST.t.
+  Definition eq := @eq t.
+  Definition eq_refl := @eq_refl t.
+  Definition eq_sym := @eq_sym t.
+  Definition eq_trans := @eq_trans t.
+  Parameter lt : t -> t -> Prop.
+  Parameter eq_dec : forall t0 t1 : t, {eq t0 t1}+{~ eq t0 t1}.
+  Parameter lt_trans : forall x y z, lt x y -> lt y z -> lt x z.
+  Parameter lt_not_eq : forall x y, lt x y -> x <> y.
+  Parameter compare : forall x y, Compare lt eq x y.
+End SpecUsualOrderedType.
 
-Theorem dyadicnat_lt_not_eq : forall x y, dyadicnat_lt x y -> x <> y.
-Proof.
-move => x y H_xy; inversion H_xy; subst => H_neq.
-- injection H_neq => H_eq.
-  by omega.
-- by [].
-- injection H_neq => H_eq1 H_eq2.
-  by omega.
-- injection H_neq => H_eq.
-  by omega.
-Qed.
+Module Type DyadicSpecType (ST : SpecType) <: SpecType.
+  Definition t := @dyadic ST.t.
+End DyadicSpecType.
 
+Module DyadicSpec (ST : SpecType) <: DyadicSpecType ST.
+  Definition t := @dyadic ST.t.
+End DyadicSpec.
 
-Definition compare_dyadicnat (x y : dyadicnat) : Compare dyadicnat_lt eq x y.
-refine
+Module SpecDyadicUsualOrderedType (ST : SpecType) (SUOT : SpecUsualOrderedType ST) (DST : DyadicSpecType ST) <: SpecUsualOrderedType DST.
+  Definition t := @dyadic SUOT.t.
+
+  Definition eq := @eq t.
+  Definition eq_refl := @eq_refl t.
+  Definition eq_sym := @eq_sym t.
+  Definition eq_trans := @eq_trans t.
+
+  Definition eq_dec : forall t0 t1 : t, {t0 = t1}+{t0 <> t1}.
+    decide equality; auto using SUOT.eq_dec.
+  Defined.
+
+  Definition lt := @dyadic_lt _ SUOT.lt.
+
+  Theorem lt_trans : forall x y z, lt x y -> lt y z -> lt x z.
+  Proof.
+  move => x y z H_xy H_yz.
+  inversion H_xy; subst.
+  - inversion H_yz; subst.
+    * by apply dyadic_lt_t_t; apply SUOT.lt_trans with (y := l').
+    * by apply dyadic_lt_t_dyad.
+  - inversion H_yz; subst.
+    * by apply dyadic_lt_t_dyad.
+    * by apply dyadic_lt_t_dyad.
+  - inversion H_yz; subst.
+    * by apply dyadic_lt_dyad_lt; apply SUOT.lt_trans with (y := l1).
+    * by apply dyadic_lt_dyad_lt.
+  - inversion H_yz; subst.
+    * by apply dyadic_lt_dyad_lt.
+    * by apply dyadic_lt_dyad_eq; apply SUOT.lt_trans with (y := l1').
+  Qed.
+
+  Theorem lt_not_eq : forall x y, lt x y -> x <> y.
+  Proof.
+  move => x y H_xy; inversion H_xy; subst => H_neq.
+  - injection H_neq => H_eq.
+    subst.
+    apply SUOT.lt_not_eq in H.
+    by unfold SUOT.eq in H.
+  - by [].
+  - injection H_neq => H_eq1 H_eq2.
+    subst.
+    apply SUOT.lt_not_eq in H.
+    by unfold SUOT.eq in H.
+  - injection H_neq => H_eq.
+    subst.
+    apply SUOT.lt_not_eq in H.
+    by unfold SUOT.eq in H.
+  Qed.
+
+  Definition compare (x y : t) : Compare lt eq x y.
+  refine
   (match x as x0, y as y0 return (x = x0 -> y = y0 -> _) with
-   | dyadicnat_nat l0, dyadicnat_nat l1 => fun (H_eq : _) (H_eq' : _) => 
-     match lt_eq_lt_dec l0 l1 with
-     | inleft (left H_dec) => LT _
-     | inleft (right H_dec) => EQ _
-     | inright H_dec => GT _
+   | dyadic_t l0, dyadic_t l1 => 
+     fun (H_eq : _) (H_eq' : _) => 
+     match SUOT.compare l0 l1 with
+     | LT H_cmp => LT _
+     | EQ H_cmp => EQ _
+     | GT H_cmp => GT _
      end
-   | dyadicnat_nat l0, dyadicnat_dyad l1 l1' => fun (H_eq : _) (H_eq' : _) => LT _
-   | dyadicnat_dyad l0 l0', dyadicnat_nat l1 => fun (H_eq : _) (H_eq' : _) => GT _
-   | dyadicnat_dyad l0 l0', dyadicnat_dyad l1 l1' => fun (H_eq : _) (H_eq' : _) =>
-     match lt_eq_lt_dec l0 l1 with
-     | inleft (left H_dec) => LT _
-     | inleft (right H_dec) => 
-       match lt_eq_lt_dec l0' l1' with
-       | inleft (left H_dec') => LT _
-       | inleft (right H_dec') => EQ _
-       | inright H_dec' => GT _
+   | dyadic_t l0, dyadic_dyad l1 l1' => fun (H_eq : _) (H_eq' : _) => LT _
+   | dyadic_dyad l0 l0', dyadic_t l1 => fun (H_eq : _) (H_eq' : _) => GT _
+   | dyadic_dyad l0 l0', dyadic_dyad l1 l1' => fun (H_eq : _) (H_eq' : _) =>
+     match SUOT.compare l0 l1 with
+     | LT H_cmp => LT _
+     | EQ H_cmp =>
+       match SUOT.compare l0' l1' with
+       | LT H_cmp' => LT _
+       | EQ H_cmp' => EQ _
+       | GT H_cmp' => GT _
        end
-     | inright H_dec => GT _
+     | GT H_cmp => GT _
      end
    end (refl_equal _) (refl_equal _)); rewrite H_eq H_eq'.
-- exact: dyadicnat_lt_nat_nat.
-- by rewrite H_dec.
-- exact: dyadicnat_lt_nat_nat.
-- exact: dyadicnat_lt_nat_dyad.
-- exact: dyadicnat_lt_nat_dyad.
-- exact: dyadicnat_lt_dyad_lt.
-- rewrite H_dec.
-  exact: dyadicnat_lt_dyad_eq.
-- by rewrite H_dec H_dec'.
-- rewrite H_dec.
-  exact: dyadicnat_lt_dyad_eq.
-- exact: dyadicnat_lt_dyad_lt.
-Defined.
-
-Module dyadicnat_as_OT <: OrderedType.
-Definition t := dyadicnat.
-Definition eq := eq (A := dyadicnat).
-Definition lt := dyadicnat_lt.
-Definition eq_refl := @eq_refl dyadicnat.
-Definition eq_sym := eq_sym (A := dyadicnat).
-Definition eq_trans := eq_trans (A := dyadicnat).
-Definition lt_trans := dyadicnat_lt_trans.
-Definition lt_not_eq := dyadicnat_lt_not_eq.
-Definition compare := compare_dyadicnat.
-Definition eq_dec := dyadicnat_eq_dec.
-End dyadicnat_as_OT.
+  - exact: dyadic_lt_t_t.
+  - by rewrite H_cmp.
+  - exact: dyadic_lt_t_t.
+  - exact: dyadic_lt_t_dyad.
+  - exact: dyadic_lt_t_dyad.
+  - exact: dyadic_lt_dyad_lt.
+  - rewrite H_cmp.
+    exact: dyadic_lt_dyad_eq.
+  - by rewrite H_cmp H_cmp'.
+  - rewrite H_cmp.
+    exact: dyadic_lt_dyad_eq.
+  - exact: dyadic_lt_dyad_lt.
+  Defined.
+End SpecDyadicUsualOrderedType.
 
 (*
 Require Import FMapList.
-Module Map <: FMapInterface.S := FMapList.Make dyadicnat_as_OT.
-Eval compute in Map.find (dyadicnat_dyad 5 3) (Map.add (dyadicnat_dyad 5 3) 2 (Map.empty nat)).
+Module ListMap (ST : SpecType) (SUOT : SpecUsualOrderedType ST) (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST) <: FMapInterface.S with Module E := SUOTD := FMapList.Make SUOTD.
+Module NatSpecType <: SpecType. Definition t := nat. End NatSpecType.
+Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
+Module NatDyadicSpec <: DyadicSpecType NatSpecType := DyadicSpec NatSpecType.
+Module NatDyadicSpecUsualOrderedType <: SpecUsualOrderedType NatDyadicSpec := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
+Module Map := ListMap NatSpecType NatSpecUsualOrderedType NatDyadicSpec NatDyadicSpecUsualOrderedType.
+Import Map.
+Eval compute in Map.find (dyadic_dyad 5 3) (Map.add (dyadic_dyad 5 3) 2 (Map.empty nat)).
 *)
-
