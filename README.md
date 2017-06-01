@@ -13,7 +13,7 @@ Requirements:
 - [`Mathematical Components 1.6`](http://math-comp.github.io/math-comp/)
 - [`Ott`](https://www.cl.cam.ac.uk/~pes20/ott/)
 
-Make sure Ott's Coq auxiliary libraries have been installed in Coq' `user-contrib` (default) or set the `Ott_PATH` parameter in `configure` appropriately. Then run `./configure`, followed by `make`. This will compile the Coq syntax and relation definitions, compile them along with the proofs, extract an OCaml program, and link the program with the default parser. Example proofs (`.nd` files) can then be checked as follows:
+Make sure Ott's Coq auxiliary libraries have been installed under Coq's `user-contrib` directory (default) or set the `Ott_PATH` environment variable to an alternative location. Then run `./configure`, followed by `make`. This will compile the Coq syntax and relation definitions, compile them along with the proofs, extract an OCaml program, and link the program with the default parser. Example proofs (`.nd` files) can then be checked as follows:
 
     $ ./checker.native examples/imp.nd
 

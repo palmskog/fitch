@@ -31,14 +31,14 @@ Definition premises_admitted (proplist5 : proplist) : Prop :=
 Definition map_line_admitted (G5 : G) : Prop :=
   forall (l6 : l) (prop6 : prop) (P6 : mprop), 
     prop_mapping prop6 P6 -> 
-    Map.find (dyadic_t l6) G5 = Some (dyadicprop_prop prop6) -> 
+    Map.find (inl l6) G5 = Some (inl prop6) -> 
     P6.
 
 Definition map_box_admitted (G5 : G) : Prop :=
   forall (l6 l7 : l) (prop6 prop7 : prop) (P6 P7 : mprop), 
     prop_mapping prop6 P6 -> 
     prop_mapping prop7 P7 -> 
-    Map.find (dyadic_dyad l6 l7) G5 = Some (dyadicprop_dyad prop6 prop7) -> 
+    Map.find (inr (l6, l7)) G5 = Some (inr (prop6, prop7)) -> 
     (P6 -> P7).
 
 Lemma prop_mapping_ex : forall (prop5 : prop), 
@@ -387,8 +387,8 @@ End Derivations.
 Lemma not_in_map :
   forall (G5 : G) (l0 l6 : l) (prop0 prop6 : prop),
     l0 <> l6 ->
-    Map.find (dyadic_t l6) (Map.add (dyadic_t l0) (dyadicprop_prop prop0) G5) = Some (dyadicprop_prop prop6) ->
-    Map.find (dyadic_t l6) G5 = Some (dyadicprop_prop prop6).
+    Map.find (inl l6) (Map.add (inl l0) (inl prop0) G5) = Some (inl prop6) ->
+    Map.find (inl l6) G5 = Some (inl prop6).
 Proof.
 move => G5 l0 l6 prop0 prop6 H_neq H_some.
 apply MapFacts.find_mapsto_iff in H_some.
@@ -398,8 +398,8 @@ Qed.
 
 Lemma not_in_map_dyad :
   forall (G5 : G) (l0 l6 l7 : l) (prop0 prop6 prop7 : prop),
-    Map.find (dyadic_dyad l6 l7) (Map.add (dyadic_t l0) (dyadicprop_prop prop0) G5) = Some (dyadicprop_dyad prop6 prop7) ->
-    Map.find (dyadic_dyad l6 l7) G5 = Some (dyadicprop_dyad prop6 prop7).
+    Map.find (inr (l6, l7)) (Map.add (inl l0) (inl prop0) G5) = Some (inr (prop6, prop7)) ->
+    Map.find (inr (l6, l7)) G5 = Some (inr (prop6, prop7)).
 Proof.
 move => G5 l0 l6 l7 prop0 prop6 prop7 H_some.
 apply MapFacts.find_mapsto_iff in H_some.
@@ -409,8 +409,8 @@ Qed.
 
 Lemma not_in_dyad_map :
   forall (G5 : G) (l6 l7 l8 : l) (prop6 prop7 prop8 : prop),  
-    Map.find (dyadic_t l6) (Map.add (dyadic_dyad l7 l8) (dyadicprop_dyad prop7 prop8) G5) = Some (dyadicprop_prop prop6) ->
-    Map.find (dyadic_t l6) G5 = Some (dyadicprop_prop prop6).
+    Map.find (inl l6) (Map.add (inr (l7, l8)) (inr (prop7, prop8)) G5) = Some (inl prop6) ->
+    Map.find (inl l6) G5 = Some (inl prop6).
 Proof.
 move => G5 l6 l7 l8 prop6 prop7 prop8 H_some.
 apply MapFacts.find_mapsto_iff in H_some.
@@ -421,7 +421,7 @@ Qed.
 Lemma in_map :
   forall (G5 : G) (l0 l6 : l) (prop0 prop6 : prop),
     l0 = l6 ->
-    Map.find (dyadic_t l6) (Map.add (dyadic_t l0) (dyadicprop_prop prop0) G5) = Some (dyadicprop_prop prop6) ->
+    Map.find (inl l6) (Map.add (inl l0) (inl prop0) G5) = Some (inl prop6) ->
     prop0 = prop6.
 Proof.
 move => G5 l0 l6 prop0 prop6 H_eq H_some.
@@ -440,8 +440,8 @@ Qed.
 
 Lemma not_in_map_dyad_neq : forall (G5 : G) (d d' : dyadic) (prop5 prop6 prop7 prop' : prop), 
   d <> d' -> 
-  Map.find d (Map.add d' (dyadicprop_dyad prop5 prop') G5) = Some (dyadicprop_dyad prop6 prop7) ->
-  Map.find d G5 = Some (dyadicprop_dyad prop6 prop7).
+  Map.find d (Map.add d' (inr (prop5, prop')) G5) = Some (inr (prop6, prop7)) ->
+  Map.find d G5 = Some (inr (prop6, prop7)).
 Proof.
 move => G5 d d' prop6 prop7 prop8 prop' H_neq H_some.
 apply MapFacts.find_mapsto_iff in H_some.
@@ -465,9 +465,9 @@ Lemma justification_derivation :
          (proof5 : proof),
        valid_derivation G5 proplist5
          (derivation_deriv l5 prop5 (reason_justification justification5)) ->
-       valid_proof (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       valid_proof (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
-       justification_prop (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       justification_prop (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
        justification_prop G5 proplist5
          (proof_entries
@@ -497,15 +497,15 @@ Lemma justification_box :
                   (derivation_deriv l5 prop5 reason_assumption)
                 :: proof_list_entry proof5))) entry_invalid =
        entry_derivation (derivation_deriv l' prop' reason5) ->
-       valid_proof (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       valid_proof (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
-       justification_prop (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       justification_prop (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
        valid_proof
-         (Map.add (dyadic_dyad l5 l') (dyadicprop_dyad prop5 prop') G5)
+         (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
          proplist5 proof' ->
        justification_prop
-         (Map.add (dyadic_dyad l5 l') (dyadicprop_dyad prop5 prop') G5)
+         (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
          proplist5 proof' ->
        justification_prop G5 proplist5
          (proof_entries
@@ -550,9 +550,9 @@ Lemma soundness_derivation :
   (prop5 : prop)(justification5 : justification) (proof5 : proof),
        valid_derivation G5 proplist5
          (derivation_deriv l5 prop5 (reason_justification justification5)) ->
-       valid_proof (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       valid_proof (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
-       soundness_prop (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       soundness_prop (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
        soundness_prop G5 proplist5
          (proof_entries
@@ -572,7 +572,7 @@ case: H_in => H_in.
   exact: (soundness_derivations G5 proplist0 prop0 _ _ _ _ _ l6 j6).
 apply IH with (l6 := l6) (j5 := j6) (prop5 := prop0) => //.
   move => l7 prop6 P6 H_mp' H_g_eq.
-  case (eq_l l5 l7) => H_eq_l.
+  case (SUOT.eq_dec l5 l7) => H_eq_l.
     rewrite -(in_map G5 l5 l7 prop5 prop6 H_eq_l H_g_eq) in H_mp'.
     rewrite -(prop_mapping_eq prop5 P5 P6 H_pm H_mp').
     exact: (soundness_derivations G5 proplist0 prop5 _ _ _ _ _ l5 j5).
@@ -594,15 +594,15 @@ Lemma soundness_box : (forall (G5 : G) (proplist5 : proplist) (l5 : l)
                   (derivation_deriv l5 prop5 reason_assumption)
                 :: proof_list_entry proof5))) entry_invalid =
        entry_derivation (derivation_deriv l' prop' reason5) ->
-       valid_proof (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       valid_proof (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
-       soundness_prop (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5)
+       soundness_prop (Map.add (inl l5) (inl prop5) G5)
          proplist5 proof5 ->
        valid_proof
-         (Map.add (dyadic_dyad l5 l') (dyadicprop_dyad prop5 prop') G5)
+         (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
          proplist5 proof' ->
        soundness_prop
-         (Map.add (dyadic_dyad l5 l') (dyadicprop_dyad prop5 prop') G5)
+         (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
          proplist5 proof' ->
        soundness_prop G5 proplist5
          (proof_entries
@@ -627,7 +627,7 @@ move => l6 l7 prop6 prop7 P6 P7 H_P6 H_P7 H_mm' H_prop6.
 move: H_last.
 case H_proof5: (proof_list_entry proof5) => [|e le] H_eq.
   injection H_eq => H_reason H_prop H_l.
-  case (SUOTD.eq_dec (dyadic_dyad l6 l7) (dyadic_dyad l5 l')) => H_dyad_eq.
+  case (SUOTD.eq_dec (inr (l6, l7)) (inr (l5, l'))) => H_dyad_eq.
     injection H_dyad_eq => H_eq_l6 H_eq_l7.
     rewrite H_eq_l6 H_eq_l7 in H_mm'.
     apply map_find_add in H_mm'.
@@ -652,7 +652,7 @@ apply (valid_in_justification _ _ _ _ _ _ H_vp) in H_justification.
 case H_reason: reason5 => [|j6] => //.
 rewrite H_reason in H_in_valid.
 rewrite H_reason in H_proof5_entry.
-case (SUOTD.eq_dec (dyadic_dyad l6 l7) (dyadic_dyad l5 l')) => H_dyad_eq; first last.
+case (SUOTD.eq_dec (inr (l6, l7)) (inr (l5, l'))) => H_dyad_eq; first last.
   apply (not_in_map_dyad_neq _ _ _ _ _ _ _ H_dyad_eq) in H_mm'.
   by apply H_mm with (l6 := l6) (l7 := l7) (prop6 := prop6) (prop7 := prop7) (P6 := P6) (P7 := P7).
 injection H_dyad_eq => H_eq_l6 H_eq_l7.
@@ -661,11 +661,12 @@ apply map_find_add in H_mm'.
 injection H_mm' => H_eq_prop7 H_eq_prop6.
 apply IH with (l6 := l7) (j5 := j6) (prop5 := prop7) => //; last by rewrite H_eq_l6 -H_eq_prop7.
   move => l1 prop1 P1 H_P1 H_m1 {H_eq}.
-  case (eq_l l1 l5) => H_eq.
+  case (SUOT.eq_dec l1 l5) => H_eq.
     rewrite H_eq in H_m1.
     apply in_map in H_m1; last by [].
     rewrite -H_m1 H_eq_prop6 in H_P1.
     by rewrite -(prop_mapping_eq prop6 P6 P1 H_P6 H_P1).
+  unfold SUOT.eq in H_eq.
   apply not_in_map in H_m1 => [|H_c]; last by rewrite H_c in H_eq.
   rewrite /map_line_admitted in H_m.
   by apply H_m with (P6 := P1) in H_m1.

@@ -3,15 +3,13 @@ Require Export Structures.OrderedTypeEx.
 Require Import mathcomp.ssreflect.ssreflect.
 Require Import Omega.
 
-Inductive dyadic {A : Type} : Type :=
-| dyadic_t : A -> dyadic
-| dyadic_dyad : A -> A -> dyadic.
+Definition dyadic {A : Type} : Type := sum A (A * A).
 
 Inductive dyadic_lt {A : Type} {lt : A -> A -> Prop} : dyadic -> dyadic -> Prop :=
-| dyadic_lt_t_t : forall (l l' : A), lt l l' -> dyadic_lt (dyadic_t l) (dyadic_t l')
-| dyadic_lt_t_dyad : forall (l l1 l1': A), dyadic_lt (dyadic_t l) (dyadic_dyad l1 l1')
-| dyadic_lt_dyad_lt : forall (l0 l0' l1 l1' : A), lt l0 l1 -> dyadic_lt (dyadic_dyad l0 l0') (dyadic_dyad l1 l1')
-| dyadic_lt_dyad_eq : forall (l l0' l1' : A), lt l0' l1' -> dyadic_lt (dyadic_dyad l l0') (dyadic_dyad l l1').
+| dyadic_lt_t_t : forall (l l' : A), lt l l' -> dyadic_lt (inl l) (inl l')
+| dyadic_lt_t_dyad : forall (l l1 l1': A), dyadic_lt (inl l) (inr (l1, l1'))
+| dyadic_lt_dyad_lt : forall (l0 l0' l1 l1' : A), lt l0 l1 -> dyadic_lt (inr (l0, l0')) (inr (l1, l1'))
+| dyadic_lt_dyad_eq : forall (l l0' l1' : A), lt l0' l1' -> dyadic_lt (inr (l, l0')) (inr (l, l1')).
 
 Module Type SpecType.
   Parameter t : Type.
@@ -49,6 +47,8 @@ Module SpecDyadicUsualOrderedType
   Definition eq_trans := @eq_trans t.
 
   Definition eq_dec : forall t0 t1 : t, {t0 = t1}+{t0 <> t1}.
+    decide equality; auto using SUOT.eq_dec.
+    destruct b, p.
     decide equality; auto using SUOT.eq_dec.
   Defined.
 
@@ -93,16 +93,16 @@ Module SpecDyadicUsualOrderedType
   Definition compare (x y : t) : Compare lt eq x y.
   refine
   (match x as x0, y as y0 return (x = x0 -> y = y0 -> _) with
-   | dyadic_t l0, dyadic_t l1 => 
+   | inl l0, inl l1 =>
      fun (H_eq : _) (H_eq' : _) => 
      match SUOT.compare l0 l1 with
      | LT H_cmp => LT _
      | EQ H_cmp => EQ _
      | GT H_cmp => GT _
      end
-   | dyadic_t l0, dyadic_dyad l1 l1' => fun (H_eq : _) (H_eq' : _) => LT _
-   | dyadic_dyad l0 l0', dyadic_t l1 => fun (H_eq : _) (H_eq' : _) => GT _
-   | dyadic_dyad l0 l0', dyadic_dyad l1 l1' => fun (H_eq : _) (H_eq' : _) =>
+   | inl l0, inr (l1, l1') => fun (H_eq : _) (H_eq' : _) => LT _
+   | inr (l0, l0'), inl l1 => fun (H_eq : _) (H_eq' : _) => GT _
+   | inr (l0, l0'), inr (l1, l1') => fun (H_eq : _) (H_eq' : _) =>
      match SUOT.compare l0 l1 with
      | LT H_cmp => LT _
      | EQ H_cmp =>
@@ -141,5 +141,5 @@ Module MakeMap
   FMapInterface.S with Module E := SDUOT := FMapList.Make SDUOT.
 Module Map := MakeMap NatSpecType NatSpecUsualOrderedType NatDyadicSpec NatDyadicSpecUsualOrderedType.
 Import Map.
-Eval compute in Map.find (dyadic_dyad 5 3) (Map.add (dyadic_dyad 5 3) 2 (Map.empty nat)).
+Eval compute in Map.find (inr (5, 3)) (Map.add (inr (5, 3)) 2 (Map.empty nat)).
 *)

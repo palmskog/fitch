@@ -148,8 +148,11 @@ terminals :: terminals_ ::=
 
 dyadicprop :: dyadicprop_ ::=
         {{ coq-universe Type }}
-	| prop :: :: prop
-	| ( prop , prop' ) :: :: dyad
+	{{ coq (@dyadic prop) }}
+	| prop :: M :: prop
+	  {{ coq (inl [[prop]]) }}
+	| ( prop , prop' ) :: M :: dyad
+	  {{ coq (inr ([[prop]], [[prop']]) ) }}
 
 G {{ tex \Gamma }} :: G_ ::=
   {{ com admissible context }}
@@ -158,9 +161,9 @@ G {{ tex \Gamma }} :: G_ ::=
   | [] :: M :: empty
     {{ coq (Map.empty dyadicprop) }}
   | G [ l |-> prop ] :: M :: add_prop
-    {{ coq (Map.add (dyadic_t [[l]]) (dyadicprop_prop [[prop]]) [[G]]) }}
+    {{ coq (Map.add (inl [[l]]) (inl [[prop]]) [[G]]) }}
   | G [ ( l , l' ) |-> ( prop , prop' ) ] :: M :: add_dyad
-    {{ coq (Map.add (dyadic_dyad [[l]] [[l']]) (dyadicprop_dyad [[prop]] [[prop']]) [[G]]) }}
+    {{ coq (Map.add (inr ([[l]], [[l']])) (inr ([[prop]], [[prop']])) [[G]]) }}
 
 formula :: formula_ ::=  
 	{{ com formulas }}
@@ -171,10 +174,10 @@ formula :: formula_ ::=
 	  {{ coq (In [[prop]] [[proplist]]) }}
      	| G ( l ) = prop :: M :: G_label
           {{ com map label to prop }}
-	  {{ coq (Map.find (dyadic_t [[l]]) [[G]] = Some (dyadicprop_prop [[prop]])) }}
+	  {{ coq (Map.find (inl [[l]]) [[G]] = Some (inl [[prop]])) }}
 	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
 	  {{ com map tuple of labels to tuple of props }}
-	  {{ coq (Map.find (dyadic_dyad [[l]] [[l']]) [[G]] = Some (dyadicprop_dyad [[prop]] [[prop']])) }}
+	  {{ coq (Map.find (inr ([[l]], [[l']])) [[G]] = Some (inr ([[prop]], [[prop']]))) }}
 	| entry = entry' :: M :: entry_eq
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}

@@ -54,8 +54,8 @@ Definition valid_derivation_deriv_copy_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_copy l6))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-    match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (dyadicprop_prop prop') => fun (H_eq : _) =>       
+    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+    | Some (inl prop') => fun (H_eq : _) =>       
       match prop_eq_dec prop5 prop' with
       | left H_eq_prop => left _ _
       | right H_eq_prop => right _ _
@@ -73,10 +73,10 @@ Definition valid_derivation_deriv_andi_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_andi l6 l7))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-    match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (dyadicprop_prop prop6) => fun (H_eq : _) => 
-      match Map.find (dyadic_t l7) G5 as dp' return (_ = dp' -> _) with
-      | Some (dyadicprop_prop prop7) => fun (H_eq' : _) =>           
+    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+    | Some (inl prop6) => fun (H_eq : _) => 
+      match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
+      | Some (inl prop7) => fun (H_eq' : _) =>           
         match prop_eq_dec prop5 (prop_and prop6 prop7) with
         | left H_dec => left _ _
         | right H_dec => right _ _
@@ -101,8 +101,8 @@ Definition valid_derivation_deriv_ande1_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_ande1 l6))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-    match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (dyadicprop_prop (prop_and prop6 prop7)) => fun (H_eq : _) =>      
+    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+    | Some (inl (prop_and prop6 prop7)) => fun (H_eq : _) =>      
       match prop_eq_dec prop5 prop6 with
       | left H_eq_dec => left _ _
       | right H_eq_dec => right _ _
@@ -121,8 +121,8 @@ Definition valid_derivation_deriv_ande2_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_ande2 l6))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-    match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (dyadicprop_prop (prop_and prop6 prop7)) => fun (H_eq : _) =>
+    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+    | Some (inl (prop_and prop6 prop7)) => fun (H_eq : _) =>
       match prop_eq_dec prop5 prop7 with
       | left H_eq_dec => left _ _
       | right H_eq_dec => right _ _
@@ -143,8 +143,8 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
     match prop5 as prop' return (prop5 = prop' -> _) with
     | prop_or prop6 prop7 => fun (H_eq_prop : _) =>
-      match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (dyadicprop_prop prop') => fun (H_eq : _) =>      
+      match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+      | Some (inl prop') => fun (H_eq : _) =>      
         match prop_eq_dec prop6 prop' with
         | left H_eq_dec => left _ _
         | right H_eq_dec => right _ _
@@ -166,8 +166,8 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
     match prop5 as prop' return (prop5 = prop' -> _) with
     | prop_or prop6 prop7 => fun (H_eq_prop : _) =>
-      match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (dyadicprop_prop prop') => fun (H_eq : _) =>      
+      match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+      | Some (inl prop') => fun (H_eq : _) =>      
         match prop_eq_dec prop7 prop' with
         | left H_eq_dec => left _ _
         | right H_eq_dec => right _ _
@@ -187,10 +187,10 @@ Definition valid_derivation_deriv_impe_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_impe l6 l7))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-   match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-   | Some (dyadicprop_prop prop6) => fun (H_eq : _) => 
-     match Map.find (dyadic_t l7) G5 as dp' return (_ = dp' -> _) with
-     | Some (dyadicprop_prop (prop_imp prop7 prop8)) => fun (H_eq' : _) => 
+   match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+   | Some (inl prop6) => fun (H_eq : _) => 
+     match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
+     | Some (inl (prop_imp prop7 prop8)) => fun (H_eq' : _) => 
        match prop_eq_dec prop6 prop7, prop_eq_dec prop5 prop8 with
        | left H_eq_dec, left H_eq_dec' => left _ _
        | _, _ => right _ _
@@ -218,10 +218,10 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
     match prop5 as prop' return (prop5 = prop' -> _) with
     | prop_cont => fun (H_eq_cont : _) => 
-      match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (dyadicprop_prop prop6) => fun (H_eq : _) => 
-        match Map.find (dyadic_t l7) G5 as dp' return (_ = dp' -> _) with
-        | Some (dyadicprop_prop (prop_neg prop7)) => fun (H_eq' : _) =>
+      match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+      | Some (inl prop6) => fun (H_eq : _) => 
+        match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
+        | Some (inl (prop_neg prop7)) => fun (H_eq' : _) =>
           match prop_eq_dec prop6 prop7 with
           | left H_eq_dec => left _ _
           | right H_eq_dec => right _ _
@@ -248,8 +248,8 @@ Definition valid_derivation_deriv_conte_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_conte l6))) }.
 refine  
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-    match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (dyadicprop_prop prop_cont) => fun (H_eq : _) => left _ _
+    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+    | Some (inl prop_cont) => fun (H_eq : _) => left _ _
     | _ => fun (H_eq : _) => right _ _
     end (refl_equal _)); 
   subst; try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
@@ -264,8 +264,8 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
    match prop5 as prop' return (prop5 = prop' -> _) with
    | prop_neg (prop_neg prop6) => fun (H_eq_prop : _) =>
-     match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-     | Some (dyadicprop_prop prop7) => fun (H_eq : _) => 
+     match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+     | Some (inl prop7) => fun (H_eq : _) => 
        match prop_eq_dec prop6 prop7 with
        | left H_eq_dec => left _ _
        | right H_eq_dec => right _ _
@@ -285,8 +285,8 @@ Definition valid_derivation_deriv_negnege_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_negnege l6))) }.
 refine  
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-   match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-   | Some (dyadicprop_prop (prop_neg (prop_neg prop6))) => fun (H_eq : _) =>    
+   match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+   | Some (inl (prop_neg (prop_neg prop6))) => fun (H_eq : _) =>    
      match prop_eq_dec prop5 prop6 with
      | left H_eq_dec => left _ _
      | right H_eq_dec => right _ _
@@ -306,12 +306,12 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
     match prop5 as prop' return (prop5 = prop' -> _) with
     | prop_neg prop6 => fun (H_eq_prop : _) => 
-      match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (dyadicprop_prop (prop_imp prop7 prop8)) => fun (H_eq : _) => 
+      match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+      | Some (inl (prop_imp prop7 prop8)) => fun (H_eq : _) => 
         match prop_eq_dec prop6 prop7 with
         | left H_dec => 
-          match Map.find (dyadic_t l7) G5 as dp' return (_ = dp' -> _) with
-          | Some (dyadicprop_prop (prop_neg prop9)) => fun (H_eq' : _) =>           
+          match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
+          | Some (inl (prop_neg prop9)) => fun (H_eq' : _) =>           
             match prop_eq_dec prop8 prop9 with
             | left H_dec' => left _ _
             | right H_dec' => right _ _
@@ -342,8 +342,8 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
    match prop5 as prop' return (prop5 = prop' -> _) with
    | prop_imp prop6 prop7 => fun (H_eq_prop : _) =>
-     match Map.find (dyadic_dyad l6 l7) G5 as dp' return (_ = dp' -> _) with
-     | Some (dyadicprop_dyad prop8 prop9) => fun (H_eq : _) =>
+     match Map.find (inr (l6, l7)) G5 as dp' return (_ = dp' -> _) with
+     | Some (inr (prop8, prop9)) => fun (H_eq : _) =>
        match prop_eq_dec prop6 prop8, prop_eq_dec prop7 prop9 with
        | left H_dec, left H_dec' => left _ _         
        | _ , _ => right _ _
@@ -366,8 +366,8 @@ refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
    match prop5 as prop' return (prop5 = prop' -> _) with
    | prop_neg prop6 => fun (H_eq_prop : _) =>
-     match Map.find (dyadic_dyad l6 l7) G5 as dp' return (_ = dp' -> _) with
-     | Some (dyadicprop_dyad prop7 prop_cont) => fun (H_eq : _) =>
+     match Map.find (inr (l6, l7)) G5 as dp' return (_ = dp' -> _) with
+     | Some (inr (prop7, prop_cont)) => fun (H_eq : _) =>
        match prop_eq_dec prop6 prop7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
@@ -388,14 +388,14 @@ Definition valid_derivation_deriv_ore_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_ore l6 l7 l8 l9 l10))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 l8 l9 l10: l) =>
-   match Map.find (dyadic_t l6) G5 as dp' return (_ = dp' -> _) with
-   | Some (dyadicprop_prop (prop_or prop6 prop7)) => fun (H_eq_or : _) => 
-     match Map.find (dyadic_dyad l7 l8) G5 as dp' return (_ = dp' -> _) with
-     | Some (dyadicprop_dyad prop8 prop9) => fun (H_eq_fst : _) => 
+   match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
+   | Some (inl (prop_or prop6 prop7)) => fun (H_eq_or : _) => 
+     match Map.find (inr (l7, l8)) G5 as dp' return (_ = dp' -> _) with
+     | Some (inr (prop8, prop9)) => fun (H_eq_fst : _) => 
        match prop_eq_dec prop6 prop8, prop_eq_dec prop5 prop9 with
        | left H_dec_fst, left H_dec_fst_or =>
-         match Map.find (dyadic_dyad l9 l10) G5 as dp' return (_ = dp' -> _) with
-         | Some (dyadicprop_dyad prop10 prop11) => fun (H_eq_snd : _) => 
+         match Map.find (inr (l9, l10)) G5 as dp' return (_ = dp' -> _) with
+         | Some (inr (prop10, prop11)) => fun (H_eq_snd : _) => 
            match prop_eq_dec prop7 prop10, prop_eq_dec prop5 prop11 with
            | left H_dec_snd, left H_dec_snd_or => left _ _
            | _ , _ => right _ _
@@ -434,8 +434,8 @@ Definition valid_derivation_deriv_pbc_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_pbc l6 l7))) }.
 refine
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-  match Map.find (dyadic_dyad l6 l7) G5 as dp' return (_ = dp' -> _) with
-  | Some (dyadicprop_dyad (prop_neg prop6) prop_cont) => fun (H_eq : _) =>
+  match Map.find (inr (l6, l7)) G5 as dp' return (_ = dp' -> _) with
+  | Some (inr ((prop_neg prop6), prop_cont)) => fun (H_eq : _) =>
     match prop_eq_dec prop5 prop6 with
     | left H_dec => left _ _
     | right H_dec => right _ _
@@ -559,7 +559,7 @@ Inductive valid_entry (G5 : G) (proplist5 : proplist) : entry -> Prop :=
     valid_entry G5 proplist5 (entry_derivation (derivation_deriv l5 prop5 (reason_justification justification5)))
 | valid_entry_box :
   forall (proof5 : proof) (l5 : l) (prop5 : prop),
-    valid_proof (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5) proplist5 proof5 ->
+    valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
     valid_entry G5 proplist5 (entry_box (proof_entries (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: (proof_list_entry proof5)))).
 
 Definition valid_proof_entry_list_   
@@ -580,7 +580,7 @@ refine
       | reason_justification justification5 => fun (H_eq_j : _) => 
         match valid_entry_dec G5 proplist5 e with
         | left H_dec =>
-          match valid_proof_entry_list ls' (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5) proplist5 with
+          match valid_proof_entry_list ls' (Map.add (inl l5) (inl prop5) G5) proplist5 with
           | left H_dec_l => left _ _
           | right H_dec_l => right _ _
           end
@@ -601,7 +601,7 @@ refine
               | entry_derivation (derivation_deriv l6 prop6 reason6) => fun (H_eq_d' : _) => 
                 match valid_entry_dec G5 proplist5 e with
                 | left H_dec => 
-                  match valid_proof_entry_list ls' (Map.add (dyadic_dyad l5 l6) (dyadicprop_dyad prop5 prop6) G5) proplist5 with
+                  match valid_proof_entry_list ls' (Map.add (inr (l5, l6)) (inr (prop5, prop6)) G5) proplist5 with
                   | left H_dec' => left _ _
                   | right H_dec' => right _ _
                   end
@@ -692,7 +692,7 @@ refine
          | entry_derivation (derivation_deriv l5 prop5 reason5) => fun (H_eq_e : _) =>
            match reason5 as reason' return (reason5 = reason' -> _) with
            | reason_assumption => fun (H_eq_r : _) => 
-             match valid_proof_entry_list_ valid_entry_dec ls' (Map.add (dyadic_t l5) (dyadicprop_prop prop5) G5) proplist5 with
+             match valid_proof_entry_list_ valid_entry_dec ls' (Map.add (inl l5) (inl prop5) G5) proplist5 with
              | left H_dec => left _ _
              | right H_dec => right _ _
              end
