@@ -3,7 +3,7 @@ Require Export Structures.OrderedTypeEx.
 Require Import mathcomp.ssreflect.ssreflect.
 Require Import Omega.
 
-Definition dyadic {A : Type} : Type := sum A (A * A).
+Definition dyadic {A : Type} : Type := A + (A * A).
 
 Inductive dyadic_lt {A : Type} {lt : A -> A -> Prop} : dyadic -> dyadic -> Prop :=
 | dyadic_lt_t_t : forall (l l' : A), lt l l' -> dyadic_lt (inl l) (inl l')
