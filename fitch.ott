@@ -20,14 +20,17 @@ Module Fitch
 metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
+      {{ hol num }}
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
       {{ coq SUOT.t }}
+      {{ hol num }}
       {{ com proof entry label }}
 indexvar n ::= 
       {{ lex numeral }}
       {{ coq nat }}
+      {{ hol num }}
       {{ coq-equality }}
       {{ com index variable (subscript) }}
 grammar
@@ -53,13 +56,16 @@ prop {{ tex \phi }} :: prop_ ::=
      | ( prop ) :: S :: parentheses
        {{ tex ([[prop]]) }}
        {{ coq ([[prop]]) }}
+       {{ hol ([[prop]]) }}
 
 proplist {{ tex \overline{\phi} }} :: proplist_ ::=	
         {{ coq-universe Type }}
         {{ coq list prop }}
+	{{ hol prop list }}
 	{{ com list of propositions }}
 	| prop1 , .. , propn :: M :: list
           {{ coq [[prop1 .. propn]] }}
+	  {{ hol [[prop1 .. propn]] }}
 
 proof {{ tex \rho }} :: proof_ ::=
       {{ coq-universe Type }}
@@ -67,8 +73,10 @@ proof {{ tex \rho }} :: proof_ ::=
       | entry1 .. entryn :: :: entries
       | () :: M :: empty
         {{ coq (proof_entries nil) }}
+	{{ hol [] }}
       | entry proof :: M :: entry
         {{ coq (proof_entries (cons [[entry]] (proof_list_entry [[proof]]))) }}
+	{{ hol (proof_entries ([[entry]] :: (proof_list_entry [[proof]]))) }}
 
 entry :: entry_ ::=
       {{ coq-universe Type }}
@@ -79,6 +87,7 @@ entry :: entry_ ::=
       | last ( proof ) :: M :: last
         {{ com last entry in proof }}
 	{{ coq (last (proof_list_entry [[proof]]) entry_invalid) }}
+	{{ hol (LAST (proof_list_entry [[proof]]) entry_invalid) }}
 
 derivation :: derivation_ ::=
            {{ coq-universe Type }}
@@ -151,8 +160,10 @@ dyadicprop :: dyadicprop_ ::=
 	{{ coq (@dyadic prop) }}
 	| prop :: M :: prop
 	  {{ coq (inl [[prop]]) }}
+	  {{ hol FIXME }}
 	| ( prop , prop' ) :: M :: dyad
 	  {{ coq (inr ([[prop]], [[prop']]) ) }}
+	  {{ hol FIXME }}
 
 G {{ tex \Gamma }} :: G_ ::=
   {{ com admissible context }}
@@ -160,10 +171,13 @@ G {{ tex \Gamma }} :: G_ ::=
   {{ coq-universe Type }}
   | [] :: M :: empty
     {{ coq (Map.empty dyadicprop) }}
+    {{ hol FIXME }}
   | G [ l |-> prop ] :: M :: add_prop
     {{ coq (Map.add (inl [[l]]) (inl [[prop]]) [[G]]) }}
+    {{ hol FIXME }}
   | G [ ( l , l' ) |-> ( prop , prop' ) ] :: M :: add_dyad
     {{ coq (Map.add (inr ([[l]], [[l']])) (inr ([[prop]], [[prop']])) [[G]]) }}
+    {{ hol FIXME }}
 
 formula :: formula_ ::=  
 	{{ com formulas }}
@@ -172,15 +186,19 @@ formula :: formula_ ::=
         | prop in proplist :: M :: prop_in_proplist
 	  {{ com proposition in set of premises }}
 	  {{ coq (In [[prop]] [[proplist]]) }}
+	  {{ hol (MEM [[prop]] [[proplist]]) }}
      	| G ( l ) = prop :: M :: G_label
           {{ com map label to prop }}
 	  {{ coq (Map.find (inl [[l]]) [[G]] = Some (inl [[prop]])) }}
+	  {{ hol FIXME }}
 	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
 	  {{ com map tuple of labels to tuple of props }}
 	  {{ coq (Map.find (inr ([[l]], [[l']])) [[G]] = Some (inr ([[prop]], [[prop']]))) }}
+	  {{ hol FIXME }}
 	| entry = entry' :: M :: entry_eq
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}
+	  {{ hol FIXME }}
 
 embed
 {{ coq
@@ -327,16 +345,22 @@ mprop {{ tex \psi }} :: mprop_ ::=
      {{ com meta-language proposition }}
      | p :: M :: p
        {{ coq (mapping [[p]]) }}
+       {{ hol FIXME }}
      | ~ mprop :: M :: neg
        {{ coq (~ [[mprop]]) }}
+       {{ hol FIXME }}
      | mprop /\ mprop' :: M :: and
        {{ coq ([[mprop]] /\ [[mprop']]) }}
+       {{ hol FIXME }}
      | mprop \/ mprop' :: M :: or
        {{ coq ([[mprop]] \/ [[mprop']]) }}
+       {{ hol FIXME }}
      | mprop -> mprop' :: M :: imp
        {{ coq ([[mprop]] -> [[mprop']]) }}
+       {{ hol FIXME }}
      | _|_ :: M :: cont
        {{ coq False }}
+       {{ hol FIXME }}
 
 defns
   mapping :: '' ::=

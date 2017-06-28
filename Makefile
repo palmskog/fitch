@@ -33,6 +33,9 @@ Makefile.coq: $(VFILES)
 $(VFILES): %.v: %.ott
 	$(OTT) -o $@ -coq_expand_list_types false $<
 
+fitchScript.sml: fitch.ott
+	$(OTT) -o fitchScript.sml fitch.ott
+
 $(MLFILES): Makefile.coq
 	$(MAKE) -f Makefile.coq $@
 
