@@ -37,11 +37,11 @@ grammar
 claim :: claim_ ::=
       {{ coq-universe Type }}
       {{ com claim }}
-      | judgment proof :: :: judgment_proof
+      | judgement proof :: :: judgement_proof
 
-judgment :: judgment_ ::=
+judgement :: judgement_ ::=
 	 {{ coq-universe Type }}
-	 {{ com judgment }}
+	 {{ com judgement }}
 	 | proplist |- prop :: :: follows
 
 prop {{ tex \phi }} :: prop_ ::=
