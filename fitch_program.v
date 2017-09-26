@@ -760,16 +760,17 @@ refine
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].
   rewrite -H_eq_pr in H_ls.
   by rewrite H_ls H_eq_last H_eq_reason in H1.
-- rewrite -H_dec {H_eq_judgment H_dec prop'}.
+- rewrite H_eq_judgment -H_dec {H_eq_judgment H_dec prop'}.
   apply vc_claim with (l5 := l5) (justification5 := justification5); last by rewrite -H_eq_pr in H_dec'.
   by rewrite -H_eq_reason -H_eq_last H_eq_pr.
 - move => H_vp; inversion H_vp.
-  by subst.
+  by subst; congruence.
 - move => H_vp; inversion H_vp; subst.
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].  
   rewrite H_ls H_eq_last in H1.
-  injection H1 => H_eq_p H_eq_pl.
-  by rewrite -H_eq_pl in H_dec.
+  injection H1 => H_eq_p H_eq_pl H_eq_l.
+  injection H => H_eq_p' H_eq_pl'.
+  by rewrite -H_eq_p' -H_eq_pl in H_dec.
 - move => H_vc; inversion H_vc.
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].
   by rewrite H_eq_pr H_ls H_eq in H1.
