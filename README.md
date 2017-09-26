@@ -9,8 +9,8 @@ Requirements:
 - [`camlp4`](https://ocaml.org)
 - [`OCamlbuild`](https://ocaml.org)
 - [`ocamlfind`](https://ocaml.org)
-- [`Coq 8.5`](https://coq.inria.fr/coq-85) or [`Coq 8.6`](https://coq.inria.fr/coq-86)
-- [`Mathematical Components 1.6`](http://math-comp.github.io/math-comp/)
+- [`Coq 8.6.1`](https://coq.inria.fr/coq-86)
+- [`Mathematical Components 1.6.1`](http://math-comp.github.io/math-comp/) (`ssreflect`)
 - [`Ott`](https://www.cl.cam.ac.uk/~pes20/ott/)
 
 Make sure Ott's Coq auxiliary libraries have been installed under Coq's `user-contrib` directory (default) or set the `Ott_PATH` environment variable to an alternative location. Then run `./configure`, followed by `make`. This will compile the Coq syntax and relation definitions, compile them along with the proofs, extract an OCaml program, and link the program with the default parser. Example proofs (`.nd` files) can then be checked as follows:

@@ -9,8 +9,6 @@ addons:
       - aspcud
 env:
   matrix:
-    - MODE=build COQ_VERSION=8.5.3
-    - MODE=build COQ_VERSION=8.6
     - MODE=build COQ_VERSION=8.6.1
 script: bash -ex .travis-ci.sh
 sudo: false
