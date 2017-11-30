@@ -1,6 +1,7 @@
-COQVERSION := $(shell coqc --version|egrep "version (8\\.5|8\\.6)")
-ifeq "$(COQVERSION)" ""
-$(error "Only compatible with Coq version 8.5 or 8.6")
+include Makefile.detect-coq-version
+
+ifeq (,$(filter $(COQVERSION),8.6 8.7 trunk))
+$(error "only compatible with Coq version 8.6 or later")
 endif
 
 COQPROJECT_EXISTS = $(wildcard _CoqProject)
@@ -25,7 +26,7 @@ prolog.native: $(MLFILES) util.ml prolog.ml
 	$(OCAMLBUILD) prolog.native
 
 Makefile.coq: $(VFILES)
-	coq_makefile -f _CoqProject -o Makefile.coq -no-install \
+	coq_makefile -f _CoqProject -o Makefile.coq -install none \
           -extra '$(MLFILES)' \
 	    'fitch_program_extrocaml.v fitch_program.vo' \
 	    '$$(COQC) $$(COQDEBUG) $$(COQFLAGS) fitch_program_extrocaml.v'

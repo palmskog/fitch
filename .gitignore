@@ -6,6 +6,7 @@
 *.cmo
 Makefile.coq
 Makefile.coq.bak
+Makefile.coq.conf
 _build
 fitch.v
 fitch.ml
