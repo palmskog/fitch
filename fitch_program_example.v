@@ -12,17 +12,13 @@ Module DPIString <: DecidablePropInterpretation PIString.
 Definition A_eq_dec := string_dec.
 End DPIString.
 
-Module NatSpecType <: SpecType. Definition t := nat. End NatSpecType.
-Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
-Module NatDyadicSpec := DyadicSpec NatSpecType.
-Module NatDyadicSpecUsualOrderedType := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
-Module Map := FMapList.Make NatDyadicSpecUsualOrderedType.
+Module Nat_as_DUOT <: DyadicUsualOrderedType Nat_as_OT := LexDyadicUsualOrderedType Nat_as_OT.
+Module Map <: FMapInterface.S with Module E := Nat_as_DUOT := FMapList.Make Nat_as_DUOT.
 
 Module FitchProgramMap :=
  FitchProgram
    PIString DPIString
-   NatSpecType NatSpecUsualOrderedType
-   NatDyadicSpec NatDyadicSpecUsualOrderedType
+   Nat_as_OT Nat_as_DUOT
    Map.
 Import FitchProgramMap.
 

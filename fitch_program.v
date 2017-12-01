@@ -6,12 +6,11 @@ Parameter A_eq_dec : forall x y : A, {x = y}+{x <> y}.
 End DecidablePropInterpretation.
 
 Module FitchProgram
- (PI : PropInterpretation) (DPI : DecidablePropInterpretation PI)
- (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
- (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST)
- (Map : FMapInterface.S with Module E := SUOTD).
+  (PI : PropInterpretation) (DPI : DecidablePropInterpretation PI)
+  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
+  (Map : FMapInterface.S with Module E := DUOT).
 
-Module FitchPI := Fitch PI ST SUOT DST SUOTD Map.
+Module FitchPI := Fitch PI UOT DUOT Map.
 Export FitchPI.
 
 Definition prop_eq_dec : forall (prop5 prop' : prop), { prop5 = prop' }+{ prop5 <> prop' }.

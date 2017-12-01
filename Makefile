@@ -17,7 +17,8 @@ OTTFILES = fitch.ott
 VFILES = $(OTTFILES:.ott=.v)
 MLFILES = fitch.ml fitch.mli
 
-default: checker.native
+default: Makefile.coq
+	$(MAKE) -f Makefile.coq
 
 checker.native: $(MLFILES) util.ml checker.ml
 	$(OCAMLBUILD) checker.native
@@ -53,7 +54,7 @@ fitch.pdf: fitch_defs.tex fitch.tex
 clean:
 	if [ -f Makefile.coq ]; then \
 	  $(MAKE) -f Makefile.coq cleanall; fi
-	rm -f Makefile.coq $(VFILES)
+	rm -f Makefile.coq Makefile.coq.conf $(VFILES)
 	$(OCAMLBUILD) -clean
 
 .PHONY: default clean

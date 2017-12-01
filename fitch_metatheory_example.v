@@ -3,15 +3,13 @@ Require Import fitch.
 Require Import fitch_metatheory.
 Require Import mathcomp.ssreflect.ssreflect.
 
-Module NatSpecType. Definition t := nat. End NatSpecType.
-Module NatSpecUsualOrderedType <: SpecUsualOrderedType NatSpecType := Nat_as_OT.
-Module NatDyadicSpec := DyadicSpec NatSpecType.
-Module NatDyadicSpecUsualOrderedType := SpecDyadicUsualOrderedType NatSpecType NatSpecUsualOrderedType NatDyadicSpec.
-Module MapList := FMapList.Make NatDyadicSpecUsualOrderedType.
+Module Nat_as_DUOT <: DyadicUsualOrderedType Nat_as_OT := LexDyadicUsualOrderedType Nat_as_OT.
+Module Map <: FMapInterface.S with Module E := Nat_as_DUOT := FMapList.Make Nat_as_DUOT.
 
 Module FitchPropMetatheoryListMap :=
- FitchPropMetatheory NatSpecType NatSpecUsualOrderedType
-   NatDyadicSpec NatDyadicSpecUsualOrderedType MapList.
+  FitchPropMetatheory
+    Nat_as_OT Nat_as_DUOT
+    Map.
 Import FitchPropMetatheoryListMap.
 
 Section TestFitch.

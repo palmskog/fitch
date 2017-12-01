@@ -13,9 +13,8 @@ End PropInterpretation.
 
 Module Fitch
  (Import PI : PropInterpretation)
- (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
- (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST)
- (Map : FMapInterface.S with Module E := SUOTD).
+ (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
+ (Map : FMapInterface.S with Module E := DUOT).
 }}
 metavar p ::=
       {{ lex alphanum }}
@@ -24,7 +23,7 @@ metavar p ::=
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
-      {{ coq SUOT.t }}
+      {{ coq UOT.t }}
       {{ hol num }}
       {{ com proof entry label }}
 indexvar n ::= 
@@ -330,11 +329,10 @@ End PropMappingInterpretation.
 Module FitchMapping
   (Import PI : PropInterpretation)
   (Import PMI : PropMappingInterpretation PI)
-  (ST : SpecType) (SUOT : SpecUsualOrderedType ST)
-  (DST : DyadicSpecType ST) (SUOTD : SpecUsualOrderedType DST)
-  (Map : FMapInterface.S with Module E := SUOTD).
+  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
+  (Map : FMapInterface.S with Module E := DUOT).
 
-Module FitchPI := Fitch PI ST SUOT DST SUOTD Map.
+Module FitchPI := Fitch PI UOT DUOT Map.
 Export FitchPI.
 }}
 
