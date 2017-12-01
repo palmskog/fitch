@@ -20,6 +20,8 @@ MLFILES = fitch.ml fitch.mli
 default: Makefile.coq
 	$(MAKE) -f Makefile.coq
 
+checker: checker.native
+
 checker.native: $(MLFILES) util.ml checker.ml
 	$(OCAMLBUILD) checker.native
 
@@ -57,5 +59,5 @@ clean:
 	rm -f Makefile.coq Makefile.coq.conf $(VFILES)
 	$(OCAMLBUILD) -clean
 
-.PHONY: default clean
+.PHONY: default clean checker
 .NOTPARALLEL: $(MLFILES)
