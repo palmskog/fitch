@@ -1,6 +1,6 @@
 Require Import FMapList.
-Require Import fitch.
-Require Import fitch_metatheory.
+Require Import Fitch.fitch.
+Require Import Fitch.fitch_metatheory.
 Require Import mathcomp.ssreflect.ssreflect.
 
 Module Nat_as_DUOT <: DyadicUsualOrderedType Nat_as_OT := LexDyadicUsualOrderedType Nat_as_OT.

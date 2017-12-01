@@ -1,4 +1,4 @@
-Require Import fitch.
+Require Import Fitch.fitch.
 Require Import mathcomp.ssreflect.ssreflect.
 
 Module Type DecidablePropInterpretation (Import PI : PropInterpretation).

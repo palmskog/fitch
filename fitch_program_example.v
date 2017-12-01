@@ -1,6 +1,6 @@
 Require Import FMapList.
-Require Import fitch.
-Require Import fitch_program.
+Require Import Fitch.fitch.
+Require Import Fitch.fitch_program.
 Require Import String.
 Require Import mathcomp.ssreflect.ssreflect.
 

@@ -1,4 +1,4 @@
-Require Import fitch.
+Require Import Fitch.fitch.
 Require Import List.
 Require Import FMapFacts.
 Require Import Classical.

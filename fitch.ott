@@ -3,9 +3,10 @@ embed
 \usepackage{stmaryrd} 
 }}
 {{ coq
-Require Export dyadic_ordered.
 Require Export Structures.OrderedTypeEx.
 Require Export FMapInterface.
+
+Require Export Fitch.dyadic_ordered.
 
 Module Type PropInterpretation.
 Parameter A : Type.

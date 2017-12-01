@@ -1,8 +1,8 @@
 Require Import String.
 Require Import FMapList.
 
-Require Import fitch.
-Require Import fitch_program.
+Require Import Fitch.fitch.
+Require Import Fitch.fitch_program.
 
 Require Import ExtrOcamlBasic.
 Require Import ExtrOcamlNatInt.
