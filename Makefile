@@ -22,6 +22,8 @@ default: Makefile.coq
 
 checker: checker.native
 
+prolog: prolog.native
+
 checker.native: $(MLFILES) util.ml checker.ml
 	$(OCAMLBUILD) checker.native
 
@@ -59,5 +61,5 @@ clean:
 	rm -f Makefile.coq Makefile.coq.conf $(VFILES)
 	$(OCAMLBUILD) -clean
 
-.PHONY: default clean checker
+.PHONY: default clean checker prolog
 .NOTPARALLEL: $(MLFILES)
