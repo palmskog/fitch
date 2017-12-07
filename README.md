@@ -1,7 +1,7 @@
 Fitch
 =====
 
-Certified proof checker for Fitch-style propositional logic proofs as defined in the book _Logic for Computer Science_ by Huth and Ryan.
+A certified proof checker for Fitch-style propositional logic proofs as defined in the book [Logic for Computer Science](http://www.cambridge.org/gb/academic/subjects/computer-science/programming-languages-and-applied-logic/logic-computer-science-modelling-and-reasoning-about-systems-2nd-edition) by Huth and Ryan.
 
 Requirements
 ------------
@@ -22,7 +22,13 @@ Executable checker:
 Building
 --------
 
-Make sure Ott's Coq auxiliary libraries have been installed under Coq's `user-contrib` directory (default) or set the `Ott_PATH` environment variable to an alternative location. Then run `./configure`, followed by `make`. This will compile the Coq syntax and relation definitions along with the proofs and functions, and extract OCaml code.
+Make sure the `ott` program is in the `PATH`, and Ott's Coq auxiliary library has been installed under Coq's `user-contrib` directory (default) or set the `Ott_PATH` environment variable to an alternative location. One easy way to install Ott and its Coq library is via [OPAM](http://opam.ocaml.org/doc/Install.html):
+```
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam install ott coq-ott
+```
+
+Then, run `./configure`, followed by `make`. This will compile the Coq syntax and relation definitions along with the proofs and functions, and extract OCaml code.
 
 To build an executable checker program, run `make checker`. Example proofs (`.nd` files) can then be checked as follows:
 
