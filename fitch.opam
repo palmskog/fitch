@@ -5,7 +5,7 @@ maintainer: "palmskog@gmail.com"
 homepage: "https://github.com/palmskog/fitch"
 dev-repo: "https://github.com/palmskog/fitch.git"
 bug-reports: "https://github.com/palmskog/fitch/issues"
-license: "Proprietary"
+license: "MIT"
 
 build: [
   [ "./configure" ]
