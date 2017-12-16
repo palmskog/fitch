@@ -54,12 +54,12 @@ Definition valid_derivation_deriv_copy_dec :
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
     match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (inl prop') => fun (H_eq : _) =>       
+    | Some (inl prop') => fun H_eq =>
       match prop_eq_dec prop5 prop' with
       | left H_eq_prop => left _ _
       | right H_eq_prop => right _ _
       end
-    | _ => fun (H_eq : _) => right _ _
+    | _ => fun H_eq => right _ _
     end (refl_equal _)); 
   subst; try by move => H_vd; inversion H_vd; subst; rewrite H2 in H_eq.
 - exact: vd_copy.
@@ -73,16 +73,16 @@ Definition valid_derivation_deriv_andi_dec :
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
     match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (inl prop6) => fun (H_eq : _) => 
+    | Some (inl prop6) => fun H_eq =>
       match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
-      | Some (inl prop7) => fun (H_eq' : _) =>           
+      | Some (inl prop7) => fun H_eq' =>
         match prop_eq_dec prop5 (prop_and prop6 prop7) with
         | left H_dec => left _ _
         | right H_dec => right _ _
         end
-      | _ => fun (H_eq' : _) => right _ _
+      | _ => fun H_eq' => right _ _
       end (refl_equal _)
-    | _ => fun (H_eq : _) => right _ _
+    | _ => fun H_eq => right _ _
     end (refl_equal _)); 
   subst;
     try (by move => H_vp; inversion H_vp; subst; rewrite H3 in H_eq);
@@ -101,12 +101,12 @@ Definition valid_derivation_deriv_ande1_dec :
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
     match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (inl (prop_and prop6 prop7)) => fun (H_eq : _) =>      
+    | Some (inl (prop_and prop6 prop7)) => fun H_eq =>
       match prop_eq_dec prop5 prop6 with
       | left H_eq_dec => left _ _
       | right H_eq_dec => right _ _
       end      
-    | _ => fun (H_eq : _) => right _ _
+    | _ => fun H_eq => right _ _
     end (refl_equal _)); subst; 
   try by move => H_vp; inversion H_vp; subst; rewrite H2 in H_eq.
 - by apply vd_ande1 with (prop' := prop7).
@@ -121,12 +121,12 @@ Definition valid_derivation_deriv_ande2_dec :
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
     match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (inl (prop_and prop6 prop7)) => fun (H_eq : _) =>
+    | Some (inl (prop_and prop6 prop7)) => fun H_eq =>
       match prop_eq_dec prop5 prop7 with
       | left H_eq_dec => left _ _
       | right H_eq_dec => right _ _
       end
-    | _ => fun (H_eq : _) => right _ _
+    | _ => fun H_eq => right _ _
     end (refl_equal _)); subst; 
   try by move => H_vp; inversion H_vp; subst; rewrite H2 in H_eq.
 - by apply vd_ande2 with (prop5 := prop6).
@@ -140,18 +140,18 @@ Definition valid_derivation_deriv_ori1_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_ori1 l6))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-    match prop5 as prop' return (prop5 = prop' -> _) with
-    | prop_or prop6 prop7 => fun (H_eq_prop : _) =>
+    match prop5 with
+    | prop_or prop6 prop7 =>
       match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (inl prop') => fun (H_eq : _) =>      
+      | Some (inl prop') => fun H_eq =>
         match prop_eq_dec prop6 prop' with
         | left H_eq_dec => left _ _
         | right H_eq_dec => right _ _
         end 
-      | _ => fun (H_eq : _) => right _ _
+      | _ => fun H_eq => right _ _
       end (refl_equal _)
-    | _ => fun (H_eq_prop : _) => right _ _
-    end (refl_equal _)); 
+    | _ => right _ _
+    end); 
   subst; try by move => H_vp; inversion H_vp; subst; rewrite H2 in H_eq.
 - exact: vd_ori1.
 - by move => H_vp; inversion H_vp; subst; rewrite H2 in H_eq; injection H_eq.
@@ -163,18 +163,18 @@ Definition valid_derivation_deriv_ori2_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_ori2 l6))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-    match prop5 as prop' return (prop5 = prop' -> _) with
-    | prop_or prop6 prop7 => fun (H_eq_prop : _) =>
+    match prop5 with
+    | prop_or prop6 prop7 =>
       match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (inl prop') => fun (H_eq : _) =>      
+      | Some (inl prop') => fun H_eq =>
         match prop_eq_dec prop7 prop' with
         | left H_eq_dec => left _ _
         | right H_eq_dec => right _ _
         end 
-      | _ => fun (H_eq : _) => right _ _
+      | _ => fun H_eq => right _ _
       end (refl_equal _)
-    | _ => fun (H_eq_prop : _) => right _ _
-    end (refl_equal _)); 
+    | _ => right _ _
+    end);
   subst; try by move => H_vp; inversion H_vp; subst; rewrite H2 in H_eq.
 - exact: vd_ori2.
 - by move => H_vp; inversion H_vp; subst; rewrite H2 in H_eq; injection H_eq.
@@ -187,17 +187,17 @@ Definition valid_derivation_deriv_impe_dec :
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-   | Some (inl prop6) => fun (H_eq : _) => 
+   | Some (inl prop6) => fun H_eq => 
      match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
-     | Some (inl (prop_imp prop7 prop8)) => fun (H_eq' : _) => 
+     | Some (inl (prop_imp prop7 prop8)) => fun H_eq' => 
        match prop_eq_dec prop6 prop7, prop_eq_dec prop5 prop8 with
        | left H_eq_dec, left H_eq_dec' => left _ _
        | _, _ => right _ _
        end
-     | _ => fun (H_eq' : _) => right _ _
+     | _ => fun H_eq' => right _ _
      end (refl_equal _)
-   | _ => fun (H_eq : _) => right _ _
-   end (refl_equal _)); 
+   | _ => fun H_eq => right _ _
+   end (refl_equal _));
   subst; 
     try (by move => H_vp; inversion H_vp; subst; rewrite H3 in H_eq);
     try (by move => H_vp; inversion H_vp; subst; rewrite H6 in H_eq').
@@ -215,22 +215,22 @@ Definition valid_derivation_deriv_nege_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_nege l6 l7))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-    match prop5 as prop' return (prop5 = prop' -> _) with
-    | prop_cont => fun (H_eq_cont : _) => 
+    match prop5 with
+    | prop_cont =>
       match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (inl prop6) => fun (H_eq : _) => 
+      | Some (inl prop6) => fun H_eq => 
         match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
-        | Some (inl (prop_neg prop7)) => fun (H_eq' : _) =>
+        | Some (inl (prop_neg prop7)) => fun H_eq' =>
           match prop_eq_dec prop6 prop7 with
           | left H_eq_dec => left _ _
           | right H_eq_dec => right _ _
           end
-        | _ => fun (H_eq' : _) => right _ _
+        | _ => fun H_eq' => right _ _
         end (refl_equal _)
-      | _ => fun (H_eq : _) => right _ _
+      | _ => fun H_eq => right _ _
       end (refl_equal _)
-    | _ => fun (H_eq_cont : _) => right _ _
-    end (refl_equal _));
+    | _ => right _ _
+    end);
   subst; 
     try (by move => H_vp; inversion H_vp; subst; rewrite H3 in H_eq);
     try (by move => H_vp; inversion H_vp; subst; rewrite H5 in H_eq').
@@ -248,8 +248,8 @@ Definition valid_derivation_deriv_conte_dec :
 refine  
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
     match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-    | Some (inl prop_cont) => fun (H_eq : _) => left _ _
-    | _ => fun (H_eq : _) => right _ _
+    | Some (inl prop_cont) => fun H_eq => left _ _
+    | _ => fun H_eq => right _ _
     end (refl_equal _)); 
   subst; try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
 exact: vd_conte.
@@ -261,18 +261,18 @@ Definition valid_derivation_deriv_negnegi_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_negnegi l6))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
-   match prop5 as prop' return (prop5 = prop' -> _) with
-   | prop_neg (prop_neg prop6) => fun (H_eq_prop : _) =>
+   match prop5 with
+   | prop_neg (prop_neg prop6) =>
      match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-     | Some (inl prop7) => fun (H_eq : _) => 
+     | Some (inl prop7) => fun H_eq => 
        match prop_eq_dec prop6 prop7 with
        | left H_eq_dec => left _ _
        | right H_eq_dec => right _ _
        end
-     | _ => fun (H_eq : _) => right _ _
+     | _ => fun H_eq => right _ _
      end (refl_equal _)
-   | _ => fun (H_eq_prop : _) => right _ _
-   end (refl_equal _)); 
+   | _ => right _ _
+   end);
   subst; try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
 - exact: vd_negnegi.
 - by move => H_vp; inversion H_vp; rewrite H2 in H_eq; subst; injection H_eq; contradict H_eq_dec.
@@ -285,14 +285,13 @@ Definition valid_derivation_deriv_negnege_dec :
 refine  
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) => 
    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-   | Some (inl (prop_neg (prop_neg prop6))) => fun (H_eq : _) =>    
+   | Some (inl (prop_neg (prop_neg prop6))) => fun H_eq =>    
      match prop_eq_dec prop5 prop6 with
      | left H_eq_dec => left _ _
      | right H_eq_dec => right _ _
      end
-   | _ => fun (H_eq : _) => right _ _
-   end (refl_equal _)
-  ); subst; try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
+   | _ => fun H_eq => right _ _
+   end (refl_equal _)); subst; try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
 - exact: vd_negnege.
 - by move => H_vp; inversion H_vp; rewrite H2 in H_eq; subst; injection H_eq; contradict H_eq_dec.
 Defined.
@@ -303,29 +302,29 @@ Definition valid_derivation_deriv_mt_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_mt l6 l7))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-    match prop5 as prop' return (prop5 = prop' -> _) with
-    | prop_neg prop6 => fun (H_eq_prop : _) => 
+    match prop5 with
+    | prop_neg prop6 =>
       match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-      | Some (inl (prop_imp prop7 prop8)) => fun (H_eq : _) => 
+      | Some (inl (prop_imp prop7 prop8)) => fun H_eq => 
         match prop_eq_dec prop6 prop7 with
-        | left H_dec => 
+        | left H_dec =>
           match Map.find (inl l7) G5 as dp' return (_ = dp' -> _) with
-          | Some (inl (prop_neg prop9)) => fun (H_eq' : _) =>           
+          | Some (inl (prop_neg prop9)) => fun H_eq' =>           
             match prop_eq_dec prop8 prop9 with
             | left H_dec' => left _ _
             | right H_dec' => right _ _
             end
-          | _ => fun (H_eq' : _) => right _ _
+          | _ => fun H_eq' => right _ _
           end (refl_equal _)
-        | right H_dec => right _ _        
+        | right H_dec => right _ _
         end
-      | _ => fun (H_eq : _) => right _ _
+      | _ => fun H_eq => right _ _
       end (refl_equal _)
-    | _ => fun (H_eq_prop : _) => right _ _
-    end (refl_equal _));
+    | _ => right _ _
+    end);
   subst; 
     try (by move => H_vp; inversion H_vp; subst; rewrite H3 in H_eq);
-    try (by move => H_vp; inversion H_vp; subst; rewrite H6 in H_eq').    
+    try (by move => H_vp; inversion H_vp; subst; rewrite H6 in H_eq').
 - by apply vd_mt with (prop' := prop9).
 - move => H_vp; inversion H_vp; rewrite H3 in H_eq; rewrite H6 in H_eq'.
   by injection H_eq => H_fst; injection H_eq' => H_snd'; contradict H_dec'; rewrite -H_fst.
@@ -339,18 +338,18 @@ Definition valid_derivation_deriv_impi_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_impi l6 l7))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-   match prop5 as prop' return (prop5 = prop' -> _) with
-   | prop_imp prop6 prop7 => fun (H_eq_prop : _) =>
+   match prop5 with
+   | prop_imp prop6 prop7 =>
      match Map.find (inr (l6, l7)) G5 as dp' return (_ = dp' -> _) with
-     | Some (inr (prop8, prop9)) => fun (H_eq : _) =>
+     | Some (inr (prop8, prop9)) => fun H_eq =>
        match prop_eq_dec prop6 prop8, prop_eq_dec prop7 prop9 with
        | left H_dec, left H_dec' => left _ _         
        | _ , _ => right _ _
        end
-     | _ => fun (H_eq : _) => right _ _
+     | _ => fun H_eq => right _ _
      end (refl_equal _)
-   | _ => fun (H_eq_prop : _) => right _ _
-   end (refl_equal _)); subst;
+   | _ => right _ _
+   end); subst;
    try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
 - exact: vd_impi.
 - by move => H_vp; inversion H_vp; rewrite H2 in H_eq; injection H_eq => H_find; contradict n.
@@ -363,19 +362,18 @@ Definition valid_derivation_deriv_negi_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification (justification_negi l6 l7))) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7: l) => 
-   match prop5 as prop' return (prop5 = prop' -> _) with
-   | prop_neg prop6 => fun (H_eq_prop : _) =>
+   match prop5 with
+   | prop_neg prop6 =>
      match Map.find (inr (l6, l7)) G5 as dp' return (_ = dp' -> _) with
-     | Some (inr (prop7, prop_cont)) => fun (H_eq : _) =>
+     | Some (inr (prop7, prop_cont)) => fun H_eq =>
        match prop_eq_dec prop6 prop7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | _ => fun (H_eq : _) => right _ _
+     | _ => fun H_eq => right _ _
      end (refl_equal _)
-   | _ => fun (H_eq_prop : _) => right _ _
-   end (refl_equal _)
-  ); subst;
+   | _ => right _ _
+   end); subst;
   try by move => H_vp; inversion H_vp; rewrite H2 in H_eq.
 - exact: vd_negi.
 - by move => H_vp; inversion H_vp; rewrite H2 in H_eq; injection H_eq => H_find; contradict H_dec.
@@ -388,24 +386,24 @@ Definition valid_derivation_deriv_ore_dec :
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 l8 l9 l10: l) =>
    match Map.find (inl l6) G5 as dp' return (_ = dp' -> _) with
-   | Some (inl (prop_or prop6 prop7)) => fun (H_eq_or : _) => 
+   | Some (inl (prop_or prop6 prop7)) => fun H_eq_or =>
      match Map.find (inr (l7, l8)) G5 as dp' return (_ = dp' -> _) with
-     | Some (inr (prop8, prop9)) => fun (H_eq_fst : _) => 
+     | Some (inr (prop8, prop9)) => fun H_eq_fst =>
        match prop_eq_dec prop6 prop8, prop_eq_dec prop5 prop9 with
        | left H_dec_fst, left H_dec_fst_or =>
          match Map.find (inr (l9, l10)) G5 as dp' return (_ = dp' -> _) with
-         | Some (inr (prop10, prop11)) => fun (H_eq_snd : _) => 
+         | Some (inr (prop10, prop11)) => fun H_eq_snd =>
            match prop_eq_dec prop7 prop10, prop_eq_dec prop5 prop11 with
            | left H_dec_snd, left H_dec_snd_or => left _ _
            | _ , _ => right _ _
            end
-         | _ => fun (H_eq_snd : _) => right _ _
+         | _ => fun H_eq_snd => right _ _
          end (refl_equal _)
        | _ , _ => right _ _
        end
-     | _ => fun (H_eq_fst : _) => right _ _
+     | _ => fun H_eq_fst => right _ _
      end (refl_equal _)
-   | _ => fun (H_eq_or : _) => right _ _
+   | _ => fun H_eq_or => right _ _
    end (refl_equal _)); subst;
   try (by move => H_vp; inversion H_vp; rewrite H4 in H_eq_or);
   try (by move => H_vp; inversion H_vp; rewrite H9 in H_eq_fst);
@@ -452,102 +450,102 @@ Definition valid_derivation_deriv_dec :
     { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 reason5) }.
 refine 
   (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (reason5 : reason) => 
-   match reason5 as reason6 return (reason5 = reason6 -> _) with
-   | reason_assumption => fun (H_reason : _) => right _ _
-   | reason_justification justification5 => fun (H_reason : _) => 
-     match justification5 as justification' return (justification5 = justification' -> _) with
-     | justification_premise => fun (H_eq : _) => 
+   match reason5 with
+   | reason_assumption => right _ _
+   | reason_justification justification5 =>
+     match justification5 with
+     | justification_premise =>
        match valid_derivation_deriv_premise_dec G5 proplist5 l5 prop5 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_lem => fun (H_eq : _) => 
+     | justification_lem =>
        match valid_derivation_deriv_lem_dec G5 proplist5 l5 prop5 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_copy l6 => fun (H_eq : _) => 
+     | justification_copy l6 =>
        match valid_derivation_deriv_copy_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_andi l6 l7 => fun (H_eq : _) => 
+     | justification_andi l6 l7 =>
        match valid_derivation_deriv_andi_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_ande1 l6 => fun (H_eq : _) => 
+     | justification_ande1 l6 =>
        match valid_derivation_deriv_ande1_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_ande2 l6 => fun (H_eq : _) => 
+     | justification_ande2 l6 =>
        match valid_derivation_deriv_ande2_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_ori1 l6 => fun (H_eq : _) => 
+     | justification_ori1 l6 =>
        match valid_derivation_deriv_ori1_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_ori2 l6 => fun (H_eq : _) => 
+     | justification_ori2 l6 =>
        match valid_derivation_deriv_ori2_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_impe l6 l7 => fun (H_eq : _) => 
+     | justification_impe l6 l7 =>
        match valid_derivation_deriv_impe_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_nege l6 l7 => fun (H_eq : _) => 
+     | justification_nege l6 l7 =>
        match valid_derivation_deriv_nege_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_conte l6 => fun (H_eq : _) => 
+     | justification_conte l6 =>
        match valid_derivation_deriv_conte_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_negnegi l6 => fun (H_eq : _) => 
+     | justification_negnegi l6 =>
        match valid_derivation_deriv_negnegi_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_negnege l6 => fun (H_eq : _) => 
+     | justification_negnege l6 =>
        match valid_derivation_deriv_negnege_dec G5 proplist5 l5 prop5 l6 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_mt l6 l7 => fun (H_eq : _) => 
+     | justification_mt l6 l7 =>
        match valid_derivation_deriv_mt_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_impi l6 l7 => fun (H_eq : _) => 
+     | justification_impi l6 l7 =>
        match valid_derivation_deriv_impi_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_negi l6 l7 => fun (H_eq : _) => 
+     | justification_negi l6 l7 =>
        match valid_derivation_deriv_negi_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_ore l6 l7 l8 l9 l10 => fun (H_eq : _) => 
+     | justification_ore l6 l7 l8 l9 l10 =>
        match valid_derivation_deriv_ore_dec G5 proplist5 l5 prop5 l6 l7 l8 l9 l10 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     | justification_pbc l6 l7 => fun (H_eq : _) => 
+     | justification_pbc l6 l7 =>
        match valid_derivation_deriv_pbc_dec G5 proplist5 l5 prop5 l6 l7 with
        | left H_dec => left _ _
        | right H_dec => right _ _
        end
-     end (refl_equal _)
-   end (refl_equal _)); subst => //.
+     end
+   end); subst => //.
 by move => H_deriv; inversion H_deriv.
 Defined.
 
@@ -586,7 +584,7 @@ refine
         | right H_dec => right _ _
         end
       end (refl_equal _)      
-    | entry_box proof5 => fun (H_eq : _) => 
+    | entry_box proof5 => fun (H_eq : _) =>
       match proof5 as proof' return (proof5 = proof' -> _) with
       | proof_entries ls5 => fun (H_eq_l : _) =>
         match ls5 as ls' return (ls5 = ls' -> _) with
@@ -669,39 +667,39 @@ Fixpoint valid_entry_dec (G5 : G) (proplist5 : proplist) (e : entry) :
   { valid_entry G5 proplist5 e }+{ ~ valid_entry G5 proplist5 e }.
 refine 
   (match e as e' return (e = e' -> _) with
-   | entry_derivation derivation5 => fun (H_eq_e : _) =>
+   | entry_derivation derivation5 => fun H_eq_e =>
      match derivation5 as derivation' return (derivation5 = derivation' -> _) with
-     | derivation_deriv l5 prop5 reason5 => fun (H_eq_deriv: _) =>
+     | derivation_deriv l5 prop5 reason5 => fun H_eq_deriv =>
        match reason5 as reason' return (reason5 = reason' -> _) with
-       | reason_assumption => fun (H_eq_reason : _) => right _ _
-       | reason_justification justification5 => fun (H_eq_reason : _) =>
+       | reason_assumption => fun H_eq_reason => right _ _
+       | reason_justification justification5 => fun H_eq_reason =>
          match valid_derivation_deriv_dec G5 proplist5 l5 prop5 (reason_justification justification5) with
          | left H_dec => left _ _
          | right H_dec => right _ _
          end
        end (refl_equal _)
      end (refl_equal _)
-   | entry_box proof5 => fun (H_eq: _) => 
+   | entry_box proof5 => fun H_eq =>
      match proof5 as proof' return (proof5 = proof' -> _) with
-     | proof_entries ls => fun (H_eq_pr : _) => 
+     | proof_entries ls => fun H_eq_pr =>
        match ls as ls' return (ls = ls' -> _) with
        | nil => fun (H_eq_l : _) => right _ _
-       | e :: ls' => fun (H_eq_l : _) =>
+       | e :: ls' => fun H_eq_l =>
          match e as e' return (e = e' -> _) with
-         | entry_derivation (derivation_deriv l5 prop5 reason5) => fun (H_eq_e : _) =>
+         | entry_derivation (derivation_deriv l5 prop5 reason5) => fun H_eq_e =>
            match reason5 as reason' return (reason5 = reason' -> _) with
-           | reason_assumption => fun (H_eq_r : _) => 
+           | reason_assumption => fun H_eq_r =>
              match valid_proof_entry_list_ valid_entry_dec ls' (Map.add (inl l5) (inl prop5) G5) proplist5 with
              | left H_dec => left _ _
              | right H_dec => right _ _
              end
-           | reason_justification justification5 => fun (H_eq_r : _) => right _ _
+           | reason_justification justification5 => fun H_eq_r => right _ _
            end (refl_equal _)
-         | _ => fun (H_eq_e : _) => right _ _
+         | _ => fun H_eq_e => right _ _
          end (refl_equal _)
        end (refl_equal _)
      end (refl_equal _)
-   | entry_invalid => fun (H_eq: _) => right _ _
+   | entry_invalid => fun H_eq => right _ _
    end (refl_equal _)); subst; try by move => H_vp; inversion H_vp.
 - exact: valid_entry_derivation.
 - have ->: ls' = proof_list_entry (proof_entries ls') by [].
@@ -732,15 +730,15 @@ refine
   (fun (c : claim) => 
     match c with
     | claim_judgment_proof judgment5 proof5 =>
-      match proof5 as proof6 return (proof5 = proof6 -> _) with
-      | proof_entries ls => fun (H_eq_pr : _) =>
+      match proof5 with
+      | proof_entries ls =>
         match last ls entry_invalid as e return (_ = e -> _) with
-        | entry_derivation (derivation_deriv l5 prop5 reason5) => fun (H_eq_last : _) =>
+        | entry_derivation (derivation_deriv l5 prop5 reason5) => fun H_eq_last =>
           match reason5 as reason' return (reason5 = reason' -> _) with
           | reason_assumption => fun (H_eq_reason : _) => right _ _
-          | reason_justification justification5 => fun (H_eq_reason : _) =>
-            match judgment5 as judgment6 return (judgment5 = judgment6 -> _) with 
-            | judgment_follows proplist5 prop' => fun (H_eq_judgment : _) =>
+          | reason_justification justification5 => fun H_eq_reason =>
+            match judgment5 with
+            | judgment_follows proplist5 prop' =>
               match prop_eq_dec prop5 prop' with
               | left H_dec =>
                 match valid_proof_dec (Map.empty dyadicprop) proplist5 (proof_entries ls) with
@@ -749,33 +747,31 @@ refine
                 end
               | right H_dec => right _ _
               end
-            end (refl_equal _)
+            end
           end (refl_equal _)
-        | _ => fun (H_eq : _) => right _ _
+        | _ => fun H_eq => right _ _
         end (refl_equal _)
-      end (refl_equal _)
+      end
     end).
 - move => H_vp; inversion H_vp.
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].
-  rewrite -H_eq_pr in H_ls.
   by rewrite H_ls H_eq_last H_eq_reason in H1.
-- rewrite H_eq_judgment -H_dec {H_eq_judgment H_dec prop'}.
-  apply vc_claim with (l5 := l5) (justification5 := justification5); last by rewrite -H_eq_pr in H_dec'.
-  by rewrite -H_eq_reason -H_eq_last H_eq_pr.
+- rewrite -H_dec { H_dec prop'}.
+  apply vc_claim with (l5 := l5) (justification5 := justification5) => //.
+  by rewrite -H_eq_reason -H_eq_last.
 - move => H_vp; inversion H_vp.
   by subst; congruence.
 - move => H_vp; inversion H_vp; subst.
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].  
   rewrite H_ls H_eq_last in H1.
   injection H1 => H_eq_p H_eq_pl H_eq_l.
-  injection H => H_eq_p' H_eq_pl'.
-  by rewrite -H_eq_p' -H_eq_pl in H_dec.
+  by rewrite -H_eq_pl in H_dec.
 - move => H_vc; inversion H_vc.
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].
-  by rewrite H_eq_pr H_ls H_eq in H1.
+  by rewrite H_ls H_eq in H1.
 - move => H_vc; inversion H_vc.
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].
-  by rewrite H_eq_pr H_ls H_eq in H1.
+  by rewrite H_ls H_eq in H1.
 Defined.
 
 Definition validate_claim (c : claim) : bool :=
