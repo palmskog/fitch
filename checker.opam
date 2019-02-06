@@ -12,10 +12,10 @@ build: [
   [ make "checker" "-j%{jobs}%" ]
 ]
 depends: [
-  "coq" { ((>= "8.6.1" & < "8.7~") | (>= "8.7" & < "8.8~")) }
-  "coq-mathcomp-ssreflect" {>= "1.6.1" & < "1.7~"}
-  "coq-ott" {>= "0.27"}
-  "ott" {build & >= "0.27"}
+  "coq" {>= "8.9" & < "8.10~"}
+  "coq-mathcomp-ssreflect" {>= "1.7" & < "1.8~"}
+  "coq-ott" {>= "0.28"}
+  "ott" {build & >= "0.28"}
   "camlp4" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build}
@@ -23,5 +23,5 @@ depends: [
 available: [ ocaml-version >= "4.02.3" ]
 
 authors: [
-  "Karl Palmskog <>"
+  "Karl Palmskog <palmskog@gmail.com>"
 ]

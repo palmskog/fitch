@@ -8,9 +8,9 @@ Requirements
 
 Definitions and proofs:
 
-- [`Coq 8.6.1`](https://coq.inria.fr/coq-86) or [`Coq 8.7`](https://coq.inria.fr/coq-87)
-- [`Mathematical Components 1.6.4`](http://math-comp.github.io/math-comp/) (`ssreflect`)
-- [`Ott 0.27`](https://github.com/ott-lang/ott) (and its Coq library)
+- [`Coq 8.9`](https://coq.inria.fr)
+- [`Mathematical Components 1.7.0`](http://math-comp.github.io/math-comp/) (`ssreflect`)
+- [`Ott`](https://github.com/ott-lang/ott) (and its Coq library)
 
 Executable checker:
 

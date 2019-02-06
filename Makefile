@@ -1,7 +1,8 @@
 include Makefile.detect-coq-version
+include Makefile.ml-files
 
-ifeq (,$(filter $(COQVERSION),8.6 8.7 trunk))
-$(error "only compatible with Coq version 8.6 or later")
+ifeq (,$(filter $(COQVERSION),8.9 8.10 dev))
+$(error "only compatible with Coq version 8.9 or later")
 endif
 
 COQPROJECT_EXISTS = $(wildcard _CoqProject)
@@ -15,7 +16,6 @@ PDFLATEX = pdflatex
 
 OTTFILES = fitch.ott
 VFILES = $(OTTFILES:.ott=.v)
-MLFILES = fitch.ml fitch.mli
 
 default: Makefile.coq
 	$(MAKE) -f Makefile.coq
@@ -24,17 +24,14 @@ checker: checker.native
 
 prolog: prolog.native
 
-checker.native: $(MLFILES) util.ml checker.ml
+checker.native: $(FITCHML) util.ml checker.ml
 	$(OCAMLBUILD) checker.native
 
-prolog.native: $(MLFILES) util.ml prolog.ml
+prolog.native: $(FITCHML) util.ml prolog.ml
 	$(OCAMLBUILD) prolog.native
 
 Makefile.coq: $(VFILES)
-	coq_makefile -f _CoqProject -o Makefile.coq -install none \
-          -extra '$(MLFILES)' \
-	    'fitch_program_extrocaml.v fitch_program.vo' \
-	    '$$(COQC) $$(COQDEBUG) $$(COQFLAGS) fitch_program_extrocaml.v'
+	coq_makefile -f _CoqProject -o Makefile.coq
 
 $(VFILES): %.v: %.ott
 	$(OTT) -o $@ -coq_expand_list_types false $<
@@ -42,7 +39,7 @@ $(VFILES): %.v: %.ott
 fitchScript.sml: fitch.ott
 	$(OTT) -o fitchScript.sml fitch.ott
 
-$(MLFILES): Makefile.coq
+$(FITCHML): Makefile.coq
 	$(MAKE) -f Makefile.coq $@
 
 fitch_defs.tex: fitch.ott
@@ -55,11 +52,10 @@ fitch.pdf: fitch_defs.tex fitch.tex
 	$(PDFLATEX) fitch.tex
 	$(PDFLATEX) fitch.tex
 
-clean:
-	if [ -f Makefile.coq ]; then \
-	  $(MAKE) -f Makefile.coq cleanall; fi
+clean: Makefile.coq
+	$(MAKE) -f Makefile.coq cleanall
 	rm -f Makefile.coq Makefile.coq.conf $(VFILES)
 	$(OCAMLBUILD) -clean
 
-.PHONY: default clean checker prolog
-.NOTPARALLEL: $(MLFILES)
+.PHONY: default clean checker prolog $(FITCHML)
+.NOTPARALLEL: $(FITCHML)

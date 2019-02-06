@@ -171,13 +171,13 @@ G {{ tex \Gamma }} :: G_ ::=
   {{ coq-universe Type }}
   | [] :: M :: empty
     {{ coq (Map.empty dyadicprop) }}
-    {{ hol FIXME }}
+    {{ hol FIXME1 }}
   | G [ l |-> prop ] :: M :: add_prop
     {{ coq (Map.add (inl [[l]]) (inl [[prop]]) [[G]]) }}
-    {{ hol FIXME }}
+    {{ hol FIXME2 }}
   | G [ ( l , l' ) |-> ( prop , prop' ) ] :: M :: add_dyad
     {{ coq (Map.add (inr ([[l]], [[l']])) (inr ([[prop]], [[prop']])) [[G]]) }}
-    {{ hol FIXME }}
+    {{ hol FIXME3 }}
 
 formula :: formula_ ::=  
 	{{ com formulas }}

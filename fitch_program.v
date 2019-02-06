@@ -621,46 +621,32 @@ refine
   rewrite H_l H_prop H_j in H.
   have ->: ls' = proof_list_entry (proof_entries ls') by [].
   by subst; apply vp_derivation.
-- move => H_vp; inversion H_vp; subst; last by [].
-  move: H_dec_l.
-  have ->: (proof_entries (proof_list_entry proof5)) = proof5 by destruct proof5.
-  move => H_vp'.
-  by injection H => H_j H_p H_l; subst.
 - move => H_vp; inversion H_vp; subst => //.
-  injection H => H_j H_p H_l; subst.
-  contradict H_dec.
-  exact: valid_entry_derivation. 
+  move: H_dec_l.
+  by have ->: (proof_entries (proof_list_entry proof5)) = proof5 by destruct proof5.
+- move => H_vp; inversion H_vp; subst => //.
+  case: H_dec.
+  exact: valid_entry_derivation.
 - inversion H_dec; first by rewrite H_eq H_eq_l in H0.
   rewrite H_eq H_eq_l H_ls5 H_eq_e' in H0.
   injection H0 => H_b H_d H_r H_prop.
-  rewrite H_b.
-  have ->: ls5' = proof_list_entry (proof_entries ls5') by [].
+  subst.
   have ->: ls' = proof_list_entry (proof_entries ls') by [].
-  apply vp_box with (l' := l6) (prop' := prop6) (reason5 := reason6); try by subst.
-  rewrite -H_b.
-  by have ->: proof_entries (proof_list_entry proof0) = proof0 by destruct proof0.
-- move => H_vp; inversion H_vp; subst; first by contradict H.
-  injection H => H_eq_pr H_eq_prop H_eq_l.
+  by apply vp_box with (l' := l6) (prop' := prop6) (reason5 := reason6).
+- move => H_vp; inversion H_vp; subst.
   have H_eq: (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof_list_entry proof0) = (proof_list_entry (proof_entries (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof_list_entry proof0))) by [].
-  rewrite -H_eq_prop -H_eq_l in H_eq.
-  rewrite H_eq /= in H1.
-  rewrite -H_eq_pr -H_eq_prop -H_eq_l /= in H_eq_d'.
-  rewrite H1 in H_eq_d'.
-  injection H_eq_d' => H_reason H_l H_l'.
-  contradict H_dec'.
-  rewrite -H_l -H_l' -H_eq_l -H_eq_prop.
-  by have ->: (proof_entries (proof_list_entry proof')) = proof' by destruct proof'.
-- move => H_vp; inversion H_vp; subst; first by contradict H.
+  case: H_dec'.
+  have ->: (proof_entries (proof_list_entry proof')) = proof' by destruct proof'.
+  rewrite H_eq_d' in H4.
+  injection H4 => Heq1 Heq2 Heq3.
+  by subst.
+- move => H_vp; inversion H_vp; subst.
   contradict H_dec.
-  injection H => H_eq_ls H_eq_l H_eq_prop.
-  rewrite -H_eq_ls -H_eq_l -H_eq_prop.
   exact: valid_entry_box.
-- move => H_vp; inversion H_vp; subst; first by contradict H.
-  injection H => H_eq_ls H_eq_l H_eq_prop; subst.
-  by rewrite H_eq_d' in H1.
-- move => H_vp; inversion H_vp; subst; first by contradict H.
-  injection H => H_eq_ls H_eq_l H_eq_prop; subst.
-  by rewrite H_eq_d' in H1.
+- move => H_vp; inversion H_vp; subst.
+  by rewrite H_eq_d' in H4.
+- move => H_vp; inversion H_vp; subst.  
+  by rewrite H_eq_d' in H4.
 Defined.
 
 Fixpoint valid_entry_dec (G5 : G) (proplist5 : proplist) (e : entry) : 

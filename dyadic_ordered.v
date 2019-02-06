@@ -98,7 +98,7 @@ Module DyadicLexLtUsualOrderedType (UOT : UsualOrderedType) <: DyadicUsualOrdere
        end
      | GT H_cmp => GT _
      end
-   end (refl_equal _) (refl_equal _)); rewrite H_eq H_eq'.
+   end (refl_equal _) (refl_equal _)).
   - exact: dyadic_lex_lt_t_t.
   - by rewrite H_cmp.
   - exact: dyadic_lex_lt_t_t.
