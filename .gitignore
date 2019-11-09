@@ -1,3 +1,8 @@
+.HOLMK
+.hollogs
+*.uo
+*.ui
+*.dat
 *.aux
 *.vo
 *.d
@@ -7,6 +12,7 @@
 Makefile.coq
 Makefile.coq.bak
 Makefile.coq.conf
+.lia.cache
 _build
 fitch.v
 fitch.ml
@@ -20,4 +26,8 @@ fitch_defs.aux
 fitch.pdf
 fitch_defs.tex
 _CoqProject
+ottTheory.sig
+ottTheory.sml
 fitchScript.sml
+fitchTheory.sig
+fitchTheory.sml

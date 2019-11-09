@@ -37,6 +37,9 @@ $(VFILES): %.v: %.ott
 fitchScript.sml: fitch.ott
 	$(OTT) -o fitchScript.sml fitch.ott
 
+hol: fitchScript.sml ottScript.sml ottLib.sig ottLib.sml
+	Holmake
+
 $(FITCHML): Makefile.coq
 	$(MAKE) -f Makefile.coq $@
 
@@ -55,5 +58,5 @@ clean: Makefile.coq
 	rm -f Makefile.coq Makefile.coq.conf $(VFILES)
 	$(OCAMLBUILD) -clean
 
-.PHONY: default clean checker prolog $(FITCHML)
+.PHONY: default clean checker prolog hol $(FITCHML)
 .NOTPARALLEL: $(FITCHML)
