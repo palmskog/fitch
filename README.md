@@ -8,9 +8,9 @@ Requirements
 
 Definitions and proofs:
 
-- [`Coq 8.9`](https://coq.inria.fr)
-- [`Mathematical Components 1.7.0`](http://math-comp.github.io/math-comp/) (`ssreflect`)
-- [`Ott`](https://github.com/ott-lang/ott) (and its Coq library)
+- [`Coq 8.9 or later`](https://coq.inria.fr)
+- [`Mathematical Components 1.7 or later`](http://math-comp.github.io/math-comp/) (`ssreflect`)
+- [`Ott 0.29`](https://github.com/ott-lang/ott) (and its Coq library)
 
 Executable checker:
 
@@ -24,7 +24,7 @@ Building
 
 Make sure the `ott` program is in the `PATH`, and Ott's Coq auxiliary library has been installed under Coq's `user-contrib` directory (default) or set the `Ott_PATH` environment variable to an alternative location. One easy way to install Ott and its Coq library is via [OPAM](http://opam.ocaml.org/doc/Install.html):
 ```
-opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
+opam repo add coq-released https://coq.inria.fr/opam/released
 opam install ott coq-ott
 ```
 

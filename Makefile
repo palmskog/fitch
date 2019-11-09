@@ -1,9 +1,4 @@
-include Makefile.detect-coq-version
 include Makefile.ml-files
-
-ifeq (,$(filter $(COQVERSION),8.9 8.10 dev))
-$(error "only compatible with Coq version 8.9 or later")
-endif
 
 COQPROJECT_EXISTS = $(wildcard _CoqProject)
 ifeq "$(COQPROJECT_EXISTS)" ""
