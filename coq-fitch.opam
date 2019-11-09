@@ -9,7 +9,7 @@ license: "MIT"
 
 synopsis: "Sound Fitch-style proof system in Coq for propositional logic"
 description: """
-A certified proof checker in Coq for Fitch-style propositional logic proofs
+A certified proof system and checker in Coq for Fitch-style propositional logic,
 as defined in the book Logic for Computer Science by Huth and Ryan.
 The checker is both executable inside Coq and after extraction to OCaml code.
 """
