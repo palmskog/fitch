@@ -15,6 +15,9 @@ VFILES = $(OTTFILES:.ott=.v)
 default: Makefile.coq
 	$(MAKE) -f Makefile.coq
 
+install: Makefile.coq
+	$(MAKE) -f Makefile.coq install
+
 checker: checker.native
 
 prolog: prolog.native
