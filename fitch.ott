@@ -5,8 +5,8 @@ embed
 {{ coq
 Require Export Structures.OrderedTypeEx.
 Require Export FMapInterface.
-
 Require Export Fitch.dyadic_ordered.
+Import ListNotations.
 
 Module Type PropInterpretation.
 Parameter A : Type.
@@ -72,11 +72,11 @@ proof {{ tex \rho }} :: proof_ ::=
       {{ com proof }}
       | entry1 .. entryn :: :: entries
       | () :: M :: empty
-        {{ coq (proof_entries nil) }}
-	{{ hol [] }}
+        {{ coq (proof_entries []) }}
+        {{ hol (proof_entries []) }}
       | entry proof :: M :: entry
-        {{ coq (proof_entries (cons [[entry]] (proof_list_entry [[proof]]))) }}
-	{{ hol (proof_entries ([[entry]] :: (proof_list_entry [[proof]]))) }}
+        {{ coq (proof_entries ([[entry]] :: (proof_list_entry [[proof]]))) }}
+        {{ hol (proof_entries ([[entry]] :: (proof_list_entry [[proof]]))) }}
 
 entry :: entry_ ::=
       {{ coq-universe Type }}
@@ -87,7 +87,7 @@ entry :: entry_ ::=
       | last ( proof ) :: M :: last
         {{ com last entry in proof }}
 	{{ coq (last (proof_list_entry [[proof]]) entry_invalid) }}
-	{{ hol (LAST (proof_list_entry [[proof]]) entry_invalid) }}
+	{{ hol (LAST (proof_list_entry [[proof]])) }}
 
 derivation :: derivation_ ::=
            {{ coq-universe Type }}
@@ -158,26 +158,28 @@ terminals :: terminals_ ::=
 dyadicprop :: dyadicprop_ ::=
         {{ coq-universe Type }}
 	{{ coq (@dyadic prop) }}
+	{{ hol (prop + (prop # prop)) }}
 	| prop :: M :: prop
 	  {{ coq (inl [[prop]]) }}
-	  {{ hol FIXME }}
+	  {{ hol (INL [[prop]]) }}
 	| ( prop , prop' ) :: M :: dyad
-	  {{ coq (inr ([[prop]], [[prop']]) ) }}
-	  {{ hol FIXME }}
+	  {{ coq (inr ([[prop]], [[prop']])) }}
+	  {{ hol (INR ([[prop]], [[prop']])) }}
 
 G {{ tex \Gamma }} :: G_ ::=
   {{ com admissible context }}
   {{ coq Map.t dyadicprop }}
   {{ coq-universe Type }}
+  {{ hol ((num + (num # num)) |-> (prop + (prop # prop))) }}
   | [] :: M :: empty
     {{ coq (Map.empty dyadicprop) }}
-    {{ hol FIXME1 }}
+    {{ hol FEMPTY }}
   | G [ l |-> prop ] :: M :: add_prop
     {{ coq (Map.add (inl [[l]]) (inl [[prop]]) [[G]]) }}
-    {{ hol FIXME2 }}
+    {{ hol (FUPDATE [[G]] (INL [[l]], INL [[prop]])) }}
   | G [ ( l , l' ) |-> ( prop , prop' ) ] :: M :: add_dyad
     {{ coq (Map.add (inr ([[l]], [[l']])) (inr ([[prop]], [[prop']])) [[G]]) }}
-    {{ hol FIXME3 }}
+    {{ hol (FUPDATE [[G]] (INR ([[l]], [[l']]), INR ([[prop]], [[prop']]))) }}
 
 formula :: formula_ ::=  
 	{{ com formulas }}
@@ -190,15 +192,15 @@ formula :: formula_ ::=
      	| G ( l ) = prop :: M :: G_label
           {{ com map label to prop }}
 	  {{ coq (Map.find (inl [[l]]) [[G]] = Some (inl [[prop]])) }}
-	  {{ hol FIXME }}
+	  {{ hol ((FAPPLY [[G]] (INL [[l]])) = (INL [[prop]])) }}
 	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
 	  {{ com map tuple of labels to tuple of props }}
 	  {{ coq (Map.find (inr ([[l]], [[l']])) [[G]] = Some (inr ([[prop]], [[prop']]))) }}
-	  {{ hol FIXME }}
+	  {{ hol (FAPPLY [[G]] (INR ([[l]], [[l']])) = (INR ([[prop]], [[prop']]))) }}
 	| entry = entry' :: M :: entry_eq
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}
-	  {{ hol FIXME }}
+	  {{ hol [[entry]] = [[entry']] }}
 
 embed
 {{ coq
@@ -206,6 +208,10 @@ Definition proof_list_entry (proof5 : proof) : list entry :=
 match proof5 with 
 | proof_entries ls => ls
 end.
+}}
+{{ hol
+val proof_entry_list_def = Define
+`proof_entry_list (proof_entries l) = l`;
 }}
 
 defns
