@@ -20,7 +20,7 @@ Module Fitch
 metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
-      {{ hol num }}
+      {{ hol bool }}
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
