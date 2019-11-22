@@ -25,9 +25,6 @@ Definition pq := prop_p Q.
 
 Definition prems := pp :: pq :: nil.
 
-Lemma pm_pq : prop_mapping (prop_and pp pq) (P /\ Q).
-Proof. by apply pm_and; apply pm_p. Qed.
-
 Definition proof_pq : proof :=
   (proof_entries     
       ((entry_derivation (derivation_deriv 1 pp (reason_justification justification_premise))) ::
@@ -59,19 +56,14 @@ Qed.
 Lemma premises_admitted_pq : premises_admitted prems.
 Proof.
 rewrite /premises_admitted.
-move => prop6 P6 H_P6 H_in.
-case: H_in => H_eq.
-  rewrite -H_eq in H_P6.
-  have H_pm: prop_mapping pp P by apply pm_p.
-  by rewrite -(prop_mapping_eq pp P P6 H_pm H_P6).
+move => prop6 H_in.
+case: H_in => H_eq; first by rewrite -H_eq.
 case: H_eq => H_eq; last by [].
-rewrite -H_eq in H_P6.
-have H_pm: prop_mapping pq Q by apply pm_p.
-by rewrite -(prop_mapping_eq pq Q P6 H_pm H_P6).
+by rewrite -H_eq.
 Qed.
 
 Theorem p_q : P /\ Q.
-exact (soundness_claim (prop_and pp pq) (P /\ Q) prems proof_pq premises_admitted_pq pm_pq valid_claim_p_q).
+exact (soundness_claim (prop_and pp pq) prems proof_pq premises_admitted_pq valid_claim_p_q).
 Qed.
 
 End TestFitch.
