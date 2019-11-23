@@ -374,7 +374,7 @@ Definition justification_prop (G5 : G) (proplist5 : proplist) (proof5 : proof) :
   reason5 <> reason_assumption.
 
 Lemma justification_empty : (forall (G5 : G) (proplist5 : proplist),
-   justification_prop G5 proplist5 (proof_entries nil)).
+   justification_prop G5 proplist5 (proof_entries [])).
 Proof. by intuition. Qed.
 
 Lemma justification_derivation :

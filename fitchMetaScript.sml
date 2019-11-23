@@ -21,7 +21,7 @@ val map_line_admitted_def = Define
 val map_box_admitted_def = Define
 `!G. map_box_admitted G = 
  (!l1 l2 p1 p2. FAPPLY G (INR (l1, l2)) = (INR (p1, p2)) ==>
- (prop_of p1 ==> prop_of p2))`
+ (prop_of p1 ==> prop_of p2))`;
 
 (* fun RI thm = RULE_INDUCT_THEN thm STRIP_ASSUME_TAC STRIP_ASSUME_TAC; *)
 
@@ -135,6 +135,16 @@ val soundness_derivations_thm = Q.store_thm("soundness_derivations",
 `!G pl p l j. premises_admitted pl ==> map_line_admitted G ==> map_box_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
  prop_of p`,
+ID_TAC);
+
+val justification_prop_def = Define
+`!G pl pr. justification_prop G pl pr =
+!l p r. valid_proof G pl pr ==>
+MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
+r <> reason_assumption`;
+
+val justification_empty_thm = Q.store_thm("justification_empty",
+`!G pl. justification_prop G pl (proof_entries [])`,
 ID_TAC);
 
 val _ = export_theory();

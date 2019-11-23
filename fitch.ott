@@ -210,8 +210,8 @@ match proof5 with
 end.
 }}
 {{ hol
-val proof_entry_list_def = Define
-`proof_entry_list (proof_entries l) = l`;
+val proof_list_entry_def = Define
+`proof_list_entry (proof_entries l) = l`;
 }}
 
 defns
