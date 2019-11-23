@@ -37,7 +37,7 @@ $(VFILES): %.v: %.ott
 fitchScript.sml: fitch.ott
 	$(OTT) -o fitchScript.sml fitch.ott
 
-hol: fitchScript.sml ottScript.sml ottLib.sig ottLib.sml
+hol: fitchMetaScript.sml fitchScript.sml ottScript.sml ottLib.sig ottLib.sml
 	Holmake
 
 $(FITCHML): Makefile.coq
