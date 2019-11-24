@@ -460,7 +460,7 @@ Definition soundness_prop (G5 : G) (proplist5 : proplist) (proof5 : proof) : Pro
       prop_of prop5.
 
 Lemma soundness_empty : (forall (G5 : G) (proplist5 : proplist),
-       soundness_prop G5 proplist5 (proof_entries nil)).
+       soundness_prop G5 proplist5 (proof_entries [])).
 Proof. by intuition. Qed.
 
 Lemma soundness_derivation :
