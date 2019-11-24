@@ -1,7 +1,4 @@
 embed
-{{ tex-preamble 
-\usepackage{stmaryrd} 
-}}
 {{ coq
 Require Export Structures.OrderedTypeEx.
 Require Export FMapInterface.
@@ -82,7 +79,9 @@ entry :: entry_ ::=
       {{ coq-universe Type }}
       {{ com proof entry }}
       | derivation :: :: derivation
+        {{ com line }}
       | [ proof ] :: :: box
+        {{ com box }}
       | invalid :: :: invalid
       | last ( proof ) :: M :: last
         {{ com last entry in proof }}
@@ -151,8 +150,6 @@ terminals :: terminals_ ::=
 	  | in :: :: in {{ tex \in }}
 	  | |-> :: :: mapsto {{ tex \mapsto }}
 	  | last :: :: last {{ tex \mathrm{last} }}
-	  | |[ :: :: lbracket {{ tex \llbracket }}
-	  | ]| :: :: rbracket {{ tex \rrbracket }}
 	  | invalid :: :: invalid {{ tex \mathrm{invalid} }}
 
 dyadicprop :: dyadicprop_ ::=
