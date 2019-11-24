@@ -3,6 +3,7 @@ Require Import List.
 Require Import FMapFacts.
 Require Import Classical.
 Require Import mathcomp.ssreflect.ssreflect.
+Import ListNotations.
 
 Module FitchPropMetatheory
  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
