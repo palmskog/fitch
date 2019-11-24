@@ -1,6 +1,6 @@
 open HolKernel boolLib Parse bossLib pairTheory optionTheory stringTheory;
 open relationTheory listTheory finite_mapTheory;
-open ottTheory ottLib IndDefLib IndDefRules fitchTheory;
+open IndDefLib IndDefRules ottTheory ottLib fitchTheory;
 
 val _ = new_theory "fitchMeta";
 
@@ -23,7 +23,7 @@ val map_box_admitted_def = Define
  (!l1 l2 p1 p2. FAPPLY G (INR (l1, l2)) = (INR (p1, p2)) ==>
  (prop_of p1 ==> prop_of p2))`;
 
-(* fun RI thm = RULE_INDUCT_THEN thm STRIP_ASSUME_TAC STRIP_ASSUME_TAC; *)
+(* soundness of line rules *)
 
 val soundness_premise_thm = Q.store_thm("soundness_premise",
 `!G pl p l. premises_admitted pl ==>
@@ -137,14 +137,91 @@ val soundness_derivations_thm = Q.store_thm("soundness_derivations",
  prop_of p`,
 ID_TAC);
 
+(* absence of assumptions from proofs *)
+
 val justification_prop_def = Define
 `!G pl pr. justification_prop G pl pr =
-!l p r. valid_proof G pl pr ==>
-MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
-r <> reason_assumption`;
+  !l p r. valid_proof G pl pr ==>
+  MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
+  r <> reason_assumption`;
 
 val justification_empty_thm = Q.store_thm("justification_empty",
 `!G pl. justification_prop G pl (proof_entries [])`,
+ID_TAC);
+
+val justification_derivation_thm = Q.store_thm("justification_derivation",
+`!G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
+  valid_proof (FUPDATE G (INL l, INL p)) pl pr ==>
+  justification_prop (FUPDATE G (INL l, INL p)) pl pr ==>
+  justification_prop G pl (proof_entries (entry_derivation
+   (derivation_deriv l p (reason_justification j)) :: proof_list_entry pr))`,
+ID_TAC);
+
+val justification_box_thm = Q.store_thm("justification_box",
+`!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
+  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) =
+  entry_derivation (derivation_deriv l2 p2 r) ==>
+ valid_proof (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
+ justification_prop (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
+ valid_proof (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
+ justification_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
+ justification_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
+  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
+ID_TAC);
+
+val justification_valid_in_thm = Q.store_thm("justification_valid_in",
+`!G pl pr l p r. valid_proof G pl pr ==>
+ MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
+ r <> reason_assumption`,
+ID_TAC);
+
+(* soundness of system  *)
+
+val soundness_prop_def = Define
+`soundness_prop G pl pr =
+ !l j p. premises_admitted pl ==>
+  map_line_admitted G ==>
+  map_box_admitted G ==>
+  MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr) ==>
+  prop_of p`;
+
+val soundness_empty_thm = Q.store_thm("soundness_empty",
+`!G pl. soundness_prop G pl (proof_entries [])`,
+ID_TAC);
+
+val soundness_derivation_thm = Q.store_thm("soundness_derivation",
+`!G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
+  valid_proof (FUPDATE G (INL l, INL p)) pl pr ==>
+  soundness_prop (FUPDATE G (INL l, INL p)) pl pr ==>
+  soundness_prop G pl (proof_entries (entry_derivation
+   (derivation_deriv l p (reason_justification j)) :: proof_list_entry pr))`,
+ID_TAC);
+
+val soundness_box_thm = Q.store_thm("soundness_box",
+`!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
+  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) =
+  entry_derivation (derivation_deriv l2 p2 r) ==>
+ valid_proof (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
+ soundness_prop (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
+ valid_proof (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
+ soundness_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
+ soundness_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
+  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
+ID_TAC);
+
+val soundness_proof_thm = Q.store_thm("soundness_proof",
+`!G pl pr p l j. premises_admitted pl ==>
+  map_line_admitted G ==>
+  map_box_admitted G ==>
+  valid_proof G pl pr ==>
+  MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr) ==>
+  prop_of p`,
+ID_TAC);
+
+val soundness_claim_thm = Q.store_thm("soundness_claim",
+`!p pl pr. premises_admitted pl ==>
+ valid_claim (claim_judgment_proof (judgment_follows pl p) pr) ==>
+ prop_of p`,
 ID_TAC);
 
 val _ = export_theory();
