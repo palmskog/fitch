@@ -9,12 +9,10 @@ Module FitchPropMetatheory
  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
  (Map : FMapInterface.S with Module E := DUOT).
 
-Module PI <: PropInterpretation.
-Definition A := Prop.
-End PI.
-
-Module FitchProp := Fitch PI UOT DUOT Map.
+Module FitchProp := Fitch UOT DUOT Map.
 Export FitchProp.
+
+Notation prop := (@prop Prop).
 
 Fixpoint prop_of (p : prop) : Prop :=
   match p with
@@ -45,7 +43,7 @@ Definition map_box_admitted (G5 : G) : Prop :=
 
 Section Derivations.
 
-Variables (G5 : G) (proplist5 : proplist) (prop5 : prop).
+Variables (G5 : @G Prop) (proplist5 : @proplist Prop) (prop5 : prop).
 
 Hypothesis H_prem : premises_admitted proplist5.
 Hypothesis H_m : map_line_admitted G5.
@@ -349,7 +347,7 @@ by rewrite H_eq.
 Qed.
 
 Lemma map_find_add : 
-  forall (G5 : G) (dn : dyadic) (dp dp' : dyadicprop), 
+  forall (G5 : G) (dn : dyadic) (dp dp' : @dyadicprop Prop),
     Map.find dn (Map.add dn dp G5) = Some dp' ->
     dp = dp'.
 Proof.

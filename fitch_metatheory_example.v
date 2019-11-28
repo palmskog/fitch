@@ -6,11 +6,7 @@ Require Import Fitch.ssrexport.
 Module Nat_as_DUOT <: DyadicUsualOrderedType Nat_as_OT := DyadicLexLtUsualOrderedType Nat_as_OT.
 Module Map <: FMapInterface.S with Module E := Nat_as_DUOT := FMapList.Make Nat_as_DUOT.
 
-Module FitchPropMetatheoryListMap :=
-  FitchPropMetatheory
-    Nat_as_OT Nat_as_DUOT
-    Map.
-Import FitchPropMetatheoryListMap.
+Module Import FitchPropMetatheoryListMap := FitchPropMetatheory Nat_as_OT Nat_as_DUOT Map.
 
 Section TestFitch.
 

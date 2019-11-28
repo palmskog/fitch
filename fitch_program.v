@@ -1,20 +1,20 @@
 Require Import Fitch.fitch.
 Require Import Fitch.ssrexport.
 
-Module Type DecidablePropInterpretation (Import PI : PropInterpretation).
-Parameter A_eq_dec : forall x y : A, {x = y}+{x <> y}.
-End DecidablePropInterpretation.
-
 Module FitchProgram
-  (PI : PropInterpretation) (DPI : DecidablePropInterpretation PI)
   (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
   (Map : FMapInterface.S with Module E := DUOT).
 
-Module FitchPI := Fitch PI UOT DUOT Map.
+Module FitchPI := Fitch UOT DUOT Map.
 Export FitchPI.
 
+Section FitchProp.
+Context {A : Type} (A_eq_dec : forall (a a' : A), {a = a'}+{a <> a'}).
+
+Notation prop := (@prop A).
+
 Definition prop_eq_dec : forall (prop5 prop' : prop), { prop5 = prop' }+{ prop5 <> prop' }.
-decide equality; apply DPI.A_eq_dec.
+decide equality; apply A_eq_dec.
 Defined.
 
 Definition valid_derivation_deriv_premise_dec :
@@ -234,7 +234,7 @@ refine
   subst; 
     try (by move => H_vp; inversion H_vp; subst; rewrite H3 in H_eq);
     try (by move => H_vp; inversion H_vp; subst; rewrite H5 in H_eq').
-- by apply vd_nege with (prop5 := prop7).
+- by apply vd_nege with (prop6 := prop7).
 - move => H_vp; inversion H_vp; subst.
   rewrite H3 in H_eq; rewrite H5 in H_eq'.
   injection H_eq => H_eq_neg; injection H_eq' => H_eq_neg'.
@@ -563,7 +563,7 @@ Definition valid_proof_entry_list_
   (valid_entry_dec : forall (G5 : G) (proplist5 : proplist) (e : entry), 
     { valid_entry G5 proplist5 e } + { ~ valid_entry G5 proplist5 e } ) : 
   forall (ls : list entry) (G5 : G) (proplist5 : proplist), 
-    { valid_proof G5 proplist5 (proof_entries ls) } + { ~ valid_proof G5 proplist5 (proof_entries ls) }.
+    { valid_proof G5 proplist5 (proof_entries ls) } + { ~ valid_proof G5 proplist5 (@proof_entries A ls) }.
 refine 
   (fix valid_proof_entry_list (ls : list entry) (G5 : G) (proplist5 : proplist) : 
     { valid_proof G5 proplist5 (proof_entries ls) }+{ ~ valid_proof G5 proplist5 (proof_entries ls) } :=
@@ -697,7 +697,7 @@ Defined.
 
 Definition valid_proof_entry_list := valid_proof_entry_list_ valid_entry_dec.
 
-Definition valid_proof_dec : forall (G5 : G) (proplist5 : proplist) (proof5 : proof),
+Definition valid_proof_dec : forall (G5 : G) (proplist5 : @proplist A) (proof5 : proof),
   { valid_proof G5 proplist5 proof5 }+{ ~ valid_proof G5 proplist5 proof5 }.
 by refine
   (fun (G5 : G) (proplist5 : proplist) (proof5 : proof) =>
@@ -710,7 +710,7 @@ by refine
     end).
 Defined.
 
-Definition valid_claim_dec : forall (c : claim), 
+Definition valid_claim_dec : forall (c : @claim A),
   { valid_claim c }+{ ~ valid_claim c }.
 refine 
   (fun (c : claim) => 
@@ -743,7 +743,7 @@ refine
   have H_ls: proof_list_entry (proof_entries ls) = ls by [].
   by rewrite H_ls H_eq_last H_eq_reason in H1.
 - rewrite -H_dec { H_dec prop'}.
-  apply vc_claim with (l5 := l5) (justification5 := justification5) => //.
+  apply vc_claim with (l6 := l5) (justification6 := justification5) => //.
   by rewrite -H_eq_reason -H_eq_last.
 - move => H_vp; inversion H_vp.
   by subst; congruence.
@@ -765,5 +765,7 @@ match valid_claim_dec c with
 | left _ => true
 | right _ => false
 end.
+
+End FitchProp.
 
 End FitchProgram.

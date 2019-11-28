@@ -5,15 +5,13 @@ Require Export FMapInterface.
 Require Export Fitch.dyadic_ordered.
 Import ListNotations.
 
-Module Type PropInterpretation.
-Parameter A : Type.
-End PropInterpretation.
-
 Module Fitch
- (Import PI : PropInterpretation)
  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
  (Map : FMapInterface.S with Module E := DUOT).
+Section FitchProp.
+Context {A : Type}.
 }}
+
 metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
@@ -32,6 +30,7 @@ indexvar n ::=
       {{ hol num }}
       {{ coq-equality }}
       {{ com index variable (subscript) }}
+
 grammar
 claim :: claim_ ::=
       {{ coq-universe Type }}
@@ -217,8 +216,7 @@ defns
   validity :: '' ::=
 
 defn 
-  claim :: :: valid_claim :: vc_
-  	{{ com valid claim }} by
+  claim :: :: valid_claim :: vc_ {{ com valid claim }} by
 
   last ( proof ) = l prop justification
   [] , proplist |- proof
@@ -226,8 +224,7 @@ defn
   proplist |- prop proof
      
 defn
-  G , proplist |- proof :: :: valid_proof :: vp_
-    {{ com valid proof }} by
+  G , proplist |- proof :: :: valid_proof :: vp_ {{ com valid proof }} by
   
   ------------------ :: empty
   G , proplist |- ()
@@ -326,5 +323,6 @@ defn
 
 embed
 {{ coq
+End FitchProp.
 End Fitch.
 }}
