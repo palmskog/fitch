@@ -148,13 +148,33 @@ val soundness_ore_thm = Q.store_thm("soundness_ore",
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_ore l1 l2 l3 l4 l5))) ==>
  prop_of p`,
 RW_TAC list_ss [map_box_admitted_def, map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def]);
+SUBGOAL_THEN ``((prop_of prop) \/ (prop_of prop'))`` ASSUME_TAC THEN1 METIS_TAC [prop_of_def] THEN
+METIS_TAC [prop_of_def]);
 
 val soundness_derivations_thm = Q.store_thm("soundness_derivations",
 `!G pl p l j. premises_admitted pl ==> map_line_admitted G ==> map_box_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
  prop_of p`,
-ID_TAC);
+Cases_on `j` THENL [
+ PROVE_TAC [soundness_premise_thm],
+ PROVE_TAC [soundness_lem_thm],
+ PROVE_TAC [soundness_copy_thm],
+ PROVE_TAC [soundness_andi_thm],
+ PROVE_TAC [soundness_ande1_thm],
+ PROVE_TAC [soundness_ande2_thm],
+ PROVE_TAC [soundness_ori1_thm],
+ PROVE_TAC [soundness_ori2_thm],
+ PROVE_TAC [soundness_impe_thm],
+ PROVE_TAC [soundness_nege_thm],
+ PROVE_TAC [soundness_conte_thm],
+ PROVE_TAC [soundness_negnegi_thm],
+ PROVE_TAC [soundness_negnege_thm],
+ PROVE_TAC [soundness_mt_thm],
+ PROVE_TAC [soundness_impi_thm],
+ PROVE_TAC [soundness_negi_thm],
+ PROVE_TAC [soundness_ore_thm],
+ PROVE_TAC [soundness_pbc_thm]
+]);
 
 (* absence of assumptions from proofs *)
 
@@ -166,7 +186,7 @@ val justification_prop_def = Define
 
 val justification_empty_thm = Q.store_thm("justification_empty",
 `!G pl. justification_prop G pl (proof_entries [])`,
-ID_TAC);
+RW_TAC list_ss [justification_prop_def, proof_list_entry_def]);
 
 val justification_derivation_thm = Q.store_thm("justification_derivation",
 `!G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
@@ -174,7 +194,7 @@ val justification_derivation_thm = Q.store_thm("justification_derivation",
   justification_prop (FUPDATE G (INL l, INL p)) pl pr ==>
   justification_prop G pl (proof_entries (entry_derivation
    (derivation_deriv l p (reason_justification j)) :: proof_list_entry pr))`,
-ID_TAC);
+RW_TAC list_ss [justification_prop_def, proof_list_entry_def]);
 
 val justification_box_thm = Q.store_thm("justification_box",
 `!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
@@ -186,18 +206,12 @@ val justification_box_thm = Q.store_thm("justification_box",
  justification_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
  justification_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
-ID_TAC);
-
-val justification_valid_in_thm = Q.store_thm("justification_valid_in",
-`!G pl pr l p r. valid_proof G pl pr ==>
- MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
- r <> reason_assumption`,
-ID_TAC);
+RW_TAC list_ss [justification_prop_def, proof_list_entry_def]);
 
 (* soundness of system  *)
 
 val soundness_prop_def = Define
-`soundness_prop G pl pr =
+`soundness_prop (G:G) pl pr =
  !l j p. premises_admitted pl ==>
   map_line_admitted G ==>
   map_box_admitted G ==>
@@ -206,7 +220,8 @@ val soundness_prop_def = Define
 
 val soundness_empty_thm = Q.store_thm("soundness_empty",
 `!G pl. soundness_prop G pl (proof_entries [])`,
-ID_TAC);
+RW_TAC list_ss [soundness_prop_def, proof_list_entry_def]
+);
 
 val soundness_derivation_thm = Q.store_thm("soundness_derivation",
 `!G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
@@ -214,7 +229,19 @@ val soundness_derivation_thm = Q.store_thm("soundness_derivation",
   soundness_prop (FUPDATE G (INL l, INL p)) pl pr ==>
   soundness_prop G pl (proof_entries (entry_derivation
    (derivation_deriv l p (reason_justification j)) :: proof_list_entry pr))`,
-ID_TAC);
+RW_TAC list_ss [soundness_prop_def,proof_list_entry_def] THEN1 METIS_TAC [soundness_derivations_thm] THEN
+SUBGOAL_THEN ``map_line_admitted (FUPDATE (G:G) (INL l, INL p))`` ASSUME_TAC THEN RW_TAC list_ss [map_line_admitted_def] THEN1
+( Cases_on `l = l''` THEN RW_TAC list_ss [map_line_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FUPDATE_THM]
+  THENL [ METIS_TAC [soundness_derivations_thm], METIS_TAC [map_line_admitted_def] ] ) THEN
+SUBGOAL_THEN ``map_box_admitted (FUPDATE (G:G) (INL l, INL p))`` ASSUME_TAC THEN1
+( RW_TAC list_ss [map_box_admitted_def, FAPPLY_FUPDATE_THM] THEN METIS_TAC [map_box_admitted_def] ) THEN
+METIS_TAC []);
+
+val justification_valid_in_thm = Q.store_thm("justification_valid_in",
+`!G pl pr l p r. valid_proof G pl pr ==>
+ MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
+ r <> reason_assumption`,
+ALL_TAC);
 
 val soundness_box_thm = Q.store_thm("soundness_box",
 `!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
@@ -226,7 +253,7 @@ val soundness_box_thm = Q.store_thm("soundness_box",
  soundness_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
  soundness_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
-ID_TAC);
+ALL_TAC);
 
 val soundness_proof_thm = Q.store_thm("soundness_proof",
 `!G pl pr p l j. premises_admitted pl ==>
@@ -235,12 +262,12 @@ val soundness_proof_thm = Q.store_thm("soundness_proof",
   valid_proof G pl pr ==>
   MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr) ==>
   prop_of p`,
-ID_TAC);
+ALL_TAC);
 
 val soundness_claim_thm = Q.store_thm("soundness_claim",
 `!p pl pr. premises_admitted pl ==>
  valid_claim (claim_judgment_proof (judgment_follows pl p) pr) ==>
  prop_of p`,
-ID_TAC);
+ALL_TAC);
 
 val _ = export_theory();
