@@ -17,11 +17,13 @@ Module Fitch
 metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
+      {{ coq-universe Type }}
       {{ hol bool }}
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
       {{ coq UOT.t }}
+      {{ coq-universe Type }}
       {{ hol num }}
       {{ com proof entry label }}
 indexvar n ::= 
