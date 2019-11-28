@@ -14,14 +14,10 @@ as defined in the book Logic for Computer Science by Huth and Ryan.
 The checker is both executable inside Coq and after extraction to OCaml code.
 """
 
-build: [
-  ["./configure"]
-  [make "-j%{jobs}%"]
-]
+build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [
   "coq" {>= "8.9" & < "8.11~"}
-  "coq-mathcomp-ssreflect" {>= "1.7" & < "1.10~"}
   "coq-ott" {>= "0.30"}
   "ott" {build & >= "0.30"}
 ]

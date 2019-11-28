@@ -1,7 +1,7 @@
 Require Import FMapList.
 Require Import Fitch.fitch.
 Require Import Fitch.fitch_metatheory.
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import Fitch.ssrexport.
 
 Module Nat_as_DUOT <: DyadicUsualOrderedType Nat_as_OT := DyadicLexLtUsualOrderedType Nat_as_OT.
 Module Map <: FMapInterface.S with Module E := Nat_as_DUOT := FMapList.Make Nat_as_DUOT.

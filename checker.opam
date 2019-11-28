@@ -9,16 +9,12 @@ license: "MIT"
 
 synopsis: "Verified checker for Fitch-style propositional logic proofs"
 
-build: [
-  ["./configure"]
-  [make "checker" "-j%{jobs}%"]
-]
+build: [make "checker" "-j%{jobs}%"]
 depends: [
   "ocaml" {>= "4.02.3"}
   "coq" {>= "8.9" & < "8.11~"}
-  "coq-mathcomp-ssreflect" {>= "1.7" & < "1.10~"}
-  "coq-ott" {>= "0.29"}
-  "ott" {build & >= "0.29"}
+  "coq-ott" {>= "0.30"}
+  "ott" {build & >= "0.30"}
   "camlp4" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build}

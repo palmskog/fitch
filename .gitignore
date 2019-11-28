@@ -25,7 +25,6 @@ fitch.aux
 fitch_defs.aux
 fitch.pdf
 fitch_defs.tex
-_CoqProject
 ottTheory.sig
 ottTheory.sml
 fitchScript.sml

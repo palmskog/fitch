@@ -1,6 +1,6 @@
 Require Export OrderedType.
 Require Export Structures.OrderedTypeEx.
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import Fitch.ssrexport.
 
 Definition dyadic {A : Type} : Type := A + (A * A).
 

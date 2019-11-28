@@ -2,7 +2,7 @@ Require Import FMapList.
 Require Import Fitch.fitch.
 Require Import Fitch.fitch_program.
 Require Import String.
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import Fitch.ssrexport.
 
 Module PIString <: PropInterpretation.
 Definition A := string.

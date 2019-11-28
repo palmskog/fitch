@@ -2,7 +2,7 @@ Require Import Fitch.fitch.
 Require Import List.
 Require Import FMapFacts.
 Require Import Classical.
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import Fitch.ssrexport.
 Import ListNotations.
 
 Module FitchPropMetatheory

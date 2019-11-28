@@ -1,5 +1,5 @@
 Require Import Fitch.fitch.
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import Fitch.ssrexport.
 
 Module Type DecidablePropInterpretation (Import PI : PropInterpretation).
 Parameter A_eq_dec : forall x y : A, {x = y}+{x <> y}.
