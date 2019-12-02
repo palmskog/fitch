@@ -16,11 +16,11 @@ val premises_admitted_def = Define
 `!pl. premises_admitted pl = (!p. MEM p pl ==> prop_of p)`;
 
 val map_line_admitted_def = Define
-`!G. map_line_admitted G = (!l p. FAPPLY G (INL l) = (INL p) ==> prop_of p)`;
+`!G. map_line_admitted G = (!l p. FLOOKUP G (INL l) = SOME (INL p) ==> prop_of p)`;
 
 val map_box_admitted_def = Define
 `!G. map_box_admitted G = 
- (!l1 l2 p1 p2. FAPPLY G (INR (l1, l2)) = (INR (p1, p2)) ==>
+ (!l1 l2 p1 p2. FLOOKUP G (INR (l1, l2)) = SOME (INR (p1, p2)) ==>
  (prop_of p1 ==> prop_of p2))`;
 
 (* soundness of line rules *)
@@ -42,98 +42,98 @@ val soundness_andi_thm = Q.store_thm("soundness_andi",
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_andi l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [])
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC []);
 
 val soundness_copy_thm = Q.store_thm("soundness_copy",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_copy l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC []);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC []);
 
 val soundness_ande1_thm = Q.store_thm("soundness_ande1",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ande1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_ande2_thm = Q.store_thm("soundness_ande2",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ande2 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_ori1_thm = Q.store_thm("soundness_ori1",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ori1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC []);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC []);
 
 val soundness_ori2_thm = Q.store_thm("soundness_ori2",
 `!G pl p l l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ori2 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC []);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC []);
 
 val soundness_impe_thm = Q.store_thm("soundness_impe",
 `!G pl p l l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_impe l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_nege_thm = Q.store_thm("soundness_nege",
 `!G pl p l l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_nege l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_conte_thm = Q.store_thm("soundness_conte",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_conte l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_negnegi_thm = Q.store_thm("soundness_negnegi",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_negnegi l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC []);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC []);
 
 val soundness_negnege_thm = Q.store_thm("soundness_negnege",
 `!G pl p l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_negnege l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_mt_thm = Q.store_thm("soundness_mt",
 `!G pl p l l1 l2. map_line_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_mt l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_line_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_impi_thm = Q.store_thm("soundness_impi",
 `!G pl p l l1 l2. map_box_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_impi l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_box_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC []);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC []);
 
 val soundness_negi_thm = Q.store_thm("soundness_negi",
 `!G pl p l l1 l2. map_box_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_negi l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_box_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN
 Cases_on `prop` THEN METIS_TAC [prop_of_def]);
 
 val soundness_pbc_thm = Q.store_thm("soundness_pbc",
@@ -141,15 +141,15 @@ val soundness_pbc_thm = Q.store_thm("soundness_pbc",
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_pbc l1 l2))) ==>
  prop_of p`,
 RW_TAC list_ss [map_box_admitted_def, valid_claim_cases] THEN
-FULL_SIMP_TAC list_ss [prop_of_def] THEN METIS_TAC [prop_of_def]);
+FULL_SIMP_TAC list_ss [prop_of_def, FLOOKUP_DEF] THEN METIS_TAC [prop_of_def]);
 
 val soundness_ore_thm = Q.store_thm("soundness_ore",
 `!G pl p l l1 l2 l3 l4 l5. map_line_admitted G ==> map_box_admitted G ==>
  valid_derivation G pl (derivation_deriv l p (reason_justification (justification_ore l1 l2 l3 l4 l5))) ==>
  prop_of p`,
 RW_TAC list_ss [map_box_admitted_def, map_line_admitted_def, valid_claim_cases] THEN
-SUBGOAL_THEN ``((prop_of prop) \/ (prop_of prop'))`` ASSUME_TAC THEN1 METIS_TAC [prop_of_def] THEN
-METIS_TAC [prop_of_def]);
+SUBGOAL_THEN ``((prop_of prop) \/ (prop_of prop'))`` ASSUME_TAC THEN1 METIS_TAC [prop_of_def, FLOOKUP_DEF] THEN
+METIS_TAC [prop_of_def, FLOOKUP_DEF]);
 
 val soundness_derivations_thm = Q.store_thm("soundness_derivations",
 `!G pl p l j. premises_admitted pl ==> map_line_admitted G ==> map_box_admitted G ==>
@@ -231,10 +231,10 @@ val soundness_derivation_thm = Q.store_thm("soundness_derivation",
    (derivation_deriv l p (reason_justification j)) :: proof_list_entry pr))`,
 RW_TAC list_ss [soundness_prop_def,proof_list_entry_def] THEN1 METIS_TAC [soundness_derivations_thm] THEN
 SUBGOAL_THEN ``map_line_admitted (FUPDATE (G:G) (INL l, INL p))`` ASSUME_TAC THEN RW_TAC list_ss [map_line_admitted_def] THEN1
-( Cases_on `l = l''` THEN RW_TAC list_ss [map_line_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FUPDATE_THM]
-  THENL [ METIS_TAC [soundness_derivations_thm], METIS_TAC [map_line_admitted_def] ] ) THEN
+( Cases_on `l = l''` THEN RW_TAC list_ss [map_line_admitted_def] THEN FULL_SIMP_TAC list_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE]
+  THENL [METIS_TAC [soundness_derivations_thm], METIS_TAC [map_line_admitted_def, FLOOKUP_DEF]] ) THEN
 SUBGOAL_THEN ``map_box_admitted (FUPDATE (G:G) (INL l, INL p))`` ASSUME_TAC THEN1
-( RW_TAC list_ss [map_box_admitted_def, FAPPLY_FUPDATE_THM] THEN METIS_TAC [map_box_admitted_def] ) THEN
+( FULL_SIMP_TAC list_ss [map_box_admitted_def, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, FLOOKUP_DEF] THEN METIS_TAC [map_box_admitted_def] ) THEN
 METIS_TAC []);
 
 val justification_valid_in_thm = Q.store_thm("justification_valid_in",
@@ -264,9 +264,19 @@ val soundness_proof_thm = Q.store_thm("soundness_proof",
   prop_of p`,
 cheat);
 
+(*
+val FAPPLY_FEMPTY_inl_l_not_eq_thm = Q.store_thm("FAPPLY_FEMPTY_not_eq",
+`!l p. FLOOKUP (FEMPTY:num + num # num |-> prop + prop # prop) (INL l) <> (INL p)`
+RW_TAC std_ss []
+SUBGOAL_THEN ``~(INL l IN FDOM (FEMPTY:num + num # num |-> prop + prop # prop))`` ASSUME_TAC THEN1
+(RW_TAC bool_ss [FDOM_FEMPTY] THEN RW_TAC std_ss [NOT_IN_EMPTY])
+*)
+
+(*
 val FAPPLY_FEMPTY_not_eq_thm = Q.store_thm("FAPPLY_FEMPTY_not_eq",
-`!a b. FAPPLY FEMPTY a <> b`,
+`!a b. FAPPLY FEMPTY (INL l) <> b`,
 cheat);
+*)
 
 val soundness_claim_thm = Q.store_thm("soundness_claim",
 `!p pl pr. premises_admitted pl ==>
@@ -282,9 +292,9 @@ SUBGOAL_THEN ``(!a0.valid_claim a0 ⇔
               valid_proof FEMPTY proplist proof)`` ASSUME_TAC THEN1 METIS_TAC [valid_claim_cases] THEN
 RW_TAC list_ss [] THEN
 SUBGOAL_THEN ``map_line_admitted (FEMPTY:num + num # num |-> prop + prop # prop)`` ASSUME_TAC THEN1
-(RW_TAC list_ss [map_line_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FEMPTY_not_eq_thm]) THEN
+RW_TAC list_ss [map_line_admitted_def, FLOOKUP_DEF, FDOM_FEMPTY] THEN
 SUBGOAL_THEN ``map_box_admitted (FEMPTY:num + num # num |-> prop + prop # prop)`` ASSUME_TAC THEN1
-(RW_TAC list_ss [map_box_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FEMPTY_not_eq_thm]) THEN
+RW_TAC list_ss [map_box_admitted_def, FLOOKUP_DEF, FDOM_FEMPTY] THEN
 SUBGOAL_THEN ``?e el. proof_list_entry pr = e::el`` ASSUME_TAC THEN1
 (Cases_on `pr` THEN RW_TAC list_ss [proof_list_entry_def] THEN Cases_on `l'` THEN RW_TAC list_ss [] THEN
 FULL_SIMP_TAC list_ss [proof_list_entry_def, LAST_DEFAULT_def] THEN
@@ -296,6 +306,7 @@ SUBGOAL_THEN ``MEM (entry_derivation (derivation_deriv l p (reason_justification
 METIS_TAC [soundness_proof_thm]);
 
 val _ = export_theory();
+
 
 (*
 val valid_proof_ind_def = Define
@@ -324,8 +335,7 @@ valid_proof_ind
         valid_derivation G5 proplist5
           (derivation_deriv l5 prop5
              (reason_justification justification5)) ->
-        valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5
-          proof5 ->
+        valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
         P (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
         P G5 proplist5
           (proof_entries
@@ -345,14 +355,10 @@ valid_proof_ind
                    (derivation_deriv l5 prop5 reason_assumption)
                  :: proof_list_entry proof5))) entry_invalid =
         entry_derivation (derivation_deriv l' prop' reason5) ->
-        valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5
-          proof5 ->
+        valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
         P (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
-        valid_proof
-          (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
-          proplist5 proof' ->
-        P (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
-          proplist5 proof' ->
+        valid_proof (Map.add (inr (l5, l')) (inr (prop5, prop')) G5) proplist5 proof' ->
+        P (Map.add (inr (l5, l')) (inr (prop5, prop')) G5) proplist5 proof' ->
         P G5 proplist5
           (proof_entries
              (entry_box

@@ -190,11 +190,11 @@ formula :: formula_ ::=
      	| G ( l ) = prop :: M :: G_label
           {{ com map label to prop }}
 	  {{ coq (Map.find (inl [[l]]) [[G]] = Some (inl [[prop]])) }}
-	  {{ hol ((FAPPLY [[G]] (INL [[l]])) = (INL [[prop]])) }}
+	  {{ hol (FLOOKUP [[G]] (INL [[l]]) = SOME (INL [[prop]])) }}
 	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
 	  {{ com map tuple of labels to tuple of props }}
 	  {{ coq (Map.find (inr ([[l]], [[l']])) [[G]] = Some (inr ([[prop]], [[prop']]))) }}
-	  {{ hol (FAPPLY [[G]] (INR ([[l]], [[l']])) = (INR ([[prop]], [[prop']]))) }}
+	  {{ hol (FLOOKUP [[G]] (INR ([[l]], [[l']])) = SOME (INR ([[prop]], [[prop']]))) }}
 	| entry = entry' :: M :: entry_eq
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}
