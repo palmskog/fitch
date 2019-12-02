@@ -1,5 +1,5 @@
 open HolKernel boolLib Parse bossLib pairTheory optionTheory stringTheory;
-open relationTheory listTheory finite_mapTheory;
+open relationTheory listTheory rich_listTheory finite_mapTheory;
 open IndDefLib IndDefRules ottTheory ottLib fitchTheory;
 
 val _ = new_theory "fitchMeta";
@@ -241,7 +241,7 @@ val justification_valid_in_thm = Q.store_thm("justification_valid_in",
 `!G pl pr l p r. valid_proof G pl pr ==>
  MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
  r <> reason_assumption`,
-ALL_TAC);
+cheat);
 
 val soundness_box_thm = Q.store_thm("soundness_box",
 `!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
@@ -253,7 +253,7 @@ val soundness_box_thm = Q.store_thm("soundness_box",
  soundness_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
  soundness_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
-ALL_TAC);
+cheat);
 
 val soundness_proof_thm = Q.store_thm("soundness_proof",
 `!G pl pr p l j. premises_admitted pl ==>
@@ -262,12 +262,88 @@ val soundness_proof_thm = Q.store_thm("soundness_proof",
   valid_proof G pl pr ==>
   MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr) ==>
   prop_of p`,
-ALL_TAC);
+cheat);
+
+val FAPPLY_FEMPTY_not_eq_thm = Q.store_thm("FAPPLY_FEMPTY_not_eq",
+`!a b. FAPPLY FEMPTY a <> b`,
+cheat);
 
 val soundness_claim_thm = Q.store_thm("soundness_claim",
 `!p pl pr. premises_admitted pl ==>
  valid_claim (claim_judgment_proof (judgment_follows pl p) pr) ==>
  prop_of p`,
-ALL_TAC);
+SUBGOAL_THEN ``(!a0.valid_claim a0 ⇔
+          ?proplist prop proof l j.
+              a0 = claim_judgment_proof (judgment_follows proplist prop) proof ∧
+              clause_name "vc_claim" ∧
+              LAST (proof_list_entry proof) =
+              entry_derivation
+                (derivation_deriv l prop (reason_justification j)) ∧
+              valid_proof FEMPTY proplist proof)`` ASSUME_TAC THEN1 METIS_TAC [valid_claim_cases] THEN
+RW_TAC list_ss [] THEN
+SUBGOAL_THEN ``map_line_admitted (FEMPTY:num + num # num |-> prop + prop # prop)`` ASSUME_TAC THEN1
+(RW_TAC list_ss [map_line_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FEMPTY_not_eq_thm]) THEN
+SUBGOAL_THEN ``map_box_admitted (FEMPTY:num + num # num |-> prop + prop # prop)`` ASSUME_TAC THEN1
+(RW_TAC list_ss [map_box_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FEMPTY_not_eq_thm]) THEN
+SUBGOAL_THEN ``?e el. proof_list_entry pr = e::el`` ASSUME_TAC THEN1
+(Cases_on `pr` THEN RW_TAC list_ss [] THEN Cases_on `l'` THEN RW_TAC list_ss [] THEN
+ FULL_SIMP_TAC list_ss [proof_list_entry_def] THEN cheat) THEN
+RW_TAC list_ss [] THEN
+SUBGOAL_THEN ``MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr)`` ASSUME_TAC THEN1
+(ASM_REWRITE_TAC [] THEN METIS_TAC [MEM_LAST]) THEN
+METIS_TAC [soundness_proof_thm]);
 
 val _ = export_theory();
+
+(*
+valid_proof_ind
+     : forall P : G -> proplist -> proof -> Prop,
+       (forall (G5 : G) (proplist5 : proplist),
+        P G5 proplist5 (proof_entries [])) ->
+       (forall (G5 : G) (proplist5 : proplist) 
+          (l5 : l) (prop5 : FitchProp.prop)
+          (justification5 : justification) 
+          (proof5 : proof),
+        valid_derivation G5 proplist5
+          (derivation_deriv l5 prop5
+             (reason_justification justification5)) ->
+        valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5
+          proof5 ->
+        P (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
+        P G5 proplist5
+          (proof_entries
+             (entry_derivation
+                (derivation_deriv l5 prop5
+                   (reason_justification justification5))
+              :: proof_list_entry proof5))) ->
+       (forall (G5 : G) (proplist5 : proplist) 
+          (l5 : l) (prop5 : FitchProp.prop)
+          (proof5 proof' : proof) (l' : l)
+          (prop' : FitchProp.prop) (reason5 : reason),
+        last
+          (proof_list_entry
+             (proof_entries
+                (entry_derivation
+                   (derivation_deriv l5 prop5 reason_assumption)
+                 :: proof_list_entry proof5))) entry_invalid =
+        entry_derivation (derivation_deriv l' prop' reason5) ->
+        valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5
+          proof5 ->
+        P (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
+        valid_proof
+          (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
+          proplist5 proof' ->
+        P (Map.add (inr (l5, l')) (inr (prop5, prop')) G5)
+          proplist5 proof' ->
+        P G5 proplist5
+          (proof_entries
+             (entry_box
+                (proof_entries
+                   (entry_derivation
+                      (derivation_deriv l5 prop5
+                         reason_assumption)
+                    :: proof_list_entry proof5))
+              :: proof_list_entry proof'))) ->
+       forall (g : G) (p : proplist) (p0 : proof),
+       valid_proof g p p0 -> P g p p0
+*)
