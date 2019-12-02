@@ -197,8 +197,8 @@ val justification_derivation_thm = Q.store_thm("justification_derivation",
 RW_TAC list_ss [justification_prop_def, proof_list_entry_def]);
 
 val justification_box_thm = Q.store_thm("justification_box",
-`!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
-  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) =
+`!G pl l1 l2 p1 p2 pr1 pr2 r. LAST_DEFAULT (proof_list_entry (proof_entries (entry_derivation
+  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) entry_invalid =
   entry_derivation (derivation_deriv l2 p2 r) ==>
  valid_proof (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
  justification_prop (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
@@ -244,8 +244,8 @@ val justification_valid_in_thm = Q.store_thm("justification_valid_in",
 cheat);
 
 val soundness_box_thm = Q.store_thm("soundness_box",
-`!G pl l1 l2 p1 p2 pr1 pr2 r. LAST (proof_list_entry (proof_entries (entry_derivation
-  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) =
+`!G pl l1 l2 p1 p2 pr1 pr2 r. LAST_DEFAULT (proof_list_entry (proof_entries (entry_derivation
+  (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) entry_invalid =
   entry_derivation (derivation_deriv l2 p2 r) ==>
  valid_proof (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
  soundness_prop (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
@@ -276,7 +276,7 @@ SUBGOAL_THEN ``(!a0.valid_claim a0 ⇔
           ?proplist prop proof l j.
               a0 = claim_judgment_proof (judgment_follows proplist prop) proof ∧
               clause_name "vc_claim" ∧
-              LAST (proof_list_entry proof) =
+              LAST_DEFAULT (proof_list_entry proof) entry_invalid =
               entry_derivation
                 (derivation_deriv l prop (reason_justification j)) ∧
               valid_proof FEMPTY proplist proof)`` ASSUME_TAC THEN1 METIS_TAC [valid_claim_cases] THEN
@@ -286,20 +286,37 @@ SUBGOAL_THEN ``map_line_admitted (FEMPTY:num + num # num |-> prop + prop # prop)
 SUBGOAL_THEN ``map_box_admitted (FEMPTY:num + num # num |-> prop + prop # prop)`` ASSUME_TAC THEN1
 (RW_TAC list_ss [map_box_admitted_def] THEN FULL_SIMP_TAC list_ss [FAPPLY_FEMPTY_not_eq_thm]) THEN
 SUBGOAL_THEN ``?e el. proof_list_entry pr = e::el`` ASSUME_TAC THEN1
-(Cases_on `pr` THEN RW_TAC list_ss [] THEN Cases_on `l'` THEN RW_TAC list_ss [] THEN
- FULL_SIMP_TAC list_ss [proof_list_entry_def] THEN cheat) THEN
-RW_TAC list_ss [] THEN
+(Cases_on `pr` THEN RW_TAC list_ss [proof_list_entry_def] THEN Cases_on `l'` THEN RW_TAC list_ss [] THEN
+FULL_SIMP_TAC list_ss [proof_list_entry_def, LAST_DEFAULT_def] THEN
+`entry_invalid <> entry_derivation (derivation_deriv l p (reason_justification j))` by RW_TAC list_ss [fetch "fitch" "entry_distinct"] THEN
+RW_TAC list_ss []) THEN
+RW_TAC list_ss [] THEN FULL_SIMP_TAC list_ss [LAST_DEFAULT_def] THEN
 SUBGOAL_THEN ``MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr)`` ASSUME_TAC THEN1
-(ASM_REWRITE_TAC [] THEN METIS_TAC [MEM_LAST]) THEN
+(RW_TAC bool_ss [] THEN METIS_TAC [MEM_LAST]) THEN
 METIS_TAC [soundness_proof_thm]);
 
 val _ = export_theory();
+
+(*
+val valid_proof_ind_def = Define
+`valid_proof_ind P =
+((!G pl. P G pl (proof_entries [])) /\
+
+(!G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) /\
+valid_proof (FUPDATE G (INL l, INL p)) pl pr /\ (P (FUPDATE G (INL l, INL p)) pl pr) ==>
+P G pl (proof_entries ((entry_derivation (derivation_deriv l p (reason_justification j))) :: proof_list_entry pr)))
+
+)) ==> 
+(!G pl pr. valid_proof G pl pr ==> P G pl pr)
+*)
+
 
 (*
 valid_proof_ind
      : forall P : G -> proplist -> proof -> Prop,
        (forall (G5 : G) (proplist5 : proplist),
         P G5 proplist5 (proof_entries [])) ->
+
        (forall (G5 : G) (proplist5 : proplist) 
           (l5 : l) (prop5 : FitchProp.prop)
           (justification5 : justification) 
@@ -316,6 +333,7 @@ valid_proof_ind
                 (derivation_deriv l5 prop5
                    (reason_justification justification5))
               :: proof_list_entry proof5))) ->
+
        (forall (G5 : G) (proplist5 : proplist) 
           (l5 : l) (prop5 : FitchProp.prop)
           (proof5 proof' : proof) (l' : l)
@@ -344,6 +362,7 @@ valid_proof_ind
                          reason_assumption)
                     :: proof_list_entry proof5))
               :: proof_list_entry proof'))) ->
+
        forall (g : G) (p : proplist) (p0 : proof),
        valid_proof g p p0 -> P g p p0
 *)

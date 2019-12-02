@@ -87,7 +87,7 @@ entry :: entry_ ::=
       | last ( proof ) :: M :: last
         {{ com last entry in proof }}
 	{{ coq (last (proof_list_entry [[proof]]) entry_invalid) }}
-	{{ hol (LAST (proof_list_entry [[proof]])) }}
+	{{ hol (LAST_DEFAULT (proof_list_entry [[proof]]) entry_invalid) }}
 
 derivation :: derivation_ ::=
            {{ coq-universe Type }}
@@ -208,6 +208,10 @@ match proof5 with
 end.
 }}
 {{ hol
+val LAST_DEFAULT_def = Define
+`LAST_DEFAULT [] default = default /\
+ LAST_DEFAULT (e::el) default = LAST (e::el)`;
+
 val proof_list_entry_def = Define
 `proof_list_entry (proof_entries l) = l`;
 }}
