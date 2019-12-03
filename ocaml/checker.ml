@@ -80,7 +80,7 @@ try
   let f = open_in Sys.argv.(1) in
   let fs = Stream.of_channel f in
   let c = (Gram.parse claim Loc.ghost fs) in
-  Printf.printf "%b\n" (valid_claim_dec c);
+  Printf.printf "%b\n" (valid_claim_dec0 c);
   (*Printf.printf "%s" (texize_claim c);*)
   close_in f
 with Loc.Exc_located (_, x) -> raise x 
