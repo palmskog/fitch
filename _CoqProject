@@ -1,10 +1,10 @@
--Q . Fitch
+-Q coq Fitch
 
-ssrexport.v
-dyadic_ordered.v
-fitch_metatheory.v
-fitch_program_extrocaml.v
-fitch_program_example.v
-fitch_program.v
-fitch_metatheory_example.v
-fitch.v
+coq/ssrexport.v
+coq/dyadic_ordered.v
+coq/fitch_metatheory.v
+coq/fitch_program_extrocaml.v
+coq/fitch_program_example.v
+coq/fitch_program.v
+coq/fitch_metatheory_example.v
+coq/fitch.v

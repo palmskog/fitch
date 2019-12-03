@@ -1,7 +1,10 @@
 include Makefile.ml-files
 
-$(FITCHML): fitch_program_extrocaml.v fitch_program.vo
-	$(COQC) $(COQDEBUG) $(COQFLAGS) $(COQLIBS) fitch_program_extrocaml.v
+$(FITCHML): coq/fitch_program_extrocaml.v coq/fitch_program.vo
+	$(COQC) $(COQDEBUG) $(COQFLAGS) $(COQLIBS) coq/fitch_program_extrocaml.v
+
+coq/fitch.v: fitch.ott
+	ott -o $@ -coq_expand_list_types false $<
 
 clean::
-	rm -f $(FITCHML)
+	rm -f $(FITCHML) coq/fitch.v

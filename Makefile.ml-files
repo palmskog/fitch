@@ -1,1 +1,1 @@
-FITCHML = fitch.ml fitch.mli
+FITCHML = coq/fitch.ml coq/fitch.mli
