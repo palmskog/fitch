@@ -21,8 +21,8 @@ prolog.native: $(FITCHML) ocaml/util.ml ocaml/prolog.ml
 Makefile.coq:
 	coq_makefile -f _CoqProject -o Makefile.coq
 
-hol/fitchScript.sml: fitch.ott
-	cd hol && ott -o fitchScript.sml ../fitch.ott
+hol/fitchScript.sml: ott/fitch.ott
+	cd hol && ott -o fitchScript.sml ../ott/fitch.ott
 
 hol: hol/fitchMetaScript.sml hol/fitchScript.sml hol/ottScript.sml hol/ottLib.sig hol/ottLib.sml
 	Holmake -I hol
@@ -30,11 +30,11 @@ hol: hol/fitchMetaScript.sml hol/fitchScript.sml hol/ottScript.sml hol/ottLib.si
 $(FITCHML): Makefile.coq
 	$(MAKE) -f Makefile.coq $@
 
-doc/fitch_defs.tex: fitch.ott
+doc/fitch_defs.tex: ott/fitch.ott
 	ott -o $@ -tex_wrap false $<
 
-doc/fitch.tex: doc/fitch.mng fitch.ott
-	ott -tex_filter doc/fitch.mng doc/fitch.tex fitch.ott
+doc/fitch.tex: doc/fitch.mng ott/fitch.ott
+	ott -tex_filter doc/fitch.mng doc/fitch.tex ott/fitch.ott
 
 fitch.pdf: doc/fitch_defs.tex doc/fitch.tex
 	pdflatex doc/fitch.tex

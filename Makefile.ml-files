@@ -1,1 +1,1 @@
-FITCHML = coq/fitch.ml coq/fitch.mli
+FITCHML = ocaml/fitch.ml ocaml/fitch.mli
