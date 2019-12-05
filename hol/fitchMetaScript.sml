@@ -280,6 +280,14 @@ val soundness_box_thm = Q.store_thm("soundness_box",
   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
 cheat);
 
+val soundness_proof_aux_thm = Q.store_thm("soundness_proof_aux",
+`!G pl pr. valid_proof G pl pr ==> soundness_prop G pl pr`,
+MATCH_MP_TAC valid_proof_ind THEN RW_TAC list_ss [] THENL
+[PROVE_TAC [soundness_empty_thm],
+ PROVE_TAC [soundness_derivation_thm],
+ PROVE_TAC [soundness_box_thm]
+]);
+
 val soundness_proof_thm = Q.store_thm("soundness_proof",
 `!G pl pr p l j. premises_admitted pl ==>
   map_line_admitted G ==>
@@ -287,7 +295,7 @@ val soundness_proof_thm = Q.store_thm("soundness_proof",
   valid_proof G pl pr ==>
   MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (proof_list_entry pr) ==>
   prop_of p`,
-cheat);
+METIS_TAC [soundness_proof_aux_thm,soundness_prop_def]);
 
 val soundness_claim_thm = Q.store_thm("soundness_claim",
 `!p pl pr. premises_admitted pl ==>
