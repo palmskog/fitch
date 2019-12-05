@@ -226,7 +226,7 @@ defn
   [] , proplist |- proof
   ------------------------------------- :: claim
   proplist |- prop proof
-     
+
 defn
   G , proplist |- proof :: :: valid_proof :: vp_ {{ com valid proof }} by
   
