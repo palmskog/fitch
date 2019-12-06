@@ -9,8 +9,7 @@ Requirements
 Coq definitions and proofs:
 
 - [`Coq 8.9`](https://coq.inria.fr) (or later)
-- [`Ott 0.30`](https://github.com/ott-lang/ott)
-- Ott auxiliary library for Coq
+- [`Ott 0.30`](https://github.com/ott-lang/ott) (and its auxiliary Coq library)
 
 HOL4 definitions and proofs:
 

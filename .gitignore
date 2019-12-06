@@ -23,8 +23,8 @@ fitch_defs.aux
 doc/fitch.tex
 doc/fitch_defs.tex
 coq/fitch.v
-coq/fitch.ml
-coq/fitch.mli
+ocaml/fitch.ml
+ocaml/fitch.mli
 hol/ottTheory.sig
 hol/ottTheory.sml
 hol/fitchScript.sml
