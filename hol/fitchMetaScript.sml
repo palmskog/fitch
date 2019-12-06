@@ -1,5 +1,5 @@
 open HolKernel boolLib Parse bossLib pairTheory optionTheory stringTheory;
-open relationTheory listTheory rich_listTheory finite_mapTheory;
+open relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory;
 open IndDefLib IndDefRules ottTheory ottLib fitchTheory;
 
 val _ = new_theory "fitchMeta";
@@ -306,28 +306,49 @@ val soundness_box_thm = Q.store_thm("soundness_box",
  soundness_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
  soundness_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))`,
+
 RW_TAC list_ss [soundness_prop_def, proof_list_entry_def] THEN
 FULL_SIMP_TAC list_ss [] THEN
 Q.PAT_ASSUM `!l' j' p'. map_line_admitted (G |+ (INR (l1,l2),INR (p1,p2))) ==> Q` (MP_TAC o Q.SPECL [`l`, `j`, `p`]) THEN
 RW_TAC bool_ss [] THEN
 `map_line_admitted (G |+ (INR (l1,l2),INR (p1,p2))) /\ map_box_admitted (G |+ (INR (l1,l2),INR (p1,p2)))` suffices_by METIS_TAC [] THEN
 RW_TAC bool_ss [] THEN1
-
 (FULL_SIMP_TAC bool_ss [map_line_admitted_def] THEN
 RW_TAC bool_ss [FLOOKUP_DEF] THEN
 Q.PAT_ASSUM `!l p. FLOOKUP G (INL l) = SOME (INL p) ==> Q` (MP_TAC o Q.SPECL [`l'`, `p'`]) THEN
 `FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [] THEN
 FULL_SIMP_TAC list_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE]) THEN
-
 FULL_SIMP_TAC bool_ss [map_box_admitted_def] THEN
 RW_TAC bool_ss [] THEN
 Cases_on `proof_list_entry pr1` THEN RW_TAC bool_ss [] THEN1
-
 (FULL_SIMP_TAC bool_ss [LAST_DEFAULT_def, LAST_DEF] THEN
-RW_TAC bool_ss [] THEN
-cheat) THEN
+ RW_TAC bool_ss [] THEN
+ Cases_on `(l1,l1) = (l1',l2')` THEN1
+ (RW_TAC bool_ss [] THEN
+  FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE] THEN
+  RW_TAC bool_ss []) THEN
+ RW_TAC bool_ss [] THEN
+ FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN
+ METIS_TAC []) THEN
 
-cheat);
+`LAST_DEFAULT (proof_list_entry pr1) entry_invalid = entry_derivation (derivation_deriv l2 p2 r)` by FULL_SIMP_TAC list_ss [LAST_DEFAULT_def, LAST_DEF] THEN
+`MEM (entry_derivation (derivation_deriv l2 p2 r)) (proof_list_entry pr1)` by METIS_TAC [LAST_DEFAULT_def, MEM_LAST] THEN
+`r <> reason_assumption` by METIS_TAC [justification_valid_in_thm] THEN
+Cases_on `r` THEN1 RW_TAC bool_ss [] THEN
+Cases_on `(l1',l2') <> (l1,l2)` THEN1
+  (FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN 
+  RW_TAC bool_ss [] THEN FULL_SIMP_TAC bool_ss [] THEN METIS_TAC []) THEN
+FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN RW_TAC bool_ss [] THEN
+`map_line_admitted (G |+ (INL l1,INL p1)) /\ map_box_admitted (G |+ (INL l1,INL p1))` suffices_by METIS_TAC [map_box_admitted_def] THEN
+CONJ_TAC THEN1
+(RW_TAC bool_ss [map_line_admitted_def] THEN
+Cases_on `l1 = l'` THEN FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN
+`FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [map_line_admitted_def] THEN
+RW_TAC bool_ss [FLOOKUP_DEF]) THEN
+RW_TAC bool_ss [map_box_admitted_def] THEN
+FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN
+`FLOOKUP G (INR (l1',l2')) = SOME (INR (p1',p2'))` suffices_by METIS_TAC [map_box_admitted_def] THEN
+RW_TAC bool_ss [FLOOKUP_DEF]);
 
 val soundness_proof_aux_thm = Q.store_thm("soundness_proof_aux",
 `!G pl pr. valid_proof G pl pr ==> soundness_prop G pl pr`,
