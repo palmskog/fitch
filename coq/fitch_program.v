@@ -17,35 +17,41 @@ Definition prop_eq_dec : forall (prop5 prop' : prop), { prop5 = prop' }+{ prop5 
 decide equality; apply A_eq_dec.
 Defined.
 
-Definition valid_derivation_deriv_premise_dec :
-  forall (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop), 
+Program Definition valid_derivation_deriv_premise_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) :
     { valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) }+
-    { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) }.
-refine 
-  (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) => 
-      match In_dec prop_eq_dec prop5 proplist5 with
-      | left H_in => left _ _
-      | right H_in => right _ _
-      end); last by move => H_vd; inversion H_vd.
+    { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) } :=
+match In_dec prop_eq_dec prop5 proplist5 with
+| left H_in => left _ _
+| right H_in => right _ _
+end.
+Next Obligation.
 exact: vd_premise.
-Defined.
+Qed.
+Next Obligation.
+by move => H_vd; inversion H_vd.
+Qed.
 
-Definition valid_derivation_deriv_lem_dec :
-  forall (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop),
+Program Definition valid_derivation_deriv_lem_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) :
     { valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) }+
-    { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) }.
-refine 
-  (fun (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) => 
-    match prop5 with
-    | prop_or prop' (prop_neg prop7) =>       
-      match prop_eq_dec prop' prop7 with
-      | left H_eq => left _ _
-      | right H_eq => right _ _
-      end      
-    | _ => right _ _
-    end); try by rewrite 1?H_eq; move => H_vd; inversion H_vd.
-by rewrite H_eq; apply vd_lem.
-Defined.
+    { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) } :=
+match prop5 with
+| prop_or prop' (prop_neg prop7) =>
+  match prop_eq_dec prop' prop7 with
+  | left H_eq => left _ _
+  | right H_eq => right _ _
+  end
+| _ => right _ _
+end.
+Next Obligation.
+by apply vd_lem.
+Qed.
+Next Obligation.
+by rewrite 1?H_eq; move => H_vd; inversion H_vd.
+Qed.
+Next Obligation.
+move => H_vd; inversion H_vd; subst.
+by congruence.
+Qed.
 
 Definition valid_derivation_deriv_copy_dec :
   forall (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l),
