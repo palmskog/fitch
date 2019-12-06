@@ -1,30 +1,27 @@
 embed
-{{ tex-preamble 
-\usepackage{stmaryrd} 
-}}
 {{ coq
 Require Export Structures.OrderedTypeEx.
 Require Export FMapInterface.
 Require Export Fitch.dyadic_ordered.
 Import ListNotations.
 
-Module Type PropInterpretation.
-Parameter A : Type.
-End PropInterpretation.
-
 Module Fitch
- (Import PI : PropInterpretation)
  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
  (Map : FMapInterface.S with Module E := DUOT).
+Section FitchProp.
+Context {A : Type}.
 }}
+
 metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
-      {{ hol num }}
+      {{ coq-universe Type }}
+      {{ hol bool }}
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
       {{ coq UOT.t }}
+      {{ coq-universe Type }}
       {{ hol num }}
       {{ com proof entry label }}
 indexvar n ::= 
@@ -33,6 +30,7 @@ indexvar n ::=
       {{ hol num }}
       {{ coq-equality }}
       {{ com index variable (subscript) }}
+
 grammar
 claim :: claim_ ::=
       {{ coq-universe Type }}
@@ -82,12 +80,14 @@ entry :: entry_ ::=
       {{ coq-universe Type }}
       {{ com proof entry }}
       | derivation :: :: derivation
+        {{ com line }}
       | [ proof ] :: :: box
+        {{ com box }}
       | invalid :: :: invalid
       | last ( proof ) :: M :: last
         {{ com last entry in proof }}
 	{{ coq (last (proof_list_entry [[proof]]) entry_invalid) }}
-	{{ hol (LAST (proof_list_entry [[proof]])) }}
+	{{ hol (LAST_DEFAULT (proof_list_entry [[proof]]) entry_invalid) }}
 
 derivation :: derivation_ ::=
            {{ coq-universe Type }}
@@ -151,8 +151,6 @@ terminals :: terminals_ ::=
 	  | in :: :: in {{ tex \in }}
 	  | |-> :: :: mapsto {{ tex \mapsto }}
 	  | last :: :: last {{ tex \mathrm{last} }}
-	  | |[ :: :: lbracket {{ tex \llbracket }}
-	  | ]| :: :: rbracket {{ tex \rrbracket }}
 	  | invalid :: :: invalid {{ tex \mathrm{invalid} }}
 
 dyadicprop :: dyadicprop_ ::=
@@ -192,11 +190,11 @@ formula :: formula_ ::=
      	| G ( l ) = prop :: M :: G_label
           {{ com map label to prop }}
 	  {{ coq (Map.find (inl [[l]]) [[G]] = Some (inl [[prop]])) }}
-	  {{ hol ((FAPPLY [[G]] (INL [[l]])) = (INL [[prop]])) }}
+	  {{ hol (FLOOKUP [[G]] (INL [[l]]) = SOME (INL [[prop]])) }}
 	| G ( l , l' ) = ( prop , prop' ) :: M :: G_tuple
 	  {{ com map tuple of labels to tuple of props }}
 	  {{ coq (Map.find (inr ([[l]], [[l']])) [[G]] = Some (inr ([[prop]], [[prop']]))) }}
-	  {{ hol (FAPPLY [[G]] (INR ([[l]], [[l']])) = (INR ([[prop]], [[prop']]))) }}
+	  {{ hol (FLOOKUP [[G]] (INR ([[l]], [[l']])) = SOME (INR ([[prop]], [[prop']]))) }}
 	| entry = entry' :: M :: entry_eq
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}
@@ -210,25 +208,27 @@ match proof5 with
 end.
 }}
 {{ hol
-val proof_entry_list_def = Define
-`proof_entry_list (proof_entries l) = l`;
+val LAST_DEFAULT_def = Define
+`LAST_DEFAULT [] default = default /\
+ LAST_DEFAULT (e::el) default = LAST (e::el)`;
+
+val proof_list_entry_def = Define
+`proof_list_entry (proof_entries l) = l`;
 }}
 
 defns
   validity :: '' ::=
 
 defn 
-  claim :: :: valid_claim :: vc_
-  	{{ com valid claim }} by
+  claim :: :: valid_claim :: vc_ {{ com valid claim }} by
 
   last ( proof ) = l prop justification
   [] , proplist |- proof
   ------------------------------------- :: claim
   proplist |- prop proof
-     
+
 defn
-  G , proplist |- proof :: :: valid_proof :: vp_
-    {{ com valid proof }} by
+  G , proplist |- proof :: :: valid_proof :: vp_ {{ com valid proof }} by
   
   ------------------ :: empty
   G , proplist |- ()
@@ -327,79 +327,6 @@ defn
 
 embed
 {{ coq
+End FitchProp.
 End Fitch.
-
-Module Type PropMappingInterpretation (Import PI : PropInterpretation).
-  Parameter mapping : A -> Prop.
-End PropMappingInterpretation.
-
-Module FitchMapping
-  (Import PI : PropInterpretation)
-  (Import PMI : PropMappingInterpretation PI)
-  (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
-  (Map : FMapInterface.S with Module E := DUOT).
-
-Module FitchPI := Fitch PI UOT DUOT Map.
-Export FitchPI.
-}}
-
-grammar
-mprop {{ tex \psi }} :: mprop_ ::=
-     {{ coq-universe Type }}
-     {{ coq Prop }}
-     {{ com meta-language proposition }}
-     | p :: M :: p
-       {{ coq (mapping [[p]]) }}
-       {{ hol FIXME }}
-     | ~ mprop :: M :: neg
-       {{ coq (~ [[mprop]]) }}
-       {{ hol FIXME }}
-     | mprop /\ mprop' :: M :: and
-       {{ coq ([[mprop]] /\ [[mprop']]) }}
-       {{ hol FIXME }}
-     | mprop \/ mprop' :: M :: or
-       {{ coq ([[mprop]] \/ [[mprop']]) }}
-       {{ hol FIXME }}
-     | mprop -> mprop' :: M :: imp
-       {{ coq ([[mprop]] -> [[mprop']]) }}
-       {{ hol FIXME }}
-     | _|_ :: M :: cont
-       {{ coq False }}
-       {{ hol FIXME }}
-
-defns
-  mapping :: '' ::=
-  
-defn 
-  |[ prop ]| = mprop :: :: prop_mapping :: pm_
-       {{ com proposition to meta-proposition mapping }} by
-
-  ----------- :: p
-  |[ p ]| = p  
-
-  |[ prop ]| = mprop
-  ---------------------- :: neg
-  |[ ~ prop ]| = ~ mprop
-
-  |[ prop ]| = mprop
-  |[ prop' ]| = mprop'
-  ------------------------------------- :: and
-  |[ prop /\ prop' ]| = mprop /\ mprop'
-
-  |[ prop ]| = mprop
-  |[ prop' ]| = mprop'
-  ------------------------------------- :: or
-  |[ prop \/ prop' ]| = mprop \/ mprop'
-
-  |[ prop ]| = mprop
-  |[ prop' ]| = mprop'
-  ------------------------------------- :: imp
-  |[ prop -> prop' ]| = mprop -> mprop'
-
-  --------------- :: cont
-  |[ _|_ ]| = _|_
-
-embed 
-{{ coq
-End FitchMapping.
 }}

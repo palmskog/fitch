@@ -24,7 +24,7 @@
 \maketitle
 
 \section{Introduction}
-We describe an encoding in the Ott metalanguage of the Fitch-style propositional logic proof system from the book \emph{Logic for Computer Science} by Huth and Ryan, and prove its soundness at the meta level. Our definitions of the system have been imported into the Coq proof assistant, where the soundness proof has been checked. We have also defined a decision procedure for proofs in the system in Coq, which has been extracted into OCaml to yield a certified practical proof checker.
+We describe an encoding in the Ott language of the Fitch-style propositional logic proof system from the book \emph{Logic for Computer Science} by Huth and Ryan, and prove its soundness at the meta level. Our definitions of the system have been imported into the Coq proof assistant, yielding a machine-checked soundness proof. We have also defined a decision procedure for proofs in the system in Coq, which has been extracted into OCaml to yield a certified practical proof checker.
 
 \section{Grammar}
 Let $[[p]]$ be a metavariable representing an atomic proposition, $[[l]]$ a metavariable representing a proof-line label and $[[n]]$ an index variable. The syntax of the system is then defined as below.\\
@@ -68,10 +68,10 @@ We define a valid derivation as follows.
 \end{align*}
 
 \section{Metatheory}
-We define the mapping of an object-language proposition to a meta-language proposition, $[[|[prop]| = mprop]]$, in the obvious way, and have the following result by rule induction.
+We define the mapping of an object-language proposition to a meta-language proposition in the obvious way, and have the following result by rule induction.
 
 \begin{theorem}
-Let $[[proplist]]$ be a list of propositions, $[[prop]]$ a proposition such that $[[|[prop]| = mprop]]$, and $[[proof]]$ a proof in the system. Then, if the mappings of all propositions in $[[proplist]]$ are true and $[[proplist |- prop proof]]$ holds, $[[mprop]]$ is true.
+Let $[[proplist]]$ be a list of propositions, $[[prop]]$ a proposition, and $[[proof]]$ a proof in the system. Then, if the interpretations of all propositions in $[[proplist]]$ are true and $[[proplist |- prop proof]]$ holds, the interpretation of $[[prop]]$ is true.
 \end{theorem}
 
 \section{Decision Procedure}

@@ -1,6 +1,6 @@
 Require Export OrderedType.
 Require Export Structures.OrderedTypeEx.
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import Fitch.ssrexport.
 
 Definition dyadic {A : Type} : Type := A + (A * A).
 
@@ -9,6 +9,80 @@ Inductive dyadic_lex_lt {A : Type} {lt : A -> A -> Prop} : dyadic -> dyadic -> P
 | dyadic_lex_lt_t_dyad : forall (l l1 l1': A), dyadic_lex_lt (inl l) (inr (l1, l1'))
 | dyadic_lex_lt_dyad_lt : forall (l0 l0' l1 l1' : A), lt l0 l1 -> dyadic_lex_lt (inr (l0, l0')) (inr (l1, l1'))
 | dyadic_lex_lt_dyad_eq : forall (l l0' l1' : A), lt l0' l1' -> dyadic_lex_lt (inr (l, l0')) (inr (l, l1')).
+
+Section DyadicFun.
+
+Variable A : Type.
+Variable A_eq_dec : forall (a a' : A), {a = a'}+{a <> a'}.
+Variable A_lt : A -> A -> Prop.
+Variable A_compare : forall x y : A, Compare A_lt eq x y.
+
+Program Definition dyadic_eq_dec (d d' : @dyadic A) : {d = d'}+{d <> d'} :=
+  match d, d' with
+  | inl a, inl a' =>
+    match A_eq_dec a a' with
+    | left H_dec => left _
+    | right H_dec => right _
+    end
+  | inl _, inr _ => right _
+  | inr _, inl _ => right _
+  | inr (a0, a1), inr (a'0, a'1) =>
+    match A_eq_dec a0 a'0, A_eq_dec a1 a'1 with
+    | left H_dec, left H_dec' => left _
+    | left H_dec, right H_dec' => right _
+    | right H_dec, left H_dec' => right _
+    | right H_dec, right H_dec' => right _
+    end
+  end.
+
+Program Definition dyadic_compare (x y : @dyadic A) : Compare (@dyadic_lex_lt A A_lt) eq x y :=
+  match x, y with
+  | inl l0, inl l1 =>
+    match A_compare l0 l1 with
+    | LT H_cmp => LT _
+    | EQ H_cmp => EQ _
+    | GT H_cmp => GT _
+    end
+  | inl l0, inr (l1, l1') => LT _
+  | inr (l0, l0'), inl l1 => GT _
+  | inr (l0, l0'), inr (l1, l1') =>
+    match A_compare l0 l1 with
+    | LT H_cmp => LT _
+    | EQ H_cmp =>
+      match A_compare l0' l1' with
+      | LT H_cmp' => LT _
+      | EQ H_cmp' => EQ _
+      | GT H_cmp' => GT _
+      end
+    | GT H_cmp => GT _
+    end
+  end.
+Next Obligation.
+exact: dyadic_lex_lt_t_t.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_t_t.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_t_dyad.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_t_dyad.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_dyad_lt.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_dyad_eq.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_dyad_eq.
+Qed.
+Next Obligation.
+exact: dyadic_lex_lt_dyad_lt.
+Qed.
+
+End DyadicFun.
 
 Module Type DyadicUsualOrderedType (UOT : UsualOrderedType) <: UsualOrderedType.
   Definition t := @dyadic UOT.t.
@@ -31,13 +105,9 @@ Module DyadicLexLtUsualOrderedType (UOT : UsualOrderedType) <: DyadicUsualOrdere
   Definition eq_sym := @eq_sym t.
   Definition eq_trans := @eq_trans t.
 
-  Definition eq_dec : forall t0 t1 : t, {t0 = t1}+{t0 <> t1}.
-    decide equality; auto using UOT.eq_dec.
-    destruct b, p.
-    decide equality; auto using UOT.eq_dec.
-  Defined.
+  Definition eq_dec := dyadic_eq_dec UOT.t UOT.eq_dec.
 
-  Definition lt := @dyadic_lex_lt _ UOT.lt.
+  Definition lt := @dyadic_lex_lt UOT.t UOT.lt.
 
   Theorem lt_trans : forall x y z, lt x y -> lt y z -> lt x z.
   Proof.
@@ -75,48 +145,12 @@ Module DyadicLexLtUsualOrderedType (UOT : UsualOrderedType) <: DyadicUsualOrdere
     by unfold UOT.eq in H.
   Qed.
 
-  Definition compare (x y : t) : Compare lt eq x y.
-  refine
-  (match x as x0, y as y0 return (x = x0 -> y = y0 -> _) with
-   | inl l0, inl l1 =>
-     fun (H_eq : _) (H_eq' : _) => 
-     match UOT.compare l0 l1 with
-     | LT H_cmp => LT _
-     | EQ H_cmp => EQ _
-     | GT H_cmp => GT _
-     end
-   | inl l0, inr (l1, l1') => fun (H_eq : _) (H_eq' : _) => LT _
-   | inr (l0, l0'), inl l1 => fun (H_eq : _) (H_eq' : _) => GT _
-   | inr (l0, l0'), inr (l1, l1') => fun (H_eq : _) (H_eq' : _) =>
-     match UOT.compare l0 l1 with
-     | LT H_cmp => LT _
-     | EQ H_cmp =>
-       match UOT.compare l0' l1' with
-       | LT H_cmp' => LT _
-       | EQ H_cmp' => EQ _
-       | GT H_cmp' => GT _
-       end
-     | GT H_cmp => GT _
-     end
-   end (refl_equal _) (refl_equal _)).
-  - exact: dyadic_lex_lt_t_t.
-  - by rewrite H_cmp.
-  - exact: dyadic_lex_lt_t_t.
-  - exact: dyadic_lex_lt_t_dyad.
-  - exact: dyadic_lex_lt_t_dyad.
-  - exact: dyadic_lex_lt_dyad_lt.
-  - rewrite H_cmp.
-    exact: dyadic_lex_lt_dyad_eq.
-  - by rewrite H_cmp H_cmp'.
-  - rewrite H_cmp.
-    exact: dyadic_lex_lt_dyad_eq.
-  - exact: dyadic_lex_lt_dyad_lt.
-  Defined.
+  Definition compare := dyadic_compare UOT.t UOT.lt UOT.compare.
 End DyadicLexLtUsualOrderedType.
 
 (*
 Require Import FMapList.
-Module NatDyadicUsualOrderedType <: DyadicUsualOrderedType Nat_as_OT := LexDyadicUsualOrderedType Nat_as_OT.
+Module NatDyadicUsualOrderedType <: DyadicUsualOrderedType Nat_as_OT := DyadicLexLtUsualOrderedType Nat_as_OT.
 Module Map <: FMapInterface.S with Module E := NatDyadicUsualOrderedType := FMapList.Make NatDyadicUsualOrderedType.
 Eval compute in Map.find (inr (5, 3)) (Map.add (inr (5, 3)) 2 (Map.empty nat)).
 *)

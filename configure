@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-NAMESPACE__="Fitch"
-DEPS=(Ott)
-EXTRA=(fitch.v)
-CANARIES=("Ott.ott_list_core" "Ott auxiliary library must be installed" "mathcomp.ssreflect.ssreflect" "mathcomp-ssreflect must be installed")
-ARG="-w -extraction-opaque-accessed"
-source coqproject.sh
