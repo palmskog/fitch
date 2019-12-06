@@ -32,3 +32,5 @@ hol/fitchTheory.sig
 hol/fitchTheory.sml
 hol/fitchMetaTheory.sig
 hol/fitchMetaTheory.sml
+hol/fitchProgramTheory.sig
+hol/fitchProgramTheory.sml
