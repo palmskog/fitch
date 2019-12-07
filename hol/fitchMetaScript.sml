@@ -27,30 +27,6 @@ val map_box_admitted_def = Define
 
 (* useful induction principle *)
 
-val valid_proof_aux_ind_thm = Q.store_thm("valid_proof_aux_ind",
-`!P. ((!G pl. P G pl (proof_entries [])) /\
-
-(!G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) /\
-valid_proof (FUPDATE G (INL l, INL p)) pl pr /\
-P (FUPDATE G (INL l, INL p)) pl pr ==>
-P G pl (proof_entries ((entry_derivation (derivation_deriv l p (reason_justification j))) :: proof_list_entry pr))) /\
-
-(!G pl l p pr pr' l' p' r. 
-LAST_DEFAULT (proof_list_entry (proof_entries 
- (entry_derivation (derivation_deriv l p reason_assumption) :: proof_list_entry pr))) entry_invalid =
-  entry_derivation (derivation_deriv l' p' r) /\
- valid_proof (FUPDATE G (INL l, INL p)) pl pr /\
- P (FUPDATE G (INL l, INL p)) pl pr /\
- valid_proof (FUPDATE G (INR (l,l'),INR (p,p'))) pl pr' /\
- P (FUPDATE G (INR (l,l'),INR (p,p'))) pl pr' ==>
- P G pl (proof_entries (entry_box (proof_entries
-  (entry_derivation (derivation_deriv l p reason_assumption) :: proof_list_entry pr)):: proof_list_entry pr')))) ==>
-
-((!c. valid_claim c ==> (\_. T) c) /\
-(!G pl pr. valid_proof G pl pr ==> (\G0 pl0 pr0. P G0 pl0 pr0 /\ valid_proof G0 pl0 pr0) G pl pr) /\
-(!G pl d. valid_derivation G pl d ==> valid_derivation G pl d))`,
-GEN_TAC THEN STRIP_TAC THEN MATCH_MP_TAC valid_claim_ind THEN RW_TAC list_ss [valid_claim_rules]);
-
 val valid_proof_ind = Q.store_thm("valid_proof_ind",
 `!P. ((!G pl. P G pl (proof_entries [])) /\
 
@@ -73,9 +49,9 @@ LAST_DEFAULT (proof_list_entry (proof_entries
 (!G pl pr. valid_proof G pl pr ==> P G pl pr)`,
 GEN_TAC THEN STRIP_TAC THEN
 `((!c. valid_claim c ==> (\_. T) c) /\
-(!G pl pr. valid_proof G pl pr ==> (\G0 pl0 pr0. P G0 pl0 pr0 /\ valid_proof G0 pl0 pr0) G pl pr) /\
-(!G pl d. valid_derivation G pl d ==> valid_derivation G pl d))` suffices_by METIS_TAC [] THEN
-HO_MATCH_MP_TAC valid_proof_aux_ind_thm THEN RW_TAC bool_ss []);
+ (!G pl pr. valid_proof G pl pr ==> (\G0 pl0 pr0. P G0 pl0 pr0 /\ valid_proof G0 pl0 pr0) G pl pr) /\
+ (!G pl d. valid_derivation G pl d ==> valid_derivation G pl d))` suffices_by METIS_TAC [] THEN
+MATCH_MP_TAC valid_claim_ind THEN RW_TAC list_ss [valid_claim_rules]);
 
 (* soundness of line rules *)
 
