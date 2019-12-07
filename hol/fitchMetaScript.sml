@@ -249,43 +249,6 @@ Proof
  ]
 QED
 
-(* absence of assumptions from proofs *)
-
-Definition justification_prop:
- justification_prop G pl pr = !l p r. valid_proof G pl pr ==>
-  MEM (entry_derivation (derivation_deriv l p r)) (proof_list_entry pr) ==>
-  r <> reason_assumption
-End
-
-Theorem justification_empty: !G pl. justification_prop G pl (proof_entries [])
-Proof
- RW_TAC list_ss [justification_prop, proof_list_entry]
-QED
-
-Theorem justification_derivation:
- !G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
-  valid_proof (FUPDATE G (INL l, INL p)) pl pr ==>
-  justification_prop (FUPDATE G (INL l, INL p)) pl pr ==>
-  justification_prop G pl (proof_entries (entry_derivation
-   (derivation_deriv l p (reason_justification j)) :: proof_list_entry pr))
-Proof
- RW_TAC list_ss [justification_prop, proof_list_entry]
-QED
-
-Theorem justification_box:
- !G pl l1 l2 p1 p2 pr1 pr2 r. LAST_DEFAULT (proof_list_entry (proof_entries (entry_derivation
-   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1))) entry_invalid =
-   entry_derivation (derivation_deriv l2 p2 r) ==>
-  valid_proof (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
-  justification_prop (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
-  valid_proof (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
-  justification_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
-  justification_prop G pl (proof_entries (entry_box (proof_entries (entry_derivation
-   (derivation_deriv l1 p1 reason_assumption) :: proof_list_entry pr1)) :: proof_list_entry pr2))
-Proof
- RW_TAC list_ss [justification_prop, proof_list_entry]
-QED
-
 (* soundness of system  *)
 
 Definition soundness_prop:
