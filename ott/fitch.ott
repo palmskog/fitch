@@ -197,17 +197,22 @@ formula :: formula_ ::=
 	  {{ hol [[entry]] = [[entry']] }}
 embed
 {{ coq
-Definition proof_list_entry (proof5 : proof) : list entry :=
-match proof5 with 
+
+Definition proof_list_entry (pr : proof) : list entry :=
+match pr with
 | proof_entries ls => ls
 end.
 }}
 {{ hol
-val LAST_DEFAULT_def = Define
-`LAST_DEFAULT [] default = default /\
- LAST_DEFAULT (e::el) default = LAST (e::el)`;
-val proof_list_entry_def = Define
-`proof_list_entry (proof_entries l) = l`;
+
+Definition LAST_DEFAULT:
+ (LAST_DEFAULT [] default = default) /\
+ (LAST_DEFAULT (e::el) default = LAST (e::el))
+End
+
+Definition proof_list_entry:
+ proof_list_entry (proof_entries l) = l
+End
 }}
 defns
   validity :: '' ::=
