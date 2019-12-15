@@ -34,7 +34,7 @@ claim:
 ;
 
 judgment:
-  proplist VDASH prop { Coq_judgment_follows ($1, $3) }
+  separated_list(COMMA, prop) VDASH prop { Coq_judgment_follows ($1, $3) }
 ;
 
 prop:
@@ -47,18 +47,8 @@ prop:
 | LPAREN prop RPAREN { $2 }
 ;
 
-proplist:
-  /* nothing */         { [] }
-| proplist COMMA prop   { $3 :: $1 }
-;
-
 proof:
- entrylist { Coq_proof_entries $1 }
-;
- 
-entrylist:
-  /* nothing */           { [] }
-| entrylist COMMA entry   { $3 :: $1 }
+ list(entry) { Coq_proof_entries $1 }
 ;
 
 entry:

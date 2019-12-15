@@ -4,6 +4,8 @@ exception Error of string
 }
 
 rule token = parse
+| [' ' '\t' '\n' '\r']+
+    { token lexbuf }
 | ','
     { COMMA }
 | '~'
