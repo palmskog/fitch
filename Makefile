@@ -43,10 +43,10 @@ fitch.pdf: doc/fitch_defs.tex doc/fitch.tex
 clean: Makefile.coq
 	$(MAKE) -f Makefile.coq cleanall
 	$(OCAMLBUILD) -clean
-	Holmake clean
 	rm -f Makefile.coq Makefile.coq.conf
-	rm -f hol/fitchScript.sml
 	rm -f doc/fitch_defs.tex doc/fitch.tex
+	rm -f hol/fitchScript.sml
+	cd hol && Holmake clean
 
 .PHONY: default clean checker prolog hol $(FITCHML)
 .NOTPARALLEL: $(FITCHML)
