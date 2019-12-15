@@ -15,7 +15,7 @@ depends: [
   "coq" {>= "8.9" & < "8.11~"}
   "coq-ott" {>= "0.30"}
   "ott" {build & >= "0.30"}
-  "camlp4" {build}
+  "menhir" {build & >= "20171013"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
 ]

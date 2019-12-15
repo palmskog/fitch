@@ -1,4 +1,4 @@
-OCAMLBUILD = ocamlbuild -use-ocamlfind -tag safe_string -syntax camlp4o -pkgs 'camlp4.lib camlp4.extend' -cflag -g -I ocaml -I coq
+OCAMLBUILD = ocamlbuild -use-menhir -tag safe_string -cflag -g -I ocaml
 
 include Makefile.ml-files
 

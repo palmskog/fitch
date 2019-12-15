@@ -80,7 +80,7 @@ The following lemma is proved straightforwardly using structural induction on ou
 Let $[[proplist]]$ be a list of propositions, $[[prop]]$ a proposition and $[[proof]]$ a proof in the system. Then, it is decidable whether $[[proplist |- prop proof]]$ or not.
 \end{lemma}
 
-Using a constructive proof of this lemma and applying the extraction facility in the Coq proof assistant along with the \texttt{camlp4} parser generation facility, we have a practical tool for checking a proof in the system. An example of the surface syntax is shown in the listing below.
+Using a constructive proof of this lemma and applying the extraction facility in the Coq proof assistant along with the Menhir parser generator, we have a practical tool for checking a proof in the system. An example of the surface syntax is shown in the listing below.
 
 \lstset{frame=lines,caption=Surface syntax of a claim}
 \label{surface}

@@ -1,1 +1,1 @@
-FITCHML = ocaml/fitch.ml ocaml/fitch.mli
+FITCHML = ocaml/fitch_system.ml ocaml/fitch_system.mli
