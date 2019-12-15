@@ -83,3 +83,4 @@ justification:
 | NEGI INT DASH INT { Coq_justification_negi ($2, $4) }
 | ORE INT COMMA INT DASH INT COMMA INT DASH INT { Coq_justification_ore ($2, $4, $6, $8, $10) }
 | PBC INT DASH INT { Coq_justification_pbc ($2, $4) }
+;
