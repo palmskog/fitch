@@ -14,11 +14,10 @@ open FitchPI
 %token IMPI NEGI ORE PBC
 %token EOF
 
-%nonassoc NOT
-
 %right IMPLIES
 %left AND
 %left OR
+%right NOT
 
 %start main
 %type <char list Fitch_system.FitchProgramMap.FitchPI.claim> main
@@ -74,7 +73,7 @@ justification:
 | ANDE2 INT { Coq_justification_ande2 $2 }
 | ORI1 INT { Coq_justification_ori1 $2 }
 | ORI2 INT { Coq_justification_ori2 $2 }
-| IMPE INT COMMA INT { Coq_justification_andi ($2, $4) }
+| IMPE INT COMMA INT { Coq_justification_impe ($2, $4) }
 | NEGE INT COMMA INT { Coq_justification_nege ($2, $4) }
 | CONTE INT { Coq_justification_conte $2 }
 | NEGNEGI INT { Coq_justification_negnegi $2 }
