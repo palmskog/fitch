@@ -33,6 +33,13 @@ $(FITCHML): Makefile.coq
 doc/fitch_defs.tex: ott/fitch.ott
 	ott -o $@ -tex_wrap false $<
 
+doc/fitch_listing.tex: ott/fitch.ott
+	ott -o $@ $<
+
+fitch_listing.pdf: doc/fitch_listing.tex
+	pdflatex doc/fitch_listing.tex
+	pdflatex doc/fitch_listing.tex
+
 doc/fitch.tex: doc/fitch.mng ott/fitch.ott
 	ott -tex_filter doc/fitch.mng doc/fitch.tex ott/fitch.ott
 

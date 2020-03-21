@@ -42,11 +42,17 @@ prop {{ tex \phi }} :: prop_ ::=
      {{ coq-universe Type }}
      {{ com proposition }}
      | p :: :: p
+       {{ com atomic }}
      | ~ prop :: :: neg
+       {{ com negation }}
      | prop /\ prop' :: :: and
+       {{ com conjunction }}
      | prop \/ prop' :: :: or
+       {{ com disjunction }}
      | prop -> prop' :: :: imp
+       {{ com implication }}
      | _|_ :: :: cont
+       {{ com contradiction }}
      | ( prop ) :: S :: parentheses
        {{ tex ([[prop]]) }}
        {{ coq ([[prop]]) }}
@@ -100,23 +106,41 @@ justification :: justification_ ::=
      {{ coq-universe Type }}
      {{ com derivation justification }}
     | premise :: :: premise
+      {{ com premise }}
     | lem :: :: lem
+      {{ com law of excluded middle }}
     | copy l :: :: copy
+      {{ com copying }}
     | /\i l , l' :: :: andi
+      {{ com conjunction introduction }}
     | /\e1 l :: :: ande1
+      {{ com conjunction elimination }}
     | /\e2 l :: :: ande2
+      {{ com conjunction elimination }}
     | \/i1 l :: :: ori1
+      {{ com disjunction introduction }}
     | \/i2 l :: :: ori2
+      {{ com disjunction introduction }}
     | ->e l , l' :: :: impe
+      {{ com implication elimination }}
     | ~e l , l' :: :: nege
+      {{ com negation elimination }}
     | _|_e l :: :: conte
+      {{ com contradiction elimination }}
     | ~~i l :: :: negnegi
+      {{ com double negation introduction }}
     | ~~e l :: :: negnege
+      {{ com double negation elimination }}
     | mt l , l' :: :: mt
+      {{ com modus tollens }}
     | ->i l - l' :: :: impi
+      {{ com implication introduction }}
     | ~i l - l' :: :: negi
+      {{ com negation introduction }}
     | \/e l1 , l2 - l3 , l4 - l5 :: :: ore
+      {{ com disjunction elimination }} 
     | pbc l - l' :: :: pbc
+      {{ com proof by contraduction }}
 
 terminals :: terminals_ ::=
 	  | premise :: :: premise {{ tex \mathrm{premise} }}
