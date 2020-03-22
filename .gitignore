@@ -34,3 +34,6 @@ hol/ottTheory.sml
 hol/fitchScript.sml
 hol/*Theory.sig
 hol/*Theory.sml
+cakeml/*Theory.sig
+cakeml/*Theory.sml
+
