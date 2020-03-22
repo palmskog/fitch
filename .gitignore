@@ -32,9 +32,5 @@ ocaml/fitch_system.mli
 hol/ottTheory.sig
 hol/ottTheory.sml
 hol/fitchScript.sml
-hol/fitchTheory.sig
-hol/fitchTheory.sml
-hol/fitchMetaTheory.sig
-hol/fitchMetaTheory.sml
-hol/fitchProgramTheory.sig
-hol/fitchProgramTheory.sml
+hol/*Theory.sig
+hol/*Theory.sml
