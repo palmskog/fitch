@@ -1,8 +1,28 @@
 open HolKernel boolLib Parse bossLib;
 open relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory;
-open ottTheory ottLib fitchTheory;
+open ottTheory ottLib simple_bstTheory fitchTheory;
 
 val _ = new_theory "fitchProgram";
+
+(*
+Definition prop_eq_dec:
+  prop_eq_dec p_eq_dec p p' =
+   case p, p' of
+   | prop_p a, prop_p a' => p_eq_dec a a'
+   | prop_neg p1, prop_neg p2 => prop_eq_dec p_eq_dec p1 p2
+   |  prop_and p11 p12, prop_and p21 p22 => 
+     prop_eq_dec p_eq_dec p11 p21 /\ prop_eq_dec p_eq_dec p12 p22
+   | prop_or p11 p12, prop_and p21 p22 =>
+      prop_eq_dec p_eq_dec p11 p21 /\ prop_eq_dec p_eq_dec p12 p22
+   | prop_imp p11 p12, prop_and p21 p22 => 
+      prop_eq_dec p_eq_dec p11 p21 /\ prop_eq_dec p_eq_dec p12 p22
+   | prop_cont, prop_cont => T
+   | _ => F
+End
+
+Theorem prop_eq_dec_eq_sound:
+  !p p'. 
+*)
 
 Definition valid_derivation_deriv_premise:
  valid_derivation_deriv_premise pl p = MEM p pl
@@ -367,8 +387,8 @@ Proof
  Cases_on `q` >> rw [] >> Cases_on `r` >> rw []
 QED
 
-Definition valid_derivation_deriv_dec:
-  valid_derivation_deriv_dec G pl p r =
+Definition valid_derivation_deriv:
+  valid_derivation_deriv G pl p r =
     case r of
     | reason_assumption => F
     | reason_justification j => 
@@ -393,11 +413,11 @@ Definition valid_derivation_deriv_dec:
       | justification_pbc l1 l2 => valid_derivation_deriv_pbc G l1 l2 p
 End
 
-Theorem valid_derivation_deriv_dec_sound:
-  !G pl l p r. valid_derivation_deriv_dec G pl p r <=>
+Theorem valid_derivation_deriv_sound:
+  !G pl l p r. valid_derivation_deriv G pl p r <=>
      valid_derivation G pl (derivation_deriv l p r)
 Proof
-  rw [valid_derivation_deriv_dec] >>
+  rw [valid_derivation_deriv] >>
   Cases_on `r` >> rw [] >- rw [valid_claim_cases] >>  
   Cases_on `j` >> rw [] >| [
     PROVE_TAC [valid_derivation_deriv_premise_sound],
@@ -428,5 +448,205 @@ Inductive valid_entry:
 (!G pl pr l p. valid_proof (FUPDATE G (INL l, INL p)) pl pr ==>
  (valid_entry G pl (entry_box (proof_entries (entry_derivation (derivation_deriv l p reason_assumption) :: (proof_list_entry pr))))))
 End
+
+Definition valid_proof_entry_list:
+  (valid_proof_entry_list el G pl =
+    case el of
+    | [] => T
+    | e :: el' =>
+      (case e of 
+      | entry_derivation (derivation_deriv l p reason_assumption) => F
+      | entry_derivation (derivation_deriv l p (reason_justification j)) =>
+	if valid_entry_dec G pl e then 
+	   valid_proof_entry_list el' (FUPDATE G (INL l,INL p)) pl
+	else F
+      | entry_box pr => 
+	(case pr of 
+        | proof_entries el0  => 
+	  (case el0 of
+	  | [] => F
+	  | e' :: el1 => 
+	    (case e' of
+	     | entry_derivation (derivation_deriv l p r) => 
+	       (case r of 
+	       | reason_assumption => 
+		 (case LAST_DEFAULT el0 entry_invalid of
+		  | entry_derivation (derivation_deriv l' p' r') =>
+		    if valid_entry_dec G pl e then
+			valid_proof_entry_list el' (FUPDATE G (INR (l, l'),INR (p, p'))) pl
+		    else F
+		  | _ => F)
+	       | reason_justification j => F)
+	     | _ => F)))
+      | entry_invalid => F))
+/\
+(valid_entry_dec G pl e =
+    case e of
+    | entry_derivation (derivation_deriv l p r) => 
+       (case r of 
+	| reason_assumption => F
+	| reason_justification j => valid_derivation_deriv G pl p r)
+     | entry_box (proof_entries []) => F
+     | entry_box (proof_entries (e' :: el')) => 
+       (case e' of 
+	| entry_derivation (derivation_deriv l p reason_assumption) =>
+	  valid_proof_entry_list el' (FUPDATE G (INL l,INL p)) pl
+	| entry_derivation (derivation_deriv l p (reason_justification j)) => F
+	| _ => F)
+     | entry_invalid => F)
+Termination
+ cheat
+End
+
+Definition valid_proof_entry_list_soundness:
+  valid_proof_entry_list_soundness el G pl =
+   (valid_proof_entry_list el G pl <=> valid_proof G pl (proof_entries el))
+End
+
+Definition valid_entry_soundness:
+  valid_entry_soundness G pl e = 
+   (valid_entry_dec G pl e <=> valid_entry G pl e)
+End
+
+Theorem valid_proof_entry_list_entry_sound:
+ (!el G pl. valid_proof_entry_list_soundness el G pl) /\
+  (!G pl e. valid_entry_soundness G pl e)
+Proof
+  MATCH_MP_TAC valid_proof_entry_list_ind >> rw [] >-
+  
+  (* 1st case BEGIN *)
+  ( 
+
+  rw [valid_proof_entry_list_soundness] >>
+  once_rewrite_tac [valid_proof_entry_list] >> rw [] >>
+  Cases_on `el` >> rw [] >> once_rewrite_tac [valid_claim_cases,clause_name_def] >> rw [clause_name_def] >>
+  Cases_on `h` >> rw [] >>
+     Cases_on `d` >> rw [] >>
+     Cases_on `r` >> rw [] >>
+     fs [valid_entry_soundness] >>
+     fs [valid_proof_entry_list_soundness] >>
+     EQ_TAC >> rw [] >>
+       fs [] >>
+       Q.EXISTS_TAC `proof_entries t` >>
+       rw [proof_list_entry] >>
+       fs [valid_entry_cases]
+     fs [valid_entry_cases]
+
+     Cases_on `proof` >> rw [proof_list_entry] >>
+     fs [valid_entry_cases] >> fs [proof_list_entry]
+
+     Cases_on `p` >> rw [] >>
+     Cases_on `l` >> rw [] >>
+     Cases_on `h` >> rw [] >>
+     Cases_on `d` >> rw [] >>
+     Cases_on `r` >> rw [] >>
+     Cases_on `LAST_DEFAULT t' entry_invalid` >> fs [] >> rw [] >>
+     Cases_on `d` >> rw [] >>
+     EQ_TAC >> rw []
+      fs [] >>
+      fs [valid_proof_entry_list_soundness] >>
+      fs [valid_entry_soundness] >>
+      fs [valid_entry_cases] >>
+      Q.EXISTS_TAC `pr` >> rw [] >>
+      Q.EXISTS_TAC `proof_entries t` >> rw [] >>
+      rw [proof_list_entry]
+      Cases_on `pr` >> fs [proof_list_entry] >>
+      Cases_on `l` >> fs [LAST_DEFAULT,LAST_DEF]
+            
+      fs [valid_entry_soundness] >>
+      fs [valid_entry_cases] >>
+      Q.EXISTS_TAC `proof` >> rw []
+
+      fs [valid_entry_soundness] >>
+      fs [valid_proof_entry_list_soundness] >>
+      Cases_on `proof'` >> rw [proof_list_entry] >>
+      Cases_on `proof` >> fs [proof_list_entry] >>
+      Cases_on `l'` >> fs [LAST_DEFAULT,LAST_DEF] >>
+      rw [] >> 
+      `valid_entry G pl
+          (entry_box
+             (proof_entries
+                (entry_derivation (derivation_deriv n p reason_assumption)::
+                     h::t)))` suffices_by fs [valid_proof_entry_list_soundness] >>
+      fs [valid_entry_cases] >>
+      Q.EXISTS_TAC `proof_entries (h::t)` >> rw [proof_list_entry] >>
+
+      Cases_on `proof` >> fs [proof_list_entry] >>
+      Cases_on `proof'` >> fs [proof_list_entry] >>
+      once_rewrite_tac [valid_claim_cases,clause_name_def] >> fs [] >>
+
+      Cases_on `t' = l` >> rw [] >>
+      Cases_on `t = l'` >> rw [] >>
+      Cases_on `LAST_DEFAULT
+          (entry_derivation (derivation_deriv n p reason_assumption)::l)
+          entry_invalid =
+        entry_derivation (derivation_deriv l'' prop' reason)` >> rw [] >>
+      fs [LAST_DEFAULT,LAST_DEF] >>
+      Cases_on `l` >> fs [LAST_DEFAULT,LAST_DEF]
+
+      Cases_on `proof` >> fs [proof_list_entry] >>
+      Cases_on `proof'` >> fs [proof_list_entry] >>
+      Cases_on `t' = l` >> rw [] >>
+      Cases_on `t = l'` >> rw [] >>
+      Cases_on `LAST_DEFAULT
+          (entry_derivation (derivation_deriv n p reason_assumption)::l)
+          entry_invalid =
+        entry_derivation (derivation_deriv l'' prop' reason)` >> rw [] >>
+      fs [LAST_DEFAULT,LAST_DEF] >>
+      Cases_on `l` >> fs [LAST_DEFAULT,LAST_DEF]      
+      rw []           
+
+  ) >>
+  (* 1st case END *)
+
+  (* 2case: DONE *)
+  rw [valid_entry_soundness] >>
+  once_rewrite_tac [valid_proof_entry_list] >>
+  Cases_on `e` >> once_rewrite_tac [valid_claim_cases,clause_name_def] >> 
+  rw [valid_entry_cases] >- 
+   (Cases_on `d` >> rw [] >>
+    Cases_on `r` >> rw [valid_derivation_deriv_sound]) >>
+  Cases_on `p` >> rw [] >>
+  Cases_on `l` >> rw [] >>
+  Cases_on `h` >> rw [] >>
+  Cases_on `d` >> rw [] >>
+  Cases_on `r` >> rw [] >>
+  Cases_on `t` >> rw [] >-
+    ( once_rewrite_tac [valid_proof_entry_list] >> rw [] >>
+      fs [valid_proof_entry_list_soundness] >>
+      Q.EXISTS_TAC `proof_entries []` >> rw [proof_list_entry] >>
+      once_rewrite_tac [valid_claim_cases] >> rw [clause_name_def]) >>  
+  fs [valid_proof_entry_list_soundness] >>
+  EQ_TAC >> rw [] >- (Q.EXISTS_TAC `proof_entries (h::t')` >> rw [proof_list_entry]) >>
+  Cases_on `pr` >> rw [proof_list_entry]
+ (* END *)
+QED
+
+Definition valid_proof_dec:
+  valid_proof_dec G pl pr =
+    case pr of
+    | proof_entries el => valid_proof_entry_list el G pl      
+End
+
+Theorem valid_proof_dec_sound:
+  !G pl pr. valid_proof_dec G pl pr <=> valid_proof G pl pr
+Proof
+ rw [valid_proof_dec] >>
+ Cases_on `pr` >> rw [] >>
+ 
+QED
+
+
+Definition valid_claim_dec:
+  valid_claim_dec c =
+    case c of 
+    | claim_judgment_proof (judgment_follows pl p) (proof_entries el) =>
+      (case LAST_DEFAULT el entry_invalid of
+      | entry_derivation (derivation_deriv l p' reason_assumption) => F
+      | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
+	if p = p' then valid_proof_dec FEMPTY pl (proof_entries el)
+	else F
+      | _ => F)
+End   
 
 val _ = export_theory();
