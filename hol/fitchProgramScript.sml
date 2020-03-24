@@ -19,9 +19,6 @@ Definition prop_eq_dec:
    | prop_cont, prop_cont => T
    | _ => F
 End
-
-Theorem prop_eq_dec_eq_sound:
-  !p p'. 
 *)
 
 Definition valid_derivation_deriv_premise:
@@ -567,8 +564,6 @@ Proof
       Q.EXISTS_TAC `proof_entries l'` >> rw [proof_list_entry]
      ],
 
-     (* DONE *)
-
       Cases_on `proof` >> fs [proof_list_entry] >>
       Cases_on `proof'` >> fs [proof_list_entry] >>
       Cases_on `t' = l` >> rw [],
@@ -578,9 +573,8 @@ Proof
       Cases_on `t' = l` >> rw []
    ]
   ) >>
-  (* 1st case END *)
 
-  (* 2case: DONE *)
+  (* 2case: BEGIN *)
   rw [valid_entry_soundness] >>
   once_rewrite_tac [valid_proof_entry_list] >>
   Cases_on `e` >> once_rewrite_tac [valid_claim_cases,clause_name_def] >> 
@@ -614,9 +608,9 @@ Theorem valid_proof_dec_sound:
 Proof
  rw [valid_proof_dec] >>
  Cases_on `pr` >> rw [] >>
- 
+ `valid_proof_entry_list_soundness l G pl` suffices_by rw [valid_proof_entry_list_soundness] >>
+ rw [valid_proof_entry_list_entry_sound] 
 QED
-
 
 Definition valid_claim_dec:
   valid_claim_dec c =
@@ -628,6 +622,28 @@ Definition valid_claim_dec:
 	if p = p' then valid_proof_dec FEMPTY pl (proof_entries el)
 	else F
       | _ => F)
-End   
+End
+
+Theorem valid_claim_dec_sound:
+  !c. valid_claim_dec c <=> valid_claim c
+Proof
+  rw [valid_claim_dec] >>
+  Cases_on `c` >> rw [] >>
+  Cases_on `p` >> rw [] >>
+  Cases_on `j` >> rw [] >>
+  Cases_on `LAST_DEFAULT l entry_invalid` >> rw [] >|
+  [
+    Cases_on `d` >> rw [] >>
+    Cases_on `r` >> rw [] >-   
+    (once_rewrite_tac [valid_claim_cases] >> rw [clause_name_def] >>
+    rw [proof_list_entry]) >>
+    once_rewrite_tac [valid_claim_cases] >> rw [clause_name_def,proof_list_entry] >>
+    rw [valid_proof_dec_sound] >> metis_tac [],
+
+    once_rewrite_tac [valid_claim_cases] >> rw [clause_name_def,proof_list_entry],
+
+    once_rewrite_tac [valid_claim_cases] >> rw [clause_name_def,proof_list_entry]
+  ]
+QED
 
 val _ = export_theory();
