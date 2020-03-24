@@ -515,87 +515,68 @@ Proof
   MATCH_MP_TAC valid_proof_entry_list_ind >> rw [] >-
   
   (* 1st case BEGIN *)
-  ( 
-
+  (
   rw [valid_proof_entry_list_soundness] >>
   once_rewrite_tac [valid_proof_entry_list] >> rw [] >>
   Cases_on `el` >> rw [] >> once_rewrite_tac [valid_claim_cases,clause_name_def] >> rw [clause_name_def] >>
-  Cases_on `h` >> rw [] >>
+  Cases_on `h` >> rw [] >-
+    (
      Cases_on `d` >> rw [] >>
      Cases_on `r` >> rw [] >>
      fs [valid_entry_soundness] >>
      fs [valid_proof_entry_list_soundness] >>
-     EQ_TAC >> rw [] >>
+     EQ_TAC >> rw [] >| [
        fs [] >>
        Q.EXISTS_TAC `proof_entries t` >>
        rw [proof_list_entry] >>
-       fs [valid_entry_cases]
-     fs [valid_entry_cases]
+       fs [valid_entry_cases],       
 
-     Cases_on `proof` >> rw [proof_list_entry] >>
-     fs [valid_entry_cases] >> fs [proof_list_entry]
+      fs [valid_entry_cases],
 
-     Cases_on `p` >> rw [] >>
-     Cases_on `l` >> rw [] >>
-     Cases_on `h` >> rw [] >>
+      Cases_on `proof` >> rw [proof_list_entry] >>
+      fs [valid_entry_cases] >> fs [proof_list_entry]]
+    ) >>
+    Cases_on `p` >> rw [] >>
+    Cases_on `l` >> rw [] >>
+    Cases_on `h` >> rw [] >>
+    Cases_on `d` >> rw [] >>
+    Cases_on `r` >> rw [] >>
+    Cases_on `LAST_DEFAULT (entry_derivation (derivation_deriv n p reason_assumption)::t') entry_invalid` >> fs [] >> rw [] >| [
+
      Cases_on `d` >> rw [] >>
-     Cases_on `r` >> rw [] >>
-     Cases_on `LAST_DEFAULT t' entry_invalid` >> fs [] >> rw [] >>
-     Cases_on `d` >> rw [] >>
-     EQ_TAC >> rw []
+     EQ_TAC >> rw [] >| [
       fs [] >>
       fs [valid_proof_entry_list_soundness] >>
       fs [valid_entry_soundness] >>
       fs [valid_entry_cases] >>
       Q.EXISTS_TAC `pr` >> rw [] >>
       Q.EXISTS_TAC `proof_entries t` >> rw [] >>
-      rw [proof_list_entry]
-      Cases_on `pr` >> fs [proof_list_entry] >>
-      Cases_on `l` >> fs [LAST_DEFAULT,LAST_DEF]
-            
+      rw [proof_list_entry],
+                       
       fs [valid_entry_soundness] >>
       fs [valid_entry_cases] >>
-      Q.EXISTS_TAC `proof` >> rw []
+      Q.EXISTS_TAC `proof` >> rw [],
 
       fs [valid_entry_soundness] >>
       fs [valid_proof_entry_list_soundness] >>
       Cases_on `proof'` >> rw [proof_list_entry] >>
-      Cases_on `proof` >> fs [proof_list_entry] >>
-      Cases_on `l'` >> fs [LAST_DEFAULT,LAST_DEF] >>
-      rw [] >> 
-      `valid_entry G pl
-          (entry_box
-             (proof_entries
-                (entry_derivation (derivation_deriv n p reason_assumption)::
-                     h::t)))` suffices_by fs [valid_proof_entry_list_soundness] >>
+      Cases_on `proof` >> fs [proof_list_entry] >> rw [] >>
+      `valid_entry G pl (entry_box (proof_entries
+        (entry_derivation (derivation_deriv n p reason_assumption)::l')))` suffices_by fs [valid_proof_entry_list_soundness] >>
       fs [valid_entry_cases] >>
-      Q.EXISTS_TAC `proof_entries (h::t)` >> rw [proof_list_entry] >>
+      Q.EXISTS_TAC `proof_entries l'` >> rw [proof_list_entry]
+     ],
+
+     (* DONE *)
 
       Cases_on `proof` >> fs [proof_list_entry] >>
       Cases_on `proof'` >> fs [proof_list_entry] >>
-      once_rewrite_tac [valid_claim_cases,clause_name_def] >> fs [] >>
-
-      Cases_on `t' = l` >> rw [] >>
-      Cases_on `t = l'` >> rw [] >>
-      Cases_on `LAST_DEFAULT
-          (entry_derivation (derivation_deriv n p reason_assumption)::l)
-          entry_invalid =
-        entry_derivation (derivation_deriv l'' prop' reason)` >> rw [] >>
-      fs [LAST_DEFAULT,LAST_DEF] >>
-      Cases_on `l` >> fs [LAST_DEFAULT,LAST_DEF]
+      Cases_on `t' = l` >> rw [],
 
       Cases_on `proof` >> fs [proof_list_entry] >>
       Cases_on `proof'` >> fs [proof_list_entry] >>
-      Cases_on `t' = l` >> rw [] >>
-      Cases_on `t = l'` >> rw [] >>
-      Cases_on `LAST_DEFAULT
-          (entry_derivation (derivation_deriv n p reason_assumption)::l)
-          entry_invalid =
-        entry_derivation (derivation_deriv l'' prop' reason)` >> rw [] >>
-      fs [LAST_DEFAULT,LAST_DEF] >>
-      Cases_on `l` >> fs [LAST_DEFAULT,LAST_DEF]      
-      rw []           
-
+      Cases_on `t' = l` >> rw []
+   ]
   ) >>
   (* 1st case END *)
 
