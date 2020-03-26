@@ -1,7 +1,7 @@
 open preamble
      ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory
      ListProgTheory MapProgTheory mlmapTheory
-     fitchProgramTheory astPP basisFunctionsLib;
+     fitchTheory fitchProgramTheory astPP basisFunctionsLib;
 
 val _ = new_theory "fitchProg";
 
@@ -35,8 +35,6 @@ Proof
 QED
 
 val res = translate valid_derivation_deriv_lem_cake;
-
-(*val res = translate lookup_def;*)
 
 Definition valid_derivation_deriv_copy_cake:
  valid_derivation_deriv_copy_cake t l p =
@@ -424,6 +422,128 @@ Proof
 QED
 
 val res = translate valid_derivation_deriv_cake;
+
+Definition valid_proof_entry_list_cake:
+  (valid_proof_entry_list_cake el t pl =
+    case el of
+    | [] => T
+    | e :: el' =>
+      (case e of 
+      | entry_derivation (derivation_deriv l p reason_assumption) => F
+      | entry_derivation (derivation_deriv l p (reason_justification j)) =>
+	if valid_entry_dec_cake t pl e then 
+	   valid_proof_entry_list_cake el' (insert t (INL l) (INL p)) pl
+	else F
+      | entry_box pr => 
+	(case pr of 
+        | proof_entries el0  => 
+	  (case el0 of
+	  | [] => F
+	  | e' :: el1 => 
+	    (case e' of
+	     | entry_derivation (derivation_deriv l p r) => 
+	       (case r of 
+	       | reason_assumption => 
+		 (case LAST_DEFAULT el0 entry_invalid of
+		  | entry_derivation (derivation_deriv l' p' r') =>
+		    if valid_entry_dec_cake t pl e then
+			valid_proof_entry_list_cake el' (insert t (INR (l, l')) (INR (p, p'))) pl
+		    else F
+		  | _ => F)
+	       | reason_justification j => F)
+	     | _ => F)))
+      | entry_invalid => F))
+/\
+(valid_entry_dec_cake t pl e =
+    case e of
+    | entry_derivation (derivation_deriv l p r) => 
+       (case r of 
+	| reason_assumption => F
+	| reason_justification j => valid_derivation_deriv_cake t pl p r)
+     | entry_box (proof_entries []) => F
+     | entry_box (proof_entries (e' :: el')) => 
+       (case e' of 
+	| entry_derivation (derivation_deriv l p reason_assumption) =>
+	  valid_proof_entry_list_cake el' (insert t (INL l) (INL p)) pl
+	| entry_derivation (derivation_deriv l p (reason_justification j)) => F
+	| _ => F)
+     | entry_invalid => F)
+Termination
+ cheat
+End
+
+Definition valid_proof_entry_list_cake_soundness:
+  valid_proof_entry_list_cake_soundness el t pl =
+    (valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl)
+End
+
+Definition valid_entry_dec_cake_soundness:
+  valid_entry_dec_cake_soundness t pl e =
+    (valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e)
+End
+
+Theorem valid_proof_entry_list_entry_cake_sound:
+  (!el t pl. valid_proof_entry_list_cake_soundness el t pl) /\
+  (!t pl e. valid_entry_dec_cake_soundness t pl e)
+Proof
+ cheat
+QED
+
+Theorem valid_proof_entry_list_eq:
+ !el t pl. valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl
+Proof
+ rw [] \\
+ `valid_proof_entry_list_cake_soundness el' t pl` suffices_by rw [valid_proof_entry_list_cake_soundness] \\
+ rw [valid_proof_entry_list_entry_cake_sound]
+QED
+
+Theorem valid_entry_dec_eq:
+ !t pl e. valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e
+Proof
+ rw [] \\
+ `valid_entry_dec_cake_soundness t pl e` suffices_by rw [valid_entry_dec_cake_soundness] \\
+ rw [valid_proof_entry_list_entry_cake_sound]
+QED
+
+val res = translate LAST_DEFAULT;
+
+(*val res = translate valid_proof_entry_list_cake;*)
+
+Definition valid_proof_dec_cake:
+  valid_proof_dec_cake t pl (proof_entries el) =
+    valid_proof_entry_list_cake el t pl
+End
+
+Theorem valid_proof_dec_eq:
+ !t pl pr. valid_proof_dec_cake t pl pr = valid_proof_dec (to_fmap t) pl pr
+Proof
+ rw [] \\ Cases_on `pr` \\
+ rw [valid_proof_dec_cake,valid_proof_dec,valid_proof_entry_list_eq]
+QED
+
+(*val res = translate valid_proof_dec_cake;*)
+
+Definition valid_claim_dec_cake:
+  valid_claim_dec_cake cmp (claim_judgment_proof (judgment_follows pl p) (proof_entries el)) =
+    case LAST_DEFAULT el entry_invalid of
+    | entry_derivation (derivation_deriv l p' reason_assumption) => F
+    | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
+      if p = p' then valid_proof_dec_cake (empty cmp) pl (proof_entries el)
+      else F
+    | _ => F
+End
+
+Theorem valid_claim_dec_eq:
+  !cmp c. valid_claim_dec_cake cmp c = valid_claim_dec c
+Proof
+ rw [] \\
+ Cases_on `c` \\ Cases_on `p` \\ Cases_on `j` \\
+ rw [valid_claim_dec_cake,valid_claim_dec] \\
+ rw [valid_proof_dec_eq] \\
+ rw [empty_thm]
+QED
+
+(*val res = translate valid_claim_dec_cake;*)
 
 (*
 fun get_current_prog() =
