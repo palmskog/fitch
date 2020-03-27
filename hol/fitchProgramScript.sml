@@ -230,7 +230,7 @@ Proof
 QED
 
 Definition valid_derivation_deriv_negnegi:
-  valid_derivation_deriv_nenegi G l p =
+  valid_derivation_deriv_negnegi G l p =
     case p of
     | prop_neg (prop_neg p1) => 
       (case FLOOKUP G (INL l) of
@@ -240,7 +240,7 @@ Definition valid_derivation_deriv_negnegi:
 End
 
 Theorem valid_derivation_deriv_negnegi_sound:
- !G pl l l' p. valid_derivation_deriv_nenegi G l p <=>
+ !G pl l l' p. valid_derivation_deriv_negnegi G l p <=>
   valid_derivation G pl (derivation_deriv l' p (reason_justification (justification_negnegi l)))
 Proof
  rw [valid_derivation_deriv_negnegi] >>
@@ -401,7 +401,7 @@ Definition valid_derivation_deriv:
       | justification_impe l1 l2 => valid_derivation_deriv_impe G l1 l2 p
       | justification_nege l1 l2 => valid_derivation_deriv_nege G l1 l2 p
       | justification_conte l => valid_derivation_deriv_conte G l
-      | justification_negnegi l => valid_derivation_deriv_nenegi G l p
+      | justification_negnegi l => valid_derivation_deriv_negnegi G l p
       | justification_negnege l => valid_derivation_deriv_negnege G l p
       | justification_mt l1 l2 => valid_derivation_deriv_mt G l1 l2 p
       | justification_impi l1 l2 => valid_derivation_deriv_impi G l1 l2 p
@@ -600,7 +600,7 @@ QED
 Definition valid_proof_dec:
   valid_proof_dec G pl pr =
     case pr of
-    | proof_entries el => valid_proof_entry_list el G pl      
+    | proof_entries el => valid_proof_entry_list el G pl
 End
 
 Theorem valid_proof_dec_sound:
@@ -615,7 +615,7 @@ QED
 Definition valid_claim_dec:
   valid_claim_dec c =
     case c of 
-    | claim_judgment_proof (judgment_follows pl p) (proof_entries el) =>
+     | claim_judgment_proof (judgment_follows pl p) (proof_entries el) =>
       (case LAST_DEFAULT el entry_invalid of
       | entry_derivation (derivation_deriv l p' reason_assumption) => F
       | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
