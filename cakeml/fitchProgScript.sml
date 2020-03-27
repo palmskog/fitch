@@ -474,23 +474,57 @@ End
 
 Definition valid_proof_entry_list_cake_soundness:
   valid_proof_entry_list_cake_soundness el t pl =
-    (valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl)
+   (map_ok t ==> 
+    valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl)
 End
 
 Definition valid_entry_dec_cake_soundness:
   valid_entry_dec_cake_soundness t pl e =
-    (valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e)
+    (map_ok t ==>
+    valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e)
 End
 
 Theorem valid_proof_entry_list_entry_cake_sound:
   (!el t pl. valid_proof_entry_list_cake_soundness el t pl) /\
   (!t pl e. valid_entry_dec_cake_soundness t pl e)
 Proof
- cheat
+ MATCH_MP_TAC valid_proof_entry_list_cake_ind \\ rw [] >-
+ 
+ (rw [valid_proof_entry_list_cake_soundness] \\
+ once_rewrite_tac [valid_proof_entry_list_cake,valid_proof_entry_list] \\
+ Cases_on `el'` \\ rw [] \\
+ Cases_on `h` \\ rw [] >-
+  (Cases_on `d` \\ rw [] \\
+   Cases_on `r` \\ rw [] \\
+   fs [valid_entry_dec_cake_soundness] \\
+   fs [valid_proof_entry_list_cake_soundness] \\
+   EQ_TAC \\ rw [] >-
+    (rw [GSYM insert_thm] \\
+     `map_ok (insert t (INL n) (INL p))` by rw [insert_thm] \\
+     METIS_TAC []) \\
+   rw [insert_thm]) \\
+ Cases_on `p` \\ rw [] \\ Cases_on `l` \\ rw [] \\
+ Cases_on `h` \\ rw [] \\ Cases_on `d` \\ rw [] \\
+ Cases_on `r` \\ rw [] \\ 
+ Cases_on `LAST_DEFAULT (entry_derivation (derivation_deriv n p reason_assumption)::t'') entry_invalid` \\ rw [] \\
+ Cases_on `d` \\ rw [] \\
+ fs [valid_entry_dec_cake_soundness] \\ 
+ fs [valid_proof_entry_list_cake_soundness] \\
+ METIS_TAC [insert_thm]) \\
+
+ rw [valid_entry_dec_cake_soundness] \\
+ once_rewrite_tac [valid_proof_entry_list_cake,valid_proof_entry_list] \\
+ Cases_on `e` \\ rw [] >- 
+  (Cases_on `d` \\ rw [valid_derivation_deriv_eq]) \\
+ Cases_on `p` \\ rw [] \\ Cases_on `l` \\ rw [] \\
+ Cases_on `h` \\ rw [] \\ Cases_on `d` \\ rw [] \\
+ Cases_on `r` \\ rw [] \\
+ fs [valid_proof_entry_list_cake_soundness] \\
+ rw [insert_thm]
 QED
 
 Theorem valid_proof_entry_list_eq:
- !el t pl. valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl
+ !el t pl. map_ok t ==> valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl
 Proof
  rw [] \\
  `valid_proof_entry_list_cake_soundness el' t pl` suffices_by rw [valid_proof_entry_list_cake_soundness] \\
@@ -498,7 +532,8 @@ Proof
 QED
 
 Theorem valid_entry_dec_eq:
- !t pl e. valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e
+ !t pl e. map_ok t ==> 
+  valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e
 Proof
  rw [] \\
  `valid_entry_dec_cake_soundness t pl e` suffices_by rw [valid_entry_dec_cake_soundness] \\
@@ -515,7 +550,8 @@ Definition valid_proof_dec_cake:
 End
 
 Theorem valid_proof_dec_eq:
- !t pl pr. valid_proof_dec_cake t pl pr = valid_proof_dec (to_fmap t) pl pr
+ !t pl pr. map_ok t ==> 
+  valid_proof_dec_cake t pl pr = valid_proof_dec (to_fmap t) pl pr
 Proof
  rw [] \\ Cases_on `pr` \\
  rw [valid_proof_dec_cake,valid_proof_dec,valid_proof_entry_list_eq]
@@ -534,13 +570,15 @@ Definition valid_claim_dec_cake:
 End
 
 Theorem valid_claim_dec_eq:
-  !cmp c. valid_claim_dec_cake cmp c = valid_claim_dec c
+  !cmp c. TotOrd cmp ==> valid_claim_dec_cake cmp c = valid_claim_dec c
 Proof
  rw [] \\
  Cases_on `c` \\ Cases_on `p` \\ Cases_on `j` \\
  rw [valid_claim_dec_cake,valid_claim_dec] \\
- rw [valid_proof_dec_eq] \\
- rw [empty_thm]
+ Cases_on `LAST_DEFAULT l entry_invalid` \\ rw [] \\
+ Cases_on `d` \\ rw [] \\
+ Cases_on `r` \\ rw [] \\
+ rw [empty_thm,valid_proof_dec_eq]
 QED
 
 (*val res = translate valid_claim_dec_cake;*)
