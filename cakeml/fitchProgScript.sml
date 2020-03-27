@@ -1,7 +1,7 @@
 open preamble
-     ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory
-     ListProgTheory MapProgTheory mlmapTheory
-     fitchTheory fitchProgramTheory astPP basisFunctionsLib;
+ ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory
+ ListProgTheory MapProgTheory mlmapTheory
+ fitchTheory fitchProgramTheory astPP basisFunctionsLib;
 
 val _ = new_theory "fitchProg";
 
@@ -469,7 +469,10 @@ Definition valid_proof_entry_list_cake:
 	| _ => F)
      | entry_invalid => F)
 Termination
- cheat
+ WF_REL_TAC `measure (\x.
+ case x of
+ | INL (a,_,_) => proof1_size a
+ | INR (_,_,b)  => entry_size b)`
 End
 
 Definition valid_proof_entry_list_cake_soundness:
