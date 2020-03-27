@@ -446,6 +446,62 @@ Inductive valid_entry:
  (valid_entry G pl (entry_box (proof_entries (entry_derivation (derivation_deriv l p reason_assumption) :: (proof_list_entry pr))))))
 End
 
+(* 
+val valid_proof_entry_list_defn = Hol_defn "valid_proof_entry_list" `
+(valid_proof_entry_list el G pl =
+    case el of
+    | [] => T
+    | e :: el' =>
+      (case e of 
+      | entry_derivation (derivation_deriv l p reason_assumption) => F
+      | entry_derivation (derivation_deriv l p (reason_justification j)) =>
+	if valid_entry_dec G pl e then 
+	   valid_proof_entry_list el' (FUPDATE G (INL l,INL p)) pl
+	else F
+      | entry_box pr => 
+	(case pr of 
+        | proof_entries el0  => 
+	  (case el0 of
+	  | [] => F
+	  | e' :: el1 => 
+	    (case e' of
+	     | entry_derivation (derivation_deriv l p r) => 
+	       (case r of 
+	       | reason_assumption => 
+		 (case LAST_DEFAULT el0 entry_invalid of
+		  | entry_derivation (derivation_deriv l' p' r') =>
+		    if valid_entry_dec G pl e then
+			valid_proof_entry_list el' (FUPDATE G (INR (l, l'),INR (p, p'))) pl
+		    else F
+		  | _ => F)
+	       | reason_justification j => F)
+	     | _ => F)))
+      | entry_invalid => F))
+/\
+(valid_entry_dec G pl e =
+    case e of
+    | entry_derivation (derivation_deriv l p r) => 
+       (case r of 
+	| reason_assumption => F
+	| reason_justification j => valid_derivation_deriv G pl p r)
+     | entry_box (proof_entries []) => F
+     | entry_box (proof_entries (e' :: el')) => 
+       (case e' of 
+	| entry_derivation (derivation_deriv l p reason_assumption) =>
+	  valid_proof_entry_list el' (FUPDATE G (INL l,INL p)) pl
+	| entry_derivation (derivation_deriv l p (reason_justification j)) => F
+	| _ => F)
+     | entry_invalid => F)`;
+
+Defn.tgoal valid_proof_entry_list_defn;
+
+WF_REL_TAC `measure (\(x,_).
+ case x of
+ | INL (z,_,_) => (LENGTH z)
+ | INR (_,pl,_)  => (LENGTH pl))`
+
+*)
+
 Definition valid_proof_entry_list:
   (valid_proof_entry_list el G pl =
     case el of
