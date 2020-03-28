@@ -40,11 +40,11 @@ let string_of_derivation = function
 
 let rec string_of_entry = function
 | Coq_entry_derivation d -> string_of_derivation d
-| Coq_entry_box (Coq_proof_entries el) -> "[" ^ "\n" ^ String.concat "\n" (List.map string_of_entry el) ^ "\n" ^ "]"
+| Coq_entry_box el -> "[" ^ "\n" ^ String.concat "\n" (List.map string_of_entry el) ^ "\n" ^ "]"
 | Coq_entry_invalid -> ""
 
 let rec string_of_claim = function
-| Coq_claim_judgment_proof (Coq_judgment_follows (pl, p), Coq_proof_entries el) ->
+| Coq_claim_judgment_proof (Coq_judgment_follows (pl, p), el) ->
   String.concat ", " (List.map string_of_prop pl) ^ " |- " ^ (string_of_prop p) ^ "\n" ^
   String.concat "\n" (List.map string_of_entry el)
 

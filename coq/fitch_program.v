@@ -563,16 +563,16 @@ Inductive valid_entry (G5 : G) (proplist5 : proplist) : entry -> Prop :=
 | valid_entry_box :
   forall (proof5 : proof) (l5 : l) (prop5 : prop),
     valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
-    valid_entry G5 proplist5 (entry_box (proof_entries (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: (proof_list_entry proof5)))).
+    valid_entry G5 proplist5 (entry_box (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof5)).
 
 Definition valid_proof_entry_list_   
   (valid_entry_dec : forall (G5 : G) (proplist5 : proplist) (e : entry), 
     { valid_entry G5 proplist5 e } + { ~ valid_entry G5 proplist5 e } ) : 
   forall (ls : list entry) (G5 : G) (proplist5 : proplist), 
-    { valid_proof G5 proplist5 (proof_entries ls) } + { ~ valid_proof G5 proplist5 (@proof_entries A ls) }.
+    { valid_proof G5 proplist5 ls } + { ~ @valid_proof A G5 proplist5 ls }.
 refine 
   (fix valid_proof_entry_list (ls : list entry) (G5 : G) (proplist5 : proplist) : 
-    { valid_proof G5 proplist5 (proof_entries ls) }+{ ~ valid_proof G5 proplist5 (proof_entries ls) } :=
+    { valid_proof G5 proplist5 ls }+{ ~ valid_proof G5 proplist5 ls } :=
   match ls with 
   | nil => left _ _
   | cons e ls' => 
@@ -591,31 +591,28 @@ refine
         end
       end (refl_equal _)      
     | entry_box proof5 => fun (H_eq : _) =>
-      match proof5 as proof' return (proof5 = proof' -> _) with
-      | proof_entries ls5 => fun (H_eq_l : _) =>
-        match ls5 as ls' return (ls5 = ls' -> _) with
-        | nil => fun (H_ls5 : _) => right _ _
-        | e' :: ls5' => fun (H_ls5 : _) =>
-          match e' as e'' return (e' = e'' -> _) with
-          | entry_derivation (derivation_deriv l5 prop5 reason5) => fun (H_eq_e' : _) =>
-            match reason5 as reason' return (reason5 = reason' -> _) with
-            | reason_assumption => fun (H_eq_r : _) => 
-              match last ls5 entry_invalid as e'' return (_ = e'' -> _) with
-              | entry_derivation (derivation_deriv l6 prop6 reason6) => fun (H_eq_d' : _) => 
-                match valid_entry_dec G5 proplist5 e with
-                | left H_dec => 
-                  match valid_proof_entry_list ls' (Map.add (inr (l5, l6)) (inr (prop5, prop6)) G5) proplist5 with
-                  | left H_dec' => left _ _
-                  | right H_dec' => right _ _
-                  end
-                | right H_dec => right _ _
-                end
-              | _ => fun (H_eq_d' : _) => right _ _
-              end (refl_equal _)
-            | reason_justification justification5 => fun (H_eq_r : _) => right _ _
-            end (refl_equal _)
-          | _ => fun (H_eq_e' : _) => right _ _
+      match proof5 as ls' return (proof5 = ls' -> _) with
+      | nil => fun (H_ls5 : _) => right _ _
+      | e' :: ls5' => fun (H_ls5 : _) =>
+        match e' as e'' return (e' = e'' -> _) with
+        | entry_derivation (derivation_deriv l5 prop5 reason5) => fun (H_eq_e' : _) =>
+          match reason5 as reason' return (reason5 = reason' -> _) with
+          | reason_assumption => fun (H_eq_r : _) => 
+             match last proof5 entry_invalid as e'' return (_ = e'' -> _) with
+             | entry_derivation (derivation_deriv l6 prop6 reason6) => fun (H_eq_d' : _) => 
+               match valid_entry_dec G5 proplist5 e with
+               | left H_dec => 
+                 match valid_proof_entry_list ls' (Map.add (inr (l5, l6)) (inr (prop5, prop6)) G5) proplist5 with
+                 | left H_dec' => left _ _
+                 | right H_dec' => right _ _
+                 end
+               | right H_dec => right _ _
+               end
+             | _ => fun (H_eq_d' : _) => right _ _
+             end (refl_equal _)
+          | reason_justification justification5 => fun (H_eq_r : _) => right _ _
           end (refl_equal _)
+        | _ => fun (H_eq_e' : _) => right _ _
         end (refl_equal _)
       end (refl_equal _)
     | entry_invalid => fun (H_eq : _) => right _ _
@@ -624,25 +621,18 @@ refine
 - exact: vp_empty.
 - inversion H_dec; subst => //.
   injection H0 => H_l H_prop H_j.
-  rewrite H_l H_prop H_j in H.
-  have ->: ls' = proof_list_entry (proof_entries ls') by [].
+  rewrite H_l H_prop H_j in H.  
   by subst; apply vp_derivation.
-- move => H_vp; inversion H_vp; subst => //.
-  move: H_dec_l.
-  by have ->: (proof_entries (proof_list_entry proof5)) = proof5 by destruct proof5.
 - move => H_vp; inversion H_vp; subst => //.
   case: H_dec.
   exact: valid_entry_derivation.
-- inversion H_dec; first by rewrite H_eq H_eq_l in H0.
-  rewrite H_eq H_eq_l H_ls5 H_eq_e' in H0.
-  injection H0 => H_b H_d H_r H_prop.
+- inversion H_dec; first by congruence.
   subst.
-  have ->: ls' = proof_list_entry (proof_entries ls') by [].
+  injection H0 => H_pr H_p H_l.
+  subst.
   by apply vp_box with (l' := l6) (prop' := prop6) (reason5 := reason6).
 - move => H_vp; inversion H_vp; subst.
-  have H_eq: (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof_list_entry proof0) = (proof_list_entry (proof_entries (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof_list_entry proof0))) by [].
   case: H_dec'.
-  have ->: (proof_entries (proof_list_entry proof')) = proof' by destruct proof'.
   rewrite H_eq_d' in H4.
   injection H4 => Heq1 Heq2 Heq3.
   by subst.
@@ -673,32 +663,25 @@ refine
      end (refl_equal _)
    | entry_box proof5 => fun H_eq =>
      match proof5 as proof' return (proof5 = proof' -> _) with
-     | proof_entries ls => fun H_eq_pr =>
-       match ls as ls' return (ls = ls' -> _) with
-       | nil => fun (H_eq_l : _) => right _ _
-       | e :: ls' => fun H_eq_l =>
-         match e as e' return (e = e' -> _) with
-         | entry_derivation (derivation_deriv l5 prop5 reason5) => fun H_eq_e =>
-           match reason5 as reason' return (reason5 = reason' -> _) with
-           | reason_assumption => fun H_eq_r =>
-             match valid_proof_entry_list_ valid_entry_dec ls' (Map.add (inl l5) (inl prop5) G5) proplist5 with
-             | left H_dec => left _ _
-             | right H_dec => right _ _
-             end
-           | reason_justification justification5 => fun H_eq_r => right _ _
-           end (refl_equal _)
-         | _ => fun H_eq_e => right _ _
+     | nil => fun (H_eq_l : _) => right _ _
+     | e :: ls' => fun H_eq_l =>
+       match e as e' return (e = e' -> _) with
+       | entry_derivation (derivation_deriv l5 prop5 reason5) => fun H_eq_e =>
+         match reason5 as reason' return (reason5 = reason' -> _) with
+         | reason_assumption => fun H_eq_r =>
+           match valid_proof_entry_list_ valid_entry_dec ls' (Map.add (inl l5) (inl prop5) G5) proplist5 with
+           | left H_dec => left _ _
+           | right H_dec => right _ _
+           end
+         | reason_justification justification5 => fun H_eq_r => right _ _
          end (refl_equal _)
+       | _ => fun H_eq_e => right _ _
        end (refl_equal _)
      end (refl_equal _)
    | entry_invalid => fun H_eq => right _ _
    end (refl_equal _)); subst; try by move => H_vp; inversion H_vp.
 - exact: valid_entry_derivation.
-- have ->: ls' = proof_list_entry (proof_entries ls') by [].
-  exact: valid_entry_box.
-- move => H_vp; inversion H_vp; subst.
-  contradict H_dec.
-  by have ->: (proof_entries (match proof5 with proof_entries ls => ls end)) = proof5 by destruct proof5.
+- exact: valid_entry_box.
 Defined.
 
 Definition valid_proof_entry_list := valid_proof_entry_list_ valid_entry_dec.
@@ -706,14 +689,11 @@ Definition valid_proof_entry_list := valid_proof_entry_list_ valid_entry_dec.
 Definition valid_proof_dec : forall (G5 : G) (proplist5 : @proplist A) (proof5 : proof),
   { valid_proof G5 proplist5 proof5 }+{ ~ valid_proof G5 proplist5 proof5 }.
 by refine
-  (fun (G5 : G) (proplist5 : proplist) (proof5 : proof) =>
-    match proof5 with
-    | proof_entries ls =>
-      match valid_proof_entry_list ls G5 proplist5 with
+  (fun (G5 : G) (proplist5 : proplist) (proof5 : proof) =>       
+      match valid_proof_entry_list proof5 G5 proplist5 with
       | left H_dec => left _ _
       | right H_dec => right _ _
-      end
-    end).
+      end).
 Defined.
 
 Definition valid_claim_dec : forall (c : @claim A),
@@ -722,48 +702,39 @@ refine
   (fun (c : claim) => 
     match c with
     | claim_judgment_proof judgment5 proof5 =>
-      match proof5 with
-      | proof_entries ls =>
-        match last ls entry_invalid as e return (_ = e -> _) with
-        | entry_derivation (derivation_deriv l5 prop5 reason5) => fun H_eq_last =>
-          match reason5 as reason' return (reason5 = reason' -> _) with
-          | reason_assumption => fun (H_eq_reason : _) => right _ _
-          | reason_justification justification5 => fun H_eq_reason =>
-            match judgment5 with
-            | judgment_follows proplist5 prop' =>
-              match prop_eq_dec prop5 prop' with
-              | left H_dec =>
-                match valid_proof_dec (Map.empty dyadicprop) proplist5 (proof_entries ls) with
-                | left H_dec' => left _ _
-                | right H_dec' => right _ _
-                end
-              | right H_dec => right _ _
+      match last proof5 entry_invalid as e return (_ = e -> _) with
+      | entry_derivation (derivation_deriv l5 prop5 reason5) => fun H_eq_last =>
+        match reason5 as reason' return (reason5 = reason' -> _) with
+        | reason_assumption => fun (H_eq_reason : _) => right _ _
+        | reason_justification justification5 => fun H_eq_reason =>
+          match judgment5 with
+          | judgment_follows proplist5 prop' =>
+            match prop_eq_dec prop5 prop' with
+            | left H_dec =>
+              match valid_proof_dec (Map.empty dyadicprop) proplist5 proof5 with
+              | left H_dec' => left _ _
+              | right H_dec' => right _ _
               end
+            | right H_dec => right _ _
             end
-          end (refl_equal _)
-        | _ => fun H_eq => right _ _
+          end
         end (refl_equal _)
-      end
+      | _ => fun H_eq => right _ _
+      end (refl_equal)
     end).
 - move => H_vp; inversion H_vp.
-  have H_ls: proof_list_entry (proof_entries ls) = ls by [].
-  by rewrite H_ls H_eq_last H_eq_reason in H1.
-- rewrite -H_dec { H_dec prop'}.
-  apply vc_claim with (l6 := l5) (justification6 := justification5) => //.
-  by rewrite -H_eq_reason -H_eq_last.
+  subst.
+  rewrite H_eq_last in H1; congruence.
+- subst.
+  by apply vc_claim with (l6 := l5) (justification6 := justification5).
 - move => H_vp; inversion H_vp.
   by subst; congruence.
-- move => H_vp; inversion H_vp; subst.
-  have H_ls: proof_list_entry (proof_entries ls) = ls by [].  
-  rewrite H_ls H_eq_last in H1.
-  injection H1 => H_eq_p H_eq_pl H_eq_l.
-  by rewrite -H_eq_pl in H_dec.
-- move => H_vc; inversion H_vc.
-  have H_ls: proof_list_entry (proof_entries ls) = ls by [].
-  by rewrite H_ls H_eq in H1.
-- move => H_vc; inversion H_vc.
-  have H_ls: proof_list_entry (proof_entries ls) = ls by [].
-  by rewrite H_ls H_eq in H1.
+- move => H_vp; inversion H_vp.
+  by subst; congruence.
+- move => H_vp; inversion H_vp.
+  by subst; congruence.
+- move => H_vp; inversion H_vp.
+  by subst; congruence.
 Defined.
 
 Definition validate_claim (c : claim) : bool :=

@@ -24,7 +24,7 @@ main:
 ;
 
 claim:
-  judgment LBRACKET proof RBRACKET PERIOD { Coq_claim_judgment_proof ($1, $3) }
+  judgment LBRACKET separated_list(COMMA, entry) RBRACKET PERIOD { Coq_claim_judgment_proof ($1, $3) }
 ;
 
 judgment:
@@ -40,13 +40,9 @@ prop:
 | IMP LPAREN prop COMMA prop RPAREN { Coq_prop_imp ($3, $5) }
 ;
 
-proof:
- separated_list(COMMA, entry) { Coq_proof_entries $1 }
-;
-
 entry:
   LBRACKET derivation RBRACKET { Coq_entry_derivation $2 }
-| LBRACKET proof RBRACKET { Coq_entry_box $2 }
+| LBRACKET separated_list(COMMA, entry) RBRACKET { Coq_entry_box $2 }
 ;
 
 derivation:

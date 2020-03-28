@@ -29,7 +29,7 @@ main:
 ;
 
 claim:
-  judgment proof { Coq_claim_judgment_proof ($1, $2) }
+  judgment list(entry) { Coq_claim_judgment_proof ($1, $2) }
 ;
 
 judgment:
@@ -46,13 +46,9 @@ prop:
 | LPAREN prop RPAREN { $2 }
 ;
 
-proof:
- list(entry) { Coq_proof_entries $1 }
-;
-
 entry:
   derivation { Coq_entry_derivation $1 }
-| LBRACKET proof RBRACKET { Coq_entry_box $2 }
+| LBRACKET list(entry) RBRACKET { Coq_entry_box $2 }
 ;
 
 derivation:

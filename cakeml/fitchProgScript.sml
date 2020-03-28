@@ -428,7 +428,7 @@ Definition valid_proof_entry_list_cake:
     case el of
     | [] => T
     | e :: el' =>
-      (case e of 
+      (case e of
       | entry_derivation (derivation_deriv l p reason_assumption) => F
       | entry_derivation (derivation_deriv l p (reason_justification j)) =>
 	if valid_entry_dec_cake t pl e then 
@@ -436,22 +436,20 @@ Definition valid_proof_entry_list_cake:
 	else F
       | entry_box pr => 
 	(case pr of 
-        | proof_entries el0  => 
-	  (case el0 of
-	  | [] => F
-	  | e' :: el1 => 
+        | []  => F
+	| e' :: _ => 
 	    (case e' of
-	     | entry_derivation (derivation_deriv l p r) => 
-	       (case r of 
-	       | reason_assumption => 
-		 (case LAST_DEFAULT el0 entry_invalid of
+	     | entry_derivation (derivation_deriv l p r) =>
+	       (case r of
+	       | reason_assumption =>
+		 (case LAST_DEFAULT pr entry_invalid of
 		  | entry_derivation (derivation_deriv l' p' r') =>
 		    if valid_entry_dec_cake t pl e then
 			valid_proof_entry_list_cake el' (insert t (INR (l, l')) (INR (p, p'))) pl
 		    else F
 		  | _ => F)
 	       | reason_justification j => F)
-	     | _ => F)))
+	     | _ => F))
       | entry_invalid => F))
 /\
 (valid_entry_dec_cake t pl e =
@@ -460,8 +458,8 @@ Definition valid_proof_entry_list_cake:
        (case r of 
 	| reason_assumption => F
 	| reason_justification j => valid_derivation_deriv_cake t pl p r)
-     | entry_box (proof_entries []) => F
-     | entry_box (proof_entries (e' :: el')) => 
+     | entry_box [] => F
+     | entry_box (e' :: el') => 
        (case e' of 
 	| entry_derivation (derivation_deriv l p reason_assumption) =>
 	  valid_proof_entry_list_cake el' (insert t (INL l) (INL p)) pl
@@ -471,7 +469,7 @@ Definition valid_proof_entry_list_cake:
 Termination
  WF_REL_TAC `measure (\x.
  case x of
- | INL (a,_,_) => proof1_size a
+ | INL (a,_,_) => entry1_size a
  | INR (_,_,b)  => entry_size b)`
 End
 
@@ -506,7 +504,7 @@ Proof
      `map_ok (insert t (INL n) (INL p))` by rw [insert_thm] \\
      METIS_TAC []) \\
    rw [insert_thm]) \\
- Cases_on `p` \\ rw [] \\ Cases_on `l` \\ rw [] \\
+ Cases_on `l` \\ rw [] \\
  Cases_on `h` \\ rw [] \\ Cases_on `d` \\ rw [] \\
  Cases_on `r` \\ rw [] \\ 
  Cases_on `LAST_DEFAULT (entry_derivation (derivation_deriv n p reason_assumption)::t'') entry_invalid` \\ rw [] \\
@@ -519,7 +517,7 @@ Proof
  once_rewrite_tac [valid_proof_entry_list_cake,valid_proof_entry_list] \\
  Cases_on `e` \\ rw [] >- 
   (Cases_on `d` \\ rw [valid_derivation_deriv_eq]) \\
- Cases_on `p` \\ rw [] \\ Cases_on `l` \\ rw [] \\
+ Cases_on `l` \\ rw [] \\
  Cases_on `h` \\ rw [] \\ Cases_on `d` \\ rw [] \\
  Cases_on `r` \\ rw [] \\
  fs [valid_proof_entry_list_cake_soundness] \\
@@ -527,7 +525,8 @@ Proof
 QED
 
 Theorem valid_proof_entry_list_eq:
- !el t pl. map_ok t ==> valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl
+ !el t pl. map_ok t ==> 
+   valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl
 Proof
  rw [] \\
  `valid_proof_entry_list_cake_soundness el' t pl` suffices_by rw [valid_proof_entry_list_cake_soundness] \\
@@ -545,29 +544,29 @@ QED
 
 val res = translate LAST_DEFAULT;
 
-(*val res = translate valid_proof_entry_list_cake;*)
+val res = translate valid_proof_entry_list_cake;
 
 Definition valid_proof_dec_cake:
-  valid_proof_dec_cake t pl (proof_entries el) =
-    valid_proof_entry_list_cake el t pl
+  valid_proof_dec_cake t pl pr =
+    valid_proof_entry_list_cake pr t pl
 End
 
 Theorem valid_proof_dec_eq:
  !t pl pr. map_ok t ==> 
   valid_proof_dec_cake t pl pr = valid_proof_dec (to_fmap t) pl pr
 Proof
- rw [] \\ Cases_on `pr` \\
+ rw [] \\
  rw [valid_proof_dec_cake,valid_proof_dec,valid_proof_entry_list_eq]
 QED
 
-(*val res = translate valid_proof_dec_cake;*)
+val res = translate valid_proof_dec_cake;
 
 Definition valid_claim_dec_cake:
-  valid_claim_dec_cake cmp (claim_judgment_proof (judgment_follows pl p) (proof_entries el)) =
-    case LAST_DEFAULT el entry_invalid of
+  valid_claim_dec_cake cmp (claim_judgment_proof (judgment_follows pl p) pr) =
+    case LAST_DEFAULT pr entry_invalid of
     | entry_derivation (derivation_deriv l p' reason_assumption) => F
     | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
-      if p = p' then valid_proof_dec_cake (empty cmp) pl (proof_entries el)
+      if p = p' then valid_proof_dec_cake (empty cmp) pl pr
       else F
     | _ => F
 End
@@ -576,7 +575,7 @@ Theorem valid_claim_dec_eq:
   !cmp c. TotOrd cmp ==> valid_claim_dec_cake cmp c = valid_claim_dec c
 Proof
  rw [] \\
- Cases_on `c` \\ Cases_on `p` \\ Cases_on `j` \\
+ Cases_on `c` \\ Cases_on `j` \\
  rw [valid_claim_dec_cake,valid_claim_dec] \\
  Cases_on `LAST_DEFAULT l entry_invalid` \\ rw [] \\
  Cases_on `d` \\ rw [] \\
@@ -584,9 +583,15 @@ Proof
  rw [empty_thm,valid_proof_dec_eq]
 QED
 
-(*val res = translate valid_claim_dec_cake;*)
+Theorem valid_claim_dec_cake_sound:
+ !cmp c. TotOrd cmp ==> 
+   valid_claim_dec_cake cmp c = valid_claim c
+Proof
+ rw [valid_claim_dec_eq,valid_claim_dec_sound]
+QED  
 
-(*
+val res = translate valid_claim_dec_cake;
+
 fun get_current_prog() =
 let
   val state = get_ml_prog_state()
@@ -604,7 +609,8 @@ in current_prog end;
 val _ = astPP.enable_astPP();
 
 val _ = print_term (get_current_prog());
-*)
+
+val _ = astPP.disable_astPP();
 
 val _ = ml_prog_update (close_module NONE);
 

@@ -67,29 +67,33 @@ proplist {{ tex \overline{\phi} }} :: proplist_ ::=
           {{ coq [[prop1 .. propn]] }}
 	  {{ hol [[prop1 .. propn]] }}
 
-proof {{ tex \rho }} :: proof_ ::=
-      {{ coq-universe Type }}
-      {{ com proof }}
-      | entry1 .. entryn :: :: entries
-      | () :: M :: empty
-        {{ coq (proof_entries []) }}
-        {{ hol (proof_entries []) }}
-      | entry proof :: M :: entry
-        {{ coq (proof_entries ([[entry]] :: (proof_list_entry [[proof]]))) }}
-        {{ hol (proof_entries ([[entry]] :: (proof_list_entry [[proof]]))) }}
-
 entry :: entry_ ::=
       {{ coq-universe Type }}
       {{ com proof entry }}
       | derivation :: :: derivation
         {{ com line }}
-      | [ proof ] :: :: box
+      | [ entry1 .. entryn ] :: :: box
         {{ com box }}
+      | [ proof ] :: M :: entry_box
+        {{ coq (entry_box [[proof]]) }}
+	{{ hol (entry_box [[proof]]) }}
       | invalid :: :: invalid
       | last ( proof ) :: M :: last
         {{ com last entry in proof }}
-	{{ coq (last (proof_list_entry [[proof]]) entry_invalid) }}
-	{{ hol (LAST_DEFAULT (proof_list_entry [[proof]]) entry_invalid) }}
+	{{ coq (last ([[proof]]) entry_invalid) }}
+	{{ hol (LAST_DEFAULT ([[proof]]) entry_invalid) }}
+
+proof {{ tex \rho }} :: proof_ ::=
+      {{ coq-universe Type }}
+      {{ coq list entry }}
+      {{ hol entry list }}
+      {{ com proof }}
+      | () :: M :: empty
+        {{ coq [] }}
+        {{ hol [] }}
+      | entry proof :: M :: entry
+        {{ coq ([[entry]] :: [[proof]]) }}
+        {{ hol ([[entry]] :: [[proof]]) }}
 
 derivation :: derivation_ ::=
            {{ coq-universe Type }}
@@ -220,22 +224,10 @@ formula :: formula_ ::=
 	  {{ coq [[entry]] = [[entry']] }}
 	  {{ hol [[entry]] = [[entry']] }}
 embed
-{{ coq
-
-Definition proof_list_entry (pr : proof) : list entry :=
-match pr with
-| proof_entries ls => ls
-end.
-}}
 {{ hol
-
 Definition LAST_DEFAULT:
  (LAST_DEFAULT [] default = default) /\
  (LAST_DEFAULT (e::el) default = LAST (e::el))
-End
-
-Definition proof_list_entry:
- proof_list_entry (proof_entries l) = l
 End
 }}
 defns

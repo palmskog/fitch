@@ -22,8 +22,7 @@ Definition pq := prop_p Q.
 Definition prems := pp :: pq :: nil.
 
 Definition proof_pq : proof :=
-  (proof_entries     
-      ((entry_derivation (derivation_deriv 1 pp (reason_justification justification_premise))) ::
+  (((entry_derivation (derivation_deriv 1 pp (reason_justification justification_premise))) ::
       (entry_derivation (derivation_deriv 2 pq (reason_justification justification_premise))) ::
       (entry_derivation (derivation_deriv 3 (prop_and pp pq) (reason_justification (justification_andi 1 2)))) :: nil)).
 
@@ -37,14 +36,11 @@ Proof.
 apply vc_claim with (l5 := 3) (justification5 := justification_andi 1 2); first by [].
 rewrite /proof_pq.
 set derivs := (entry_derivation (derivation_deriv 2 pq (reason_justification justification_premise))) :: (entry_derivation (derivation_deriv 3 (prop_and pp pq) (reason_justification (justification_andi 1 2))) :: nil).
-have ->: derivs = proof_list_entry (proof_entries derivs) by [].
 apply vp_derivation; first by apply vd_premise; left.
 rewrite /derivs {derivs}.
 set derivs := entry_derivation (derivation_deriv 3 (prop_and pp pq) (reason_justification (justification_andi 1 2))) :: nil.
-have ->: derivs = proof_list_entry (proof_entries derivs) by [].
 apply vp_derivation; first by apply vd_premise; right; left.
 rewrite /derivs {derivs}.
-have ->: nil = proof_list_entry (proof_entries nil) by [].
 apply vp_derivation; last by apply vp_empty.
 by apply vd_andi.
 Qed.
