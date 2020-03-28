@@ -12,7 +12,7 @@ synopsis: "Verified checker for Fitch-style propositional logic proofs"
 build: [make "checker" "-j%{jobs}%"]
 depends: [
   "ocaml" {>= "4.02.3"}
-  "coq" {>= "8.9" & < "8.11~"}
+  "coq" {>= "8.9" & < "8.12~"}
   "coq-ott" {>= "0.30"}
   "ott" {build & >= "0.30"}
   "menhir" {build & >= "20171013"}
