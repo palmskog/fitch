@@ -5,7 +5,7 @@
 
 open preamble
      ml_progLib ml_translatorLib ml_translatorTheory astPP
-     simple_bstTheory fitchTheory ListProgTheory fitchProgramTheory;
+     simple_bstTheory ListProgTheory;
 
 val _ = new_theory "simple_bstProg";
 
@@ -37,7 +37,6 @@ val _ = new_theory "simple_bstProg";
   Let us look at the code in the current program.
 *)
 
-(* TODO: this is too cumbersome! *)
 fun get_current_prog() =
 let
   val state = get_ml_prog_state()
@@ -61,12 +60,6 @@ val res = translate insert_def;
 (*print_term (get_current_prog());*)
 
 val res = translate lookup_def;
-
-val res = translate LAST_DEF;
-
-val res = translate LAST_DEFAULT;
-
-val res = translate MEMBER_def;
 
 (*val res = translate valid_derivation_deriv_premise;*)
 

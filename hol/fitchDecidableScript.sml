@@ -1,25 +1,8 @@
-open HolKernel boolLib Parse bossLib;
-open relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory;
-open ottTheory ottLib simple_bstTheory fitchTheory;
+open HolKernel boolLib Parse bossLib
+ relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory
+ ottTheory ottLib fitchTheory;
 
-val _ = new_theory "fitchProgram";
-
-(*
-Definition prop_eq_dec:
-  prop_eq_dec p_eq_dec p p' =
-   case p, p' of
-   | prop_p a, prop_p a' => p_eq_dec a a'
-   | prop_neg p1, prop_neg p2 => prop_eq_dec p_eq_dec p1 p2
-   |  prop_and p11 p12, prop_and p21 p22 => 
-     prop_eq_dec p_eq_dec p11 p21 /\ prop_eq_dec p_eq_dec p12 p22
-   | prop_or p11 p12, prop_and p21 p22 =>
-      prop_eq_dec p_eq_dec p11 p21 /\ prop_eq_dec p_eq_dec p12 p22
-   | prop_imp p11 p12, prop_and p21 p22 => 
-      prop_eq_dec p_eq_dec p11 p21 /\ prop_eq_dec p_eq_dec p12 p22
-   | prop_cont, prop_cont => T
-   | _ => F
-End
-*)
+val _ = new_theory "fitchDecidable";
 
 Definition valid_derivation_deriv_premise:
  valid_derivation_deriv_premise pl p = MEM p pl

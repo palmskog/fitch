@@ -1,7 +1,7 @@
 open preamble
  ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory
  ListProgTheory MapProgTheory mlmapTheory comparisonTheory
- fitchTheory fitchProgramTheory astPP basisFunctionsLib dyadicCmpTheory;
+ dyadicCmpTheory fitchTheory fitchDecidableTheory astPP basisFunctionsLib;
 
 val _ = new_theory "fitchProg";
 
