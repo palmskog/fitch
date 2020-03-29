@@ -1,7 +1,7 @@
 open preamble
  ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory
- ListProgTheory MapProgTheory mlmapTheory
- fitchTheory fitchProgramTheory astPP basisFunctionsLib;
+ ListProgTheory MapProgTheory mlmapTheory comparisonTheory
+ fitchTheory fitchProgramTheory astPP basisFunctionsLib dyadicCmpTheory;
 
 val _ = new_theory "fitchProg";
 
@@ -561,8 +561,8 @@ QED
 
 val res = translate valid_proof_dec_cake;
 
-Definition valid_claim_dec_cake:
-  valid_claim_dec_cake cmp c =
+Definition valid_claim_dec_cmp_cake:
+  valid_claim_dec_cmp_cake cmp c =
   case c of
   | claim_judgment_proof (judgment_follows pl p) pr =>
     case LAST_DEFAULT pr entry_invalid of
@@ -573,25 +573,48 @@ Definition valid_claim_dec_cake:
     | _ => F
 End
 
-Theorem valid_claim_dec_eq:
-  !cmp c. TotOrd cmp ==> valid_claim_dec_cake cmp c = valid_claim_dec c
+Theorem valid_claim_dec_cmp_eq:
+  !cmp c. TotOrd cmp ==> valid_claim_dec_cmp_cake cmp c = valid_claim_dec c
 Proof
  rw [] \\
  Cases_on `c` \\ Cases_on `j` \\
- rw [valid_claim_dec_cake,valid_claim_dec] \\
+ rw [valid_claim_dec_cmp_cake,valid_claim_dec] \\
  Cases_on `LAST_DEFAULT l entry_invalid` \\ rw [] \\
  Cases_on `d` \\ rw [] \\
  Cases_on `r` \\ rw [] \\
  rw [empty_thm,valid_proof_dec_eq]
 QED
 
-Theorem valid_claim_dec_cake_sound:
+Theorem valid_claim_dec_cmp_cake_sound:
  !cmp c. TotOrd cmp ==> 
-   valid_claim_dec_cake cmp c = valid_claim c
+   valid_claim_dec_cmp_cake cmp c = valid_claim c
+Proof
+ rw [valid_claim_dec_cmp_eq,valid_claim_dec_sound]
+QED
+
+val res = translate valid_claim_dec_cmp_cake;
+
+Definition valid_claim_dec_cake:
+  valid_claim_dec_cake c = valid_claim_dec_cmp_cake dyadic_cmp_num c
+End
+
+Theorem valid_claim_dec_eq:
+  !c. valid_claim_dec_cake c = valid_claim_dec c
+Proof
+  rw [valid_claim_dec_cake] \\
+  MATCH_MP_TAC valid_claim_dec_cmp_eq \\
+  rw [TotOrd_num_cmp]
+QED
+
+Theorem valid_claim_dec_cake_sound:
+ !c. valid_claim_dec_cake c = valid_claim c
 Proof
  rw [valid_claim_dec_eq,valid_claim_dec_sound]
-QED  
+QED
 
+val res = translate dyadic_cmp;
+val res = translate num_cmp_def;
+val res = translate dyadic_cmp_num;
 val res = translate valid_claim_dec_cake;
 
 fun get_current_prog() =

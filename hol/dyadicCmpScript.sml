@@ -3,8 +3,6 @@ open HolKernel boolLib Parse bossLib
 
 val _ = new_theory "dyadicCmp";
 
-(*val _ = type_abbrev("dyadic", Type`:'a + 'a # 'a`);*)
-
 Definition dyadic_cmp:
   dyadic_cmp (cmp: 'a comp) =
    \x y.
@@ -70,7 +68,20 @@ Proof
   Cases_on `cmp q' q''` >> Cases_on `cmp q'' q` >> Cases_on `cmp q' q` >> 
   Cases_on `cmp r' r''` >> Cases_on `cmp r'' r` >> Cases_on `cmp r' r` >> fs [TotOrd] >>
   METIS_TAC [all_cpn_distinct]
- ]    
+ ]
+QED
+
+Definition dyadic_cmp_num:
+  dyadic_cmp_num = dyadic_cmp num_cmp
+End
+
+Theorem TotOrd_num_cmp:
+ TotOrd dyadic_cmp_num
+Proof
+ rw [dyadic_cmp_num] >>
+ MATCH_MP_TAC TotOrd_dyadic_cmp >>
+ rw [num_cmp_numOrd] >>
+ rw [TO_numOrd]
 QED
 
 val _ = export_theory();
