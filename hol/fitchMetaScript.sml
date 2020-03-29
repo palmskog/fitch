@@ -1,6 +1,6 @@
-open HolKernel boolLib Parse bossLib pairTheory optionTheory stringTheory;
-open relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory;
-open IndDefLib IndDefRules ottTheory ottLib fitchTheory;
+open HolKernel boolLib Parse bossLib pairTheory optionTheory stringTheory
+ relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory
+ IndDefLib IndDefRules ottTheory ottLib fitchTheory;
 
 val _ = new_theory "fitchMeta";
 

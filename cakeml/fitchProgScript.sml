@@ -562,7 +562,9 @@ QED
 val res = translate valid_proof_dec_cake;
 
 Definition valid_claim_dec_cake:
-  valid_claim_dec_cake cmp (claim_judgment_proof (judgment_follows pl p) pr) =
+  valid_claim_dec_cake cmp c =
+  case c of
+  | claim_judgment_proof (judgment_follows pl p) pr =>
     case LAST_DEFAULT pr entry_invalid of
     | entry_derivation (derivation_deriv l p' reason_assumption) => F
     | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
