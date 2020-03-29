@@ -13,7 +13,7 @@ metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
       {{ coq-universe Type }}
-      {{ hol bool }}
+      {{ hol string }}
       {{ com atomic proposition }}
 metavar l ::=
       {{ lex numeral }}
