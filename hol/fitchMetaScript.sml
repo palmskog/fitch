@@ -20,11 +20,11 @@ Definition premises_admitted:
 End
 
 Definition map_line_admitted:
- map_line_admitted G a = (!l p. FLOOKUP G (INL l) = SOME (INL p) ==> prop_sem p a)
+ map_line_admitted (G:G) a = (!l p. FLOOKUP G (INL l) = SOME (INL p) ==> prop_sem p a)
 End
 
 Definition map_box_admitted:
- map_box_admitted G a =
+ map_box_admitted (G:G) a =
   (!l1 l2 p1 p2. FLOOKUP G (INR (l1, l2)) = SOME (INR (p1, p2)) ==>
   (prop_sem p1 a ==> prop_sem p2 a))
 End

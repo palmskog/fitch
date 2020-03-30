@@ -9,6 +9,7 @@ Module Fitch (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
 Section FitchProp.
 Context {A : Type}.
 }}
+
 metavar p ::=
       {{ lex alphanum }}
       {{ coq A }}
@@ -27,6 +28,7 @@ indexvar n ::=
       {{ coq-equality }}
       {{ hol num }}
       {{ com index variable (subscript) }}
+
 grammar
 claim :: claim_ ::=
       {{ coq-universe Type }}
@@ -223,6 +225,7 @@ formula :: formula_ ::=
 	  {{ com entry equality }}
 	  {{ coq [[entry]] = [[entry']] }}
 	  {{ hol [[entry]] = [[entry']] }}
+
 embed
 {{ hol
 Definition LAST_DEFAULT:
@@ -230,111 +233,114 @@ Definition LAST_DEFAULT:
  (LAST_DEFAULT (e::el) default = LAST (e::el))
 End
 }}
+
 defns
   validity :: '' ::=
 defn 
   claim :: :: valid_claim :: vc_ {{ com valid claim }} by
 
-  last ( proof ) = l prop justification
-  [] , proplist |- proof
-  ------------------------------------- :: claim
+  last(proof) = l prop justification
+  [],proplist |- proof
+  ---------------------------------- :: claim
   proplist |- prop proof
+
 defn
   G , proplist |- proof :: :: valid_proof :: vp_ {{ com valid proof }} by
   
-  ------------------ :: empty
-  G , proplist |- ()
+  ----------------- :: empty
+  G, proplist |- ()
 
-  :valid_derivation: G , proplist |- l prop justification
-  G [ l |-> prop ] , proplist |- proof
-  ------------------------------------------------------- :: derivation
-  G , proplist |- l prop justification proof
+  G,proplist |- l prop justification
+  G[l |-> prop],proplist |- proof
+  ---------------------------------------- :: derivation
+  G,proplist |- l prop justification proof
 
-  last ( l prop assumption proof ) = l' prop' reason
-  G [ l |-> prop ] , proplist |- proof
-  G [ ( l , l' ) |-> ( prop , prop' ) ] , proplist |- proof'
-  ---------------------------------------------------------- :: box
-  G , proplist |- [ l prop assumption proof ] proof'
+  last (l prop assumption proof) = l' prop' reason
+  G [l |-> prop], proplist |- proof
+  G[(l,l') |-> (prop,prop')], proplist |- proof'
+  ------------------------------------------------ :: box
+  G,proplist |- [l prop assumption proof] proof'
+
 defn
-  G , proplist |- derivation :: :: valid_derivation :: vd_
-    	      {{ com valid derivation }} by
+  G , proplist |- derivation :: :: valid_derivation :: vd_ {{ com valid derivation }} by
 
   prop in proplist
-  ------------------------------ :: premise
-  G , proplist |- l prop premise
+  ---------------------------- :: premise
+  G,proplist |- l prop premise
 
-  ------------------------------------ :: lem
-  G , proplist |- l prop \/ ~ prop lem
+  ------------------------------- :: lem
+  G,proplist |- l prop\/~prop lem
 
-  G ( l' ) = prop
-  ------------------------------ :: copy
-  G , proplist |- l prop copy l'
+  G(l') = prop
+  ---------------------------- :: copy
+  G,proplist |- l prop copy l'
 
-  G ( l' ) = _|_
-  ------------------------------ :: conte
-  G , proplist |- l prop _|_e l'
+  G(l') = _|_
+  ---------------------------- :: conte
+  G,proplist |- l prop _|_e l'
 
-  G ( l1 ) = prop
-  G ( l2 ) = prop'
-  ------------------------------------------- :: andi
-  G , proplist |- l prop /\ prop' /\i l1 , l2
+  G(l1) = prop
+  G(l2) = prop'
+  ------------------------------------- :: andi
+  G,proplist |- l prop/\prop' /\i l1,l2
 
-  G ( l' ) = prop /\ prop'
-  ------------------------------ :: ande1
-  G , proplist |- l prop /\e1 l'
+  G(l') = prop/\prop'
+  ---------------------------- :: ande1
+  G,proplist |- l prop /\e1 l'
 
-  G ( l' ) = prop /\ prop'
-  ------------------------------- :: ande2
-  G , proplist |- l prop' /\e2 l'
+  G(l') = prop/\prop'
+  ----------------------------- :: ande2
+  G,proplist |- l prop' /\e2 l'
 
-  G ( l' ) = prop
-  --------------------------------------- :: ori1
-  G , proplist |- l prop \/ prop' \/i1 l'
+  G(l') = prop
+  ----------------------------------- :: ori1
+  G,proplist |- l prop\/prop' \/i1 l'
 
-  G ( l' ) = prop'
-  --------------------------------------- :: ori2
-  G , proplist |- l prop \/ prop' \/i2 l'
+  G(l') = prop'
+  ----------------------------------- :: ori2
+  G,proplist |- l prop\/prop' \/i2 l'
 
-  G ( l1 ) = prop'
-  G ( l2 ) = prop' -> prop
-  ---------------------------------- :: impe
-  G , proplist |- l prop ->e l1 , l2
+  G(l1) = prop'
+  G(l2) = prop'->prop
+  ------------------------------ :: impe
+  G,proplist |- l prop ->e l1,l2
 
-  G ( l' ) = prop
-  --------------------------------- :: negnegi
-  G , proplist |- l ~ ~ prop ~~i l'
+  G(l') = prop
+  ----------------------------- :: negnegi
+  G,proplist |- l ~~prop ~~i l'
 
-  G ( l' ) = ~ ~ prop
-  ----------------------------- :: negnege
-  G , proplist |- l prop ~~e l'
+  G(l') = ~~prop
+  --------------------------- :: negnege
+  G,proplist |- l prop ~~e l'
 
-  G ( l1 ) = prop -> prop'
-  G ( l2 ) = ~ prop'
-  ----------------------------------- :: mt
-  G , proplist |- l ~ prop mt l1 , l2
+  G(l1) = prop->prop'
+  G(l2) = ~prop'
+  ------------------------------ :: mt
+  G,proplist |- l ~prop mt l1,l2
 
-  G ( l1 ) = prop
-  G ( l2 ) = ~ prop
-  -------------------------------- :: nege
-  G , proplist |- l _|_ ~e l1 , l2
+  G(l1) = prop
+  G(l2) = ~prop
+  ---------------------------- :: nege
+  G,proplist |- l _|_ ~e l1,l2
 
-  G ( l1 , l2 ) = ( prop , prop' ) 
-  ------------------------------------------- :: impi
-  G , proplist |- l prop -> prop' ->i l1 - l2
+  G(l1,l2) = (prop,prop')
+  ------------------------------------- :: impi
+  G,proplist |- l prop->prop' ->i l1-l2
 
-  G ( l1 , l2 ) = ( prop , _|_ )
-  ----------------------------------- :: negi
-  G , proplist |- l ~ prop ~i l1 - l2
+  G(l1,l2) = (prop, _|_)
+  ------------------------------ :: negi
+  G,proplist |- l ~prop ~i l1-l2
 
-  G ( l1 ) = prop \/ prop'
-  G ( l2 , l3 ) = ( prop , prop'' )
-  G ( l4 , l5 ) = ( prop' , prop'' )
-  --------------------------------------------------- :: ore
-  G , proplist |- l prop'' \/e l1 , l2 - l3 , l4 - l5
+  G(l1) = prop\/prop'
+  G(l2,l3) = (prop,prop'')
+  G(l4,l5) = (prop',prop'')
+  ----------------------------------------- :: ore
+  G,proplist |- l prop'' \/e l1,l2-l3,l4-l5
 
-  G ( l1 , l2 ) = ( ~ prop , _|_ )
-  ---------------------------------- :: pbc
-  G , proplist |- l prop pbc l1 - l2
+  G(l1,l2) = (~prop,_|_)
+  ------------------------------ :: pbc
+  G,proplist |- l prop pbc l1-l2
+
 embed
 {{ coq
 End FitchProp.
