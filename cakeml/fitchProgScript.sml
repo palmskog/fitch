@@ -1,7 +1,7 @@
 open preamble
  ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory
  ListProgTheory MapProgTheory mlmapTheory comparisonTheory
- dyadicCmpTheory fitchTheory fitchDecidableTheory astPP basisFunctionsLib;
+ dyadicCmpTheory fitchTheory fitchExampleTheory fitchDecidableTheory astPP basisFunctionsLib;
 
 val _ = new_theory "fitchProg";
 
@@ -616,6 +616,10 @@ val res = translate dyadic_cmp;
 val res = translate num_cmp_def;
 val res = translate dyadic_cmp_num;
 val res = translate valid_claim_dec_cake;
+
+val res = translate example_premises;
+val res = translate example_proof;
+val res = translate example_claim;
 
 fun get_current_prog() =
 let
