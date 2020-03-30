@@ -23,6 +23,11 @@ Executable OCaml checkers:
 - [`OCamlbuild`](https://github.com/ocaml/ocamlbuild)
 - [`ocamlfind`](https://ocaml.org)
 
+Executable CakeML checker:
+
+- [`HOL4 Kananaskis-13`](https://hol-theorem-prover.org)
+- [`CakeML 1009`](https://github.com/CakeML/cakeml/releases/tag/v1009)
+
 Building Coq definitions and proofs
 -----------------------------------
 
@@ -48,6 +53,13 @@ To build the default executable checker program, run `make checker`. Example pro
 To generate an OCaml program with the alternative Prolog file format parser, run `make prolog` in the root directory. Example proofs (`.pl` files) can then be checked as follows:
 
     $ ./prolog.native examples/imp_perm.pl
+
+Building the CakeML checker
+--------------------------
+
+A verified executable checker in [CakeML](https://cakeml.org) can be obtained using the CakeML proof-producing synthesis tool ("compiler frontend 1"). To generate it, go to the `cakeml` directory and adjust the `CAKEMLDIR` variable in the `Holmake` file to point to the directory with CakeML release 1009. Then, run `Holmake`.
+
+For convenience, a pretty-printed [version](https://gist.github.com/palmskog/a988783a000ae6319eed15819eeb60ac) of the verified CakeML code is available; note that the pretty-printing itself has not been verified. Moreover, there is currently no parser for for the surface syntax.
 
 Documentation
 -------------
