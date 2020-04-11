@@ -25,7 +25,6 @@ metavar l ::=
 indexvar n ::= 
       {{ lex numeral }}
       {{ coq nat }}
-      {{ coq-equality }}
       {{ hol num }}
       {{ com index variable (subscript) }}
 

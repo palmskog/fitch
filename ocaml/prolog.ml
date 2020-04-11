@@ -1,7 +1,7 @@
 open Util
 open Fitch_system
-open FitchProgramMap
-open FitchPI
+open FitchDecidableNat
+open FitchProp
 
 let main () =
   let f = open_in Sys.argv.(1) in

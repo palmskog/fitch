@@ -15,7 +15,9 @@ Module MapFacts := Facts Map.
 Section PropSem.
 Context {A : Type}.
 
-Fixpoint prop_sem (pr : @prop A) a : Prop :=
+Local Notation prop := (@prop A).
+
+Fixpoint prop_sem (pr : prop) a : Prop :=
 match pr with
 | prop_p P => a P
 | prop_neg p' => ~ (prop_sem p' a)
@@ -42,7 +44,7 @@ Definition map_box_admitted (G5 : G) a : Prop :=
 
 Section Derivations.
 
-Variables (G5 : @G A) (proplist5 : @proplist A) (prop5 : @prop A) (a : @p A -> Prop).
+Variables (G5 : @G A) (proplist5 : @proplist A) (prop5 : prop) (a : @p A -> Prop).
 
 Hypothesis H_prem : premises_admitted proplist5 a.
 Hypothesis H_m : map_line_admitted G5 a.
@@ -302,7 +304,7 @@ End Derivations.
 
 (* move to dyadic_ordered *)
 Lemma not_in_map :
-  forall (G5 : G) (l0 l6 : l) (prop0 prop6 : @prop A),
+  forall (G5 : G) (l0 l6 : l) (prop0 prop6 : prop),
     l0 <> l6 ->
     Map.find (inl l6) (Map.add (inl l0) (inl prop0) G5) = Some (inl prop6) ->
     Map.find (inl l6) G5 = Some (inl prop6).
@@ -315,7 +317,7 @@ Qed.
 
 (* move to dyadic_ordered *)
 Lemma not_in_map_dyad :
-  forall (G5 : G) (l0 l6 l7 : l) (prop0 prop6 prop7 : @prop A),
+  forall (G5 : G) (l0 l6 l7 : l) (prop0 prop6 prop7 : prop),
     Map.find (inr (l6, l7)) (Map.add (inl l0) (inl prop0) G5) = Some (inr (prop6, prop7)) ->
     Map.find (inr (l6, l7)) G5 = Some (inr (prop6, prop7)).
 Proof.
@@ -327,7 +329,7 @@ Qed.
 
 (* move to dyadic_ordered *)
 Lemma not_in_dyad_map :
-  forall (G5 : G) (l6 l7 l8 : l) (prop6 prop7 prop8 : @prop A),
+  forall (G5 : G) (l6 l7 l8 : l) (prop6 prop7 prop8 : prop),
     Map.find (inl l6) (Map.add (inr (l7, l8)) (inr (prop7, prop8)) G5) = Some (inl prop6) ->
     Map.find (inl l6) G5 = Some (inl prop6).
 Proof.
@@ -339,7 +341,7 @@ Qed.
 
 (* move to dyadic_ordered *)
 Lemma in_map :
-  forall (G5 : G) (l0 l6 : l) (prop0 prop6 : @prop A),
+  forall (G5 : G) (l0 l6 : l) (prop0 prop6 : prop),
     l0 = l6 ->
     Map.find (inl l6) (Map.add (inl l0) (inl prop0) G5) = Some (inl prop6) ->
     prop0 = prop6.
@@ -360,7 +362,7 @@ by rewrite MapFacts.add_eq_o in H_some; first by injection H_some.
 Qed.
 
 (* move to dyadic_ordered *)
-Lemma not_in_map_dyad_neq : forall (G5 : G) (d d' : dyadic) (prop5 prop6 prop7 prop' : @prop A), 
+Lemma not_in_map_dyad_neq : forall (G5 : G) (d d' : dyadic) (prop5 prop6 prop7 prop' : prop), 
   d <> d' -> 
   Map.find d (Map.add d' (inr (prop5, prop')) G5) = Some (inr (prop6, prop7)) ->
   Map.find d G5 = Some (inr (prop6, prop7)).
@@ -372,7 +374,7 @@ by apply MapFacts.find_mapsto_iff.
 Qed.
 
 Definition justification_prop (G5 : G) (proplist5 : proplist) (proof5 : proof) : Prop := 
-  forall (l5 : l) (prop5 : @prop A) (reason5 : reason), 
+  forall (l5 : l) (prop5 : prop) (reason5 : reason), 
   valid_proof G5 proplist5 proof5 -> 
   In (entry_derivation (derivation_deriv l5 prop5 reason5)) proof5 ->
   reason5 <> reason_assumption.
@@ -420,7 +422,7 @@ case: H_in => H_in; first by contradict H_in.
 exact: (IH' l0 prop0).
 Qed.
 
-Lemma valid_in_justification: forall (G5 : G) (proplist0 : proplist) (proof5 : proof) (l5 : l) (prop5 : @prop A) (reason5 : reason), 
+Lemma valid_in_justification: forall (G5 : G) (proplist0 : proplist) (proof5 : proof) (l5 : l) (prop5 : prop) (reason5 : reason), 
   valid_proof G5 proplist0 proof5 -> 
   In (entry_derivation (derivation_deriv l5 prop5 reason5)) proof5 ->
   reason5 <> reason_assumption.

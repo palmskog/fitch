@@ -3,8 +3,8 @@
 coq/ssrexport.v
 coq/dyadic_ordered.v
 coq/fitch_metatheory.v
-coq/fitch_program_extrocaml.v
-coq/fitch_program_example.v
-coq/fitch_program.v
+coq/fitch_decidable_extrocaml.v
+coq/fitch_decidable_example.v
+coq/fitch_decidable.v
 coq/fitch_metatheory_example.v
 coq/fitch.v

@@ -1,7 +1,7 @@
 open Util
 open Fitch_system
-open FitchProgramMap
-open FitchPI
+open FitchDecidableNat
+open FitchProp
 
 let rec string_of_prop = function
 | Coq_prop_cont -> "cont"

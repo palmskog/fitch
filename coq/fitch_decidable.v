@@ -1,17 +1,16 @@
 Require Import Fitch.fitch.
 Require Import Fitch.ssrexport.
 
-Module FitchProgram
+Module FitchDecidable
   (UOT : UsualOrderedType) (DUOT : DyadicUsualOrderedType UOT)
   (Map : FMapInterface.S with Module E := DUOT).
 
-Module FitchPI := Fitch UOT DUOT Map.
-Export FitchPI.
+Module Export FitchProp := Fitch UOT DUOT Map.
 
-Section FitchProp.
+Section PropDecide.
 Context {A : Type} (A_eq_dec : forall (a a' : A), {a = a'}+{a <> a'}).
 
-Notation prop := (@prop A).
+Local Notation prop := (@prop A).
 
 Definition prop_eq_dec : forall (prop5 prop' : prop), { prop5 = prop' }+{ prop5 <> prop' }.
 decide equality; apply A_eq_dec.
@@ -737,12 +736,6 @@ refine
   by subst; congruence.
 Defined.
 
-Definition validate_claim (c : claim) : bool :=
-match valid_claim_dec c with 
-| left _ => true
-| right _ => false
-end.
+End PropDecide.
 
-End FitchProp.
-
-End FitchProgram.
+End FitchDecidable.

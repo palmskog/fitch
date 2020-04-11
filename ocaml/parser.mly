@@ -1,8 +1,8 @@
 %{
 open Util
 open Fitch_system
-open FitchProgramMap
-open FitchPI
+open FitchDecidableNat
+open FitchProp
 %}
 
 %token <string> IDENT
@@ -20,7 +20,7 @@ open FitchPI
 %right NOT
 
 %start main
-%type <char list Fitch_system.FitchProgramMap.FitchPI.claim> main
+%type <char list Fitch_system.FitchDecidableNat.FitchProp.claim> main
 
 %%
 
