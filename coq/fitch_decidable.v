@@ -12,13 +12,72 @@ Context {A : Type} (A_eq_dec : forall (a a' : A), {a = a'}+{a <> a'}).
 
 Local Notation prop := (@prop A).
 
-Definition prop_eq_dec : forall (prop5 prop' : prop), { prop5 = prop' }+{ prop5 <> prop' }.
-decide equality; apply A_eq_dec.
+Local Obligation Tactic := Tactics.program_simpl; try intuition congruence.
+Program Fixpoint prop_eq_dec (prop1 prop2 : prop) : { prop1 = prop2 }+{ prop1 <> prop2 } :=
+  match prop1, prop2 with
+  | prop_cont, prop_cont => left _ _
+  | prop_p p1, prop_p p2 =>
+    match A_eq_dec p1 p2 with
+    | left H_dec => left _ _
+    | right H_dec => right _ _
+    end
+  | prop_neg prop1', prop_neg prop2' =>
+    match prop_eq_dec prop1' prop2' with
+    | left H_dec => left _ _
+    | right H_dec => right _ _
+    end
+  | prop_and prop11 prop12, prop_and prop21 prop22 =>
+    match prop_eq_dec prop11 prop21, prop_eq_dec prop12 prop22 with
+    | left H_dec, left H_dec' => left _ _
+    | _, _ => right _ _
+    end
+  | prop_or prop11 prop12, prop_or prop21 prop22 =>
+    match prop_eq_dec prop11 prop21, prop_eq_dec prop12 prop22 with
+    | left H_dec, left H_dec' => left _ _
+    | _, _ => right _ _
+    end
+  | prop_imp prop11 prop12, prop_imp prop21 prop22 =>
+    match prop_eq_dec prop11 prop21, prop_eq_dec prop12 prop22 with
+    | left H_dec, left H_dec' => left _ _
+    | _, _ => right _ _
+    end
+  | _, _ => right _ _
+  end.
+Next Obligation.
+  move: H.
+  set s1 := eq_refl prop21.
+  set s2 := eq_refl prop22.
+  move => H.
+  by case (H s1 s2).
 Defined.
+Next Obligation.
+  move: H.
+  set s1 := eq_refl prop21.
+  set s2 := eq_refl prop22.
+  move => H.
+  by case (H s1 s2).
+Defined.
+Next Obligation.
+  move: H.
+  set s1 := eq_refl prop21.
+  set s2 := eq_refl prop22.
+  move => H.
+  by case (H s1 s2).
+Defined.
+Next Obligation.
+  destruct prop1; destruct prop2; try by congruence.
+  - by case (H p5 p0).
+  - by case (H0 prop1 prop2).
+  - by case (H1 prop1_1 prop1_2 prop2_1 prop2_2).
+  - by case (H2 prop1_1 prop1_2 prop2_1 prop2_2).
+  - by case (H3 prop1_1 prop1_2 prop2_1 prop2_2).
+  - by case: H4.
+Defined.
+Local Obligation Tactic := Tactics.program_simpl.
 
 Program Definition valid_derivation_deriv_premise_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) :
-    { valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) }+
-    { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) } :=
+ { valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) }+
+ { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_premise)) } :=
 match In_dec prop_eq_dec prop5 proplist5 with
 | left H_in => left _ _
 | right H_in => right _ _
@@ -31,8 +90,8 @@ by move => H_vd; inversion H_vd.
 Defined.
 
 Program Definition valid_derivation_deriv_lem_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) :
-    { valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) }+
-    { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) } :=
+ { valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) }+
+ { ~ valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification_lem)) } :=
 match prop5 with
 | prop_or prop' (prop_neg prop7) =>
   match prop_eq_dec prop' prop7 with
@@ -691,113 +750,6 @@ Inductive valid_entry (G5 : G) (proplist5 : proplist) : entry -> Prop :=
   forall (proof5 : proof) (l5 : l) (prop5 : prop),
     valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
     valid_entry G5 proplist5 (entry_box (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof5)).
-
-(*
-Program Definition valid_proof_entry_list_
-  (valid_entry_dec : forall (G5 : G) (proplist5 : proplist) (e : entry), 
-    { valid_entry G5 proplist5 e } + { ~ valid_entry G5 proplist5 e } )
-  (ls : list entry) (G5 : G) (proplist5 : proplist) :
-    { valid_proof G5 proplist5 ls } + { ~ @valid_proof A G5 proplist5 ls } :=
-(fix valid_proof_entry_list (ls : list entry) (G5 : G) (proplist5 : proplist) : 
-  { valid_proof G5 proplist5 ls }+{ ~ valid_proof G5 proplist5 ls } :=
-match ls with 
-| nil => left _ _
-| cons e ls' => 
-  match e with
-  | entry_derivation (derivation_deriv l5 prop5 reason5) =>
-    match reason5 with
-    | reason_assumption => right _ _
-    | reason_justification justification5 =>
-      match valid_entry_dec G5 proplist5 e with
-      | left H_dec =>
-        match valid_proof_entry_list ls' (Map.add (inl l5) (inl prop5) G5) proplist5 with
-        | left H_dec_l => left _ _
-        | right H_dec_l => right _ _
-        end
-      | right H_dec => right _ _
-      end
-    end
-  | entry_box proof5 =>
-    match proof5 with
-    | nil => right _ _
-    | e' :: ls5' =>
-      match e' with
-      | entry_derivation (derivation_deriv l5 prop5 reason5) =>
-        match reason5 with
-        | reason_assumption =>
-           match last proof5 entry_invalid with
-           | entry_derivation (derivation_deriv l6 prop6 reason6) =>
-             match valid_entry_dec G5 proplist5 e with
-             | left H_dec => 
-               match valid_proof_entry_list ls' (Map.add (inr (l5, l6)) (inr (prop5, prop6)) G5) proplist5 with
-               | left H_dec' => left _ _
-               | right H_dec' => right _ _
-               end
-             | right H_dec => right _ _
-             end
-           | _ => right _ _
-           end
-        | reason_justification justification5 => right _ _
-        end
-      | _ => right _ _
-      end
-    end
-  | entry_invalid => right _ _
-  end
-end) ls G5 proplist5.
-Next Obligation.
-  exact: vp_empty.
-Defined.
-Next Obligation.
- by move => H_vp; inversion H_vp; subst.
-Defined.
-Next Obligation.
- inversion H_dec; subst => //.
- by apply vp_derivation.
-Defined.
-Next Obligation.
- by move => H_vp; inversion H_vp; subst.
-Defined.
-Next Obligation.
-  move => H_vp; inversion H_vp; subst => //.
-  case: H_dec {Heq_anonymous}.
-  exact: valid_entry_derivation.
-Defined.
-Next Obligation.
- by move => H_vp; inversion H_vp; subst.
-Defined.
-Next Obligation.
- inversion H_dec; subst.
- by apply vp_box with (l' := l6) (prop' := prop6) (reason5 := reason6).
-Defined.
-Next Obligation.
- move => H_vp; inversion H_vp; subst.
- case: H_dec' {Heq_anonymous}.
- rewrite -Heq_anonymous0 in H4.
-  injection H4 => Heq1 Heq2 Heq3.
-  by subst.
-Defined.
-Next Obligation.
- move => H_vp; inversion H_vp; subst.
- case: H_dec {Heq_anonymous}.
- exact: valid_entry_box.
-Defined.
-Next Obligation.
- move => H_vp; inversion H_vp; subst.
- rewrite H5 in H.
- by case (H l' prop' reason5).
-Defined.
-Next Obligation.
- by move => H_vp; inversion H_vp; subst.
-Defined.
-Next Obligation.
- move => H_vp; inversion H_vp; subst.
- by case (H l5 prop5 reason_assumption).
-Defined.
-Next Obligation.
- by move => H_vp; inversion H_vp; subst.
-Defined.
-*)
 
 Definition valid_proof_entry_list_   
   (valid_entry_dec : forall (G5 : G) (proplist5 : proplist) (e : entry), 
