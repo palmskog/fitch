@@ -1,6 +1,4 @@
-open HolKernel boolLib Parse bossLib
- relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory
- ottTheory ottLib fitchTheory;
+open HolKernel boolLib Parse bossLib relationTheory listTheory rich_listTheory finite_mapTheory pred_setTheory ottTheory ottLib fitchTheory;
 
 val _ = new_theory "fitchExample";
 
