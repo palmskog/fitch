@@ -379,56 +379,27 @@ Definition justification_prop (G5 : G) (proplist5 : proplist) (proof5 : proof) :
   In (entry_derivation (derivation_deriv l5 prop5 reason5)) proof5 ->
   reason5 <> reason_assumption.
 
-Lemma justification_empty : (forall (G5 : G) (proplist5 : proplist),
-   justification_prop G5 proplist5 []).
-Proof. by intuition. Qed.
-
-Lemma justification_derivation :
-  forall (G5 : G) (proplist5 : proplist) (l5 : l) 
-    (prop5 : prop) (justification5 : justification) (proof5 : proof),
-       valid_derivation G5 proplist5 (derivation_deriv l5 prop5 (reason_justification justification5)) ->
-       valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
-       justification_prop (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
-       justification_prop G5 proplist5
-         (entry_derivation (derivation_deriv l5 prop5 (reason_justification justification5)) :: proof5).
-Proof.
-rewrite /justification_prop.
-move => G5 proplist0 l5 prop5 justification5 proof5 H_vd.
-move => H_vp IH.
-move => l0 prop0 reason5 H_vp' H_in.
-case: H_in => H_in; last by apply (IH l0 prop0).
-injection H_in => H_reason H_prop H_l.
-move => H_neq.
-by rewrite -H_reason in H_neq.
-Qed.
-
-Lemma justification_box : 
-  forall (G5 : G) (proplist5 : proplist) (l5 : l) 
-    (prop5 : prop) (proof5 proof' : proof) (l' : l) 
-    (prop' : prop) (reason5 : reason),
- last (entry_derivation (derivation_deriv l5 prop5 reason_assumption) :: proof5) entry_invalid =
-   entry_derivation (derivation_deriv l' prop' reason5) ->
- valid_proof (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
- justification_prop (Map.add (inl l5) (inl prop5) G5) proplist5 proof5 ->
- valid_proof (Map.add (inr (l5, l')) (inr (prop5, prop')) G5) proplist5 proof' ->
- justification_prop (Map.add (inr (l5, l')) (inr (prop5, prop')) G5) proplist5 proof' ->
- justification_prop G5 proplist5
-  (entry_box ((entry_derivation (derivation_deriv l5 prop5 reason_assumption)) :: proof5) :: proof').
-Proof.
-rewrite /justification_prop.
-move => G5 proplist0 l5 prop5 proof5 proof' l' prop' reason5.
-move => H_last H_vp IH H_vp' IH' l0 prop0 reason0 H_vp'' H_in.
-case: H_in => H_in; first by contradict H_in.
-exact: (IH' l0 prop0).
-Qed.
-
-Lemma valid_in_justification: forall (G5 : G) (proplist0 : proplist) (proof5 : proof) (l5 : l) (prop5 : prop) (reason5 : reason), 
+Lemma justification_valid_in: forall (G5 : G) (proplist0 : proplist) (proof5 : proof) (l5 : l) (prop5 : prop) (reason5 : reason), 
   valid_proof G5 proplist0 proof5 -> 
   In (entry_derivation (derivation_deriv l5 prop5 reason5)) proof5 ->
   reason5 <> reason_assumption.
 Proof.
 move => G5 proplist0 proof5 l5 prop5 reason5 H_vp.
-exact: (valid_proof_ind justification_prop justification_empty justification_derivation justification_box _ _ _ H_vp).
+apply: (valid_proof_ind justification_prop _ _ _ _ _ _ H_vp) => //.
+- by intuition.
+- rewrite /justification_prop.
+  move => G' proplist' l' prop' justification' proof' H_vd.
+  move => H_vp' IH.
+  move => l0 prop0 reason' H_vp'' H_in.
+  case: H_in => H_in; last by apply (IH l0 prop0).
+  injection H_in => H_reason H_prop H_l.
+  move => H_neq.
+  by rewrite -H_reason in H_neq.
+- rewrite /justification_prop.
+  move => G' proplist' l' prop' proof' proof'' l'' prop'' reason'.
+  move => H_last H_vp' IH H_vp0 IH' l0 prop0 reason0 H_vp'' H_in.
+  case: H_in => H_in; first by contradict H_in.
+  exact: (IH' l0 prop0).
 Qed.
 
 Definition soundness_prop (G5 : G) (proplist5 : proplist) (proof5 : proof) : Prop :=
@@ -517,7 +488,7 @@ have H_in_valid: In (entry_derivation (derivation_deriv l' prop' reason5)) proof
   apply (@in_app_iff entry).
   by right; left.
 have H_justification := H_in_valid.
-apply (valid_in_justification _ _ _ _ _ _ H_vp) in H_justification.
+apply (justification_valid_in _ _ _ _ _ _ H_vp) in H_justification.
 case H_reason: reason5 => [|j6] => //.
 rewrite H_reason in H_in_valid.
 rewrite H_reason in H_proof5_entry.
@@ -545,17 +516,12 @@ rewrite /map_box_admitted in H_mm.
 by apply H_mm with (l6 := l1) (l7 := l2) (prop6 := prop1) (prop7 := prop2) in H_mm12.
 Qed.
 
-Lemma soundness_proof : forall (proof5 : proof) (G5 : G) (proplist5 : proplist) (prop5 : prop) (l5 : l) (j5 : justification) a,
-  premises_admitted proplist5 a ->
-  map_line_admitted G5 a ->
-  map_box_admitted G5 a ->
+Lemma soundness_proof : forall (G5 : G) (proof5 : proof) (proplist5 : proplist),
   valid_proof G5 proplist5 proof5 ->
-  In (entry_derivation (derivation_deriv l5 prop5 (reason_justification j5))) proof5 ->
-  prop_sem prop5 a.
+  soundness_prop G5 proplist5 proof5.
 Proof.
-move => proof5 G5 proplist5 prop5 l5 j5 a H_prem H_m H_mm H_vp.
-move: a H_prem l5 j5 H_m H_mm prop5.
-exact: (valid_proof_ind soundness_prop soundness_empty soundness_derivation soundness_box G5 proplist5 proof5 H_vp).
+move => proof5 G5 proplist5 H_vp.
+exact: (valid_proof_ind _ soundness_empty soundness_derivation soundness_box).
 Qed.
 
 Theorem soundness_claim : forall (prop5 : prop) (proplist5 : proplist) (proof5 : proof) a,
@@ -565,7 +531,7 @@ Theorem soundness_claim : forall (prop5 : prop) (proplist5 : proplist) (proof5 :
 Proof.
 move => p5 proplist5 proof5 a H_prem H_c.
 inversion H_c; subst.
-have H_snd := soundness_proof proof5 (Map.empty dyadicprop) proplist5 p5 l5 justification5.
+have H_snd := soundness_proof (Map.empty dyadicprop) proof5 proplist5 H3 a H_prem l5 justification5.
 apply H_snd => //.
 - rewrite /map_line_admitted.
   move => l6 prop6 H_find.
