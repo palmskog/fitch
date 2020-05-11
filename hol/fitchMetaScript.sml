@@ -14,11 +14,13 @@ Definition prop_sem:
 End
 
 Definition premises_admitted:
- premises_admitted pl a = (!p. MEM p pl ==> prop_sem p a)
+ premises_admitted pl a =
+  (!p. MEM p pl ==> prop_sem p a)
 End
 
 Definition map_line_admitted:
- map_line_admitted (G:G) a = (!l p. FLOOKUP G (INL l) = SOME (INL p) ==> prop_sem p a)
+ map_line_admitted (G:G) a =
+  (!l p. FLOOKUP G (INL l) = SOME (INL p) ==> prop_sem p a)
 End
 
 Definition map_box_admitted:
@@ -45,7 +47,7 @@ Theorem valid_proof_ind:
   valid_proof (FUPDATE G (INR (l,l'),INR (p,p'))) pl pr' /\
   P (FUPDATE G (INR (l,l'),INR (p,p'))) pl pr' ==>
   P G pl (entry_box ((entry_derivation (derivation_deriv l p reason_assumption) :: pr)) :: pr'))) ==>
- (!G pl pr. valid_proof G pl pr ==> P G pl pr)
+ (!(G:G) pl pr. valid_proof G pl pr ==> P G pl pr)
 Proof
  GEN_TAC >> STRIP_TAC >>
  `((!c. valid_claim c ==> (\_. T) c) /\
@@ -57,7 +59,7 @@ QED
 (* soundness of line rules *)
 
 Theorem soundness_premise:
- !G pl p l a. premises_admitted pl a ==>
+ !G pl p a l. premises_admitted pl a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification justification_premise)) ==>
   prop_sem p a
 Proof
@@ -65,7 +67,7 @@ Proof
 QED
 
 Theorem soundness_lem:
- !G pl p l a. valid_derivation G pl (derivation_deriv l p (reason_justification justification_lem)) ==>
+ !G pl p a l. valid_derivation G pl (derivation_deriv l p (reason_justification justification_lem)) ==>
   prop_sem p a
 Proof
  RW_TAC list_ss [valid_claim_cases] >>
@@ -73,7 +75,7 @@ Proof
 QED
 
 Theorem soundness_andi:
- !G pl p l l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_andi l1 l2))) ==>
   prop_sem p a
 Proof
@@ -82,7 +84,7 @@ Proof
 QED
 
 Theorem soundness_copy:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_copy l2))) ==>
   prop_sem p a
 Proof
@@ -91,7 +93,7 @@ Proof
 QED
 
 Theorem soundness_ande1:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ande1 l2))) ==>
   prop_sem p a
 Proof
@@ -100,7 +102,7 @@ Proof
 QED
 
 Theorem soundness_ande2:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ande2 l2))) ==>
   prop_sem p a
 Proof
@@ -109,7 +111,7 @@ Proof
 QED
 
 Theorem soundness_ori1:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ori1 l2))) ==>
   prop_sem p a
 Proof
@@ -118,7 +120,7 @@ Proof
 QED
 
 Theorem soundness_ori2:
- !G pl p l l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ori2 l2))) ==>
   prop_sem p a
 Proof
@@ -127,7 +129,7 @@ Proof
 QED
 
 Theorem soundness_impe:
- !G pl p l l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_impe l1 l2))) ==>
   prop_sem p a
 Proof
@@ -136,7 +138,7 @@ Proof
 QED
 
 Theorem soundness_nege:
- !G pl p l l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_nege l1 l2))) ==>
   prop_sem p a
 Proof
@@ -145,7 +147,7 @@ Proof
 QED
 
 Theorem soundness_conte:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_conte l2))) ==>
   prop_sem p a
 Proof
@@ -154,7 +156,7 @@ Proof
 QED
 
 Theorem soundness_negnegi:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_negnegi l2))) ==>
   prop_sem p a
 Proof
@@ -163,7 +165,7 @@ Proof
 QED
 
 Theorem soundness_negnege:
- !G pl p l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_negnege l2))) ==>
   prop_sem p a
 Proof
@@ -172,7 +174,7 @@ Proof
 QED
 
 Theorem soundness_mt:
- !G pl p l l1 l2 a. map_line_admitted G a ==>
+ !G pl p a l l1 l2. map_line_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_mt l1 l2))) ==>
   prop_sem p a
 Proof
@@ -181,7 +183,7 @@ Proof
 QED
 
 Theorem soundness_impi:
- !G pl p l l1 l2 a. map_box_admitted G a ==>
+ !G pl p a l l1 l2. map_box_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_impi l1 l2))) ==>
   prop_sem p a
 Proof
@@ -190,7 +192,7 @@ Proof
 QED
 
 Theorem soundness_negi:
- !G pl p l l1 l2 a. map_box_admitted G a ==>
+ !G pl p a l l1 l2. map_box_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_negi l1 l2))) ==>
   prop_sem p a
 Proof
@@ -200,7 +202,7 @@ Proof
 QED
 
 Theorem soundness_pbc:
- !G pl p l l1 l2 a. map_box_admitted G a ==>
+ !G pl p a l l1 l2. map_box_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_pbc l1 l2))) ==>
   prop_sem p a
 Proof
@@ -209,7 +211,7 @@ Proof
 QED
 
 Theorem soundness_ore:
- !G pl p l l1 l2 l3 l4 l5 a. map_line_admitted G a ==> map_box_admitted G a ==>
+ !G pl p a l l1 l2 l3 l4 l5. map_line_admitted G a ==> map_box_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification (justification_ore l1 l2 l3 l4 l5))) ==>
   prop_sem p a
 Proof
@@ -219,7 +221,7 @@ Proof
 QED
 
 Theorem soundness_derivations:
- !G pl p l j a. premises_admitted pl a ==> map_line_admitted G a ==> map_box_admitted G a ==>
+ !G pl p a l j. premises_admitted pl a ==> map_line_admitted G a ==> map_box_admitted G a ==>
   valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
   prop_sem p a
 Proof
@@ -247,25 +249,32 @@ QED
 
 (* soundness of system  *)
 
+Theorem justification_valid_in:
+ !G pl pr. valid_proof G pl pr ==>
+  !l p r. MEM (entry_derivation (derivation_deriv l p r)) pr ==> r <> reason_assumption
+Proof
+ HO_MATCH_MP_TAC valid_proof_ind THEN RW_TAC list_ss []
+QED
+
 Definition soundness_prop:
- soundness_prop (G:G) pl pr a = 
-  !l j p. premises_admitted pl a ==>
-  map_line_admitted G a ==> map_box_admitted G a ==>
-  MEM (entry_derivation (derivation_deriv l p (reason_justification j))) pr ==>
+ soundness_prop (G:G) pl pr =
+  !a. premises_admitted pl a ==>
+  !l j. map_line_admitted G a ==> map_box_admitted G a ==>
+  !p. MEM (entry_derivation (derivation_deriv l p (reason_justification j))) pr ==>
   prop_sem p a
 End
 
 Theorem soundness_empty:
- !G pl a. soundness_prop G pl [] a
+ !G pl. soundness_prop G pl []
 Proof
  RW_TAC list_ss [soundness_prop]
 QED
 
 Theorem soundness_derivation:
- !G pl l p j pr a. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
+ !G pl l p j pr. valid_derivation G pl (derivation_deriv l p (reason_justification j)) ==>
   valid_proof (FUPDATE G (INL l, INL p)) pl pr ==>
-  soundness_prop (FUPDATE G (INL l, INL p)) pl pr a ==>
-  soundness_prop G pl (entry_derivation (derivation_deriv l p (reason_justification j)) :: pr) a
+  soundness_prop (FUPDATE G (INL l, INL p)) pl pr ==>
+  soundness_prop G pl (entry_derivation (derivation_deriv l p (reason_justification j)) :: pr)
 Proof
  RW_TAC list_ss [soundness_prop] >- METIS_TAC [soundness_derivations] >>
  SUBGOAL_THEN ``map_line_admitted (FUPDATE (G:G) (INL l, INL p)) a`` ASSUME_TAC THEN RW_TAC list_ss [map_line_admitted]
@@ -279,85 +288,57 @@ Proof
      >- METIS_TAC [] )
 QED
 
-Theorem justification_valid_in:
- !G pl pr. valid_proof G pl pr ==>
-  !l p r. MEM (entry_derivation (derivation_deriv l p r)) pr ==> r <> reason_assumption
-Proof
- HO_MATCH_MP_TAC valid_proof_ind THEN RW_TAC list_ss []
-QED
-
 Theorem soundness_box:
- !G pl l1 l2 p1 p2 pr1 pr2 r a.
+ !G pl l1 l2 p1 p2 pr1 pr2 r.
    LAST_DEFAULT (entry_derivation (derivation_deriv l1 p1 reason_assumption) :: pr1) entry_invalid = entry_derivation (derivation_deriv l2 p2 r) ==>
   valid_proof (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
-  soundness_prop (FUPDATE G (INL l1, INL p1)) pl pr1 a ==>
+  soundness_prop (FUPDATE G (INL l1, INL p1)) pl pr1 ==>
   valid_proof (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
-  soundness_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 a ==>
-  soundness_prop G pl ((entry_box (entry_derivation (derivation_deriv l1 p1 reason_assumption) :: pr1)) :: pr2) a
+  soundness_prop (FUPDATE G (INR (l1, l2), INR (p1, p2))) pl pr2 ==>
+  soundness_prop G pl ((entry_box (entry_derivation (derivation_deriv l1 p1 reason_assumption) :: pr1)) :: pr2)
 Proof
-RW_TAC list_ss [soundness_prop] THEN
-FULL_SIMP_TAC list_ss [] THEN
-Q.PAT_ASSUM `!l' j' p'. map_line_admitted (G |+ (INR (l1,l2),INR (p1,p2))) a ==> Q` (MP_TAC o Q.SPECL [`l`, `j`, `p`]) THEN
-RW_TAC bool_ss [] THEN
-`map_line_admitted (G |+ (INR (l1,l2),INR (p1,p2))) a /\ map_box_admitted (G |+ (INR (l1,l2),INR (p1,p2))) a` suffices_by METIS_TAC [] THEN
-RW_TAC bool_ss [] THEN1
- (FULL_SIMP_TAC bool_ss [map_line_admitted] THEN
-  RW_TAC bool_ss [FLOOKUP_DEF] THEN
-  Q.PAT_ASSUM `!l p. FLOOKUP G (INL l) = SOME (INL p) ==> Q` (MP_TAC o Q.SPECL [`l'`, `p'`]) THEN
- `FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [] THEN
- FULL_SIMP_TAC list_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE]) THEN
-FULL_SIMP_TAC bool_ss [map_box_admitted] THEN
-RW_TAC bool_ss [] THEN
-Cases_on `pr1` THEN RW_TAC bool_ss [] THEN1
- (FULL_SIMP_TAC bool_ss [LAST_DEFAULT, LAST_DEF] THEN
-  RW_TAC bool_ss [] THEN
-  Cases_on `(l1,l1) = (l1',l2')` THEN1
-  (RW_TAC bool_ss [] THEN
-   FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE] THEN
-   RW_TAC bool_ss []) THEN
- RW_TAC bool_ss [] THEN
- FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN
- METIS_TAC []) THEN
-
-`LAST_DEFAULT (h::t) entry_invalid = entry_derivation (derivation_deriv l2 p2 r)` by FULL_SIMP_TAC list_ss [LAST_DEFAULT, LAST_DEF] THEN
-`MEM (entry_derivation (derivation_deriv l2 p2 r)) (h::t)` by METIS_TAC [LAST_DEFAULT, MEM_LAST] THEN
-`r <> reason_assumption` by METIS_TAC [justification_valid_in] THEN
-Cases_on `r` THEN1 RW_TAC bool_ss [] THEN
-Cases_on `(l1',l2') <> (l1,l2)` THEN1
-  (FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN 
-  RW_TAC bool_ss [] THEN FULL_SIMP_TAC bool_ss [] THEN METIS_TAC []) THEN
-FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN RW_TAC bool_ss [] THEN
-`map_line_admitted (G |+ (INL l1,INL p1)) a /\ map_box_admitted (G |+ (INL l1,INL p1)) a` suffices_by METIS_TAC [map_box_admitted] THEN
-CONJ_TAC THEN1
- (RW_TAC bool_ss [map_line_admitted] THEN
-  Cases_on `l1 = l'` THEN FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN
-  `FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [map_line_admitted] THEN
-  RW_TAC bool_ss [FLOOKUP_DEF]) THEN
-RW_TAC bool_ss [map_box_admitted] THEN
-FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] THEN
-`FLOOKUP G (INR (l1',l2')) = SOME (INR (p1',p2'))` suffices_by METIS_TAC [map_box_admitted] THEN
+rw [soundness_prop] >>
+`map_line_admitted (G |+ (INR (l1,l2),INR (p1,p2))) a /\ map_box_admitted (G |+ (INR (l1,l2),INR (p1,p2))) a` suffices_by METIS_TAC [] >>
+rw [] >-
+ (fs [map_line_admitted] >>
+  rw [FLOOKUP_DEF] >>
+  `FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [] >>
+  fs [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE]) >>
+once_rewrite_tac [map_box_admitted] >> rw [] >>
+Cases_on `pr1` >> rw [] >-
+ (fs [LAST_DEFAULT, LAST_DEF] >> rw [] >>
+  Cases_on `(l1,l1) = (l1',l2')` >> rw [] >-
+  (fs [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE] >> rw []) >>
+  fs [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >>
+  METIS_TAC [FLOOKUP_DEF,map_box_admitted]) >>
+`LAST_DEFAULT (h::t) entry_invalid = entry_derivation (derivation_deriv l2 p2 r)` by fs [LAST_DEFAULT, LAST_DEF] >>
+`MEM (entry_derivation (derivation_deriv l2 p2 r)) (h::t)` by METIS_TAC [LAST_DEFAULT, MEM_LAST] >>
+`r <> reason_assumption` by METIS_TAC [justification_valid_in] >>
+Cases_on `r` >- rw [] >>
+Cases_on `(l1',l2') <> (l1,l2)` >-
+ (fs [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >>
+  rw [] >> fs [] >> METIS_TAC [FLOOKUP_DEF,map_box_admitted]) >>
+FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >> rw [] >>
+`map_line_admitted (G |+ (INL l1,INL p1)) a /\ map_box_admitted (G |+ (INL l1,INL p1)) a` suffices_by METIS_TAC [map_box_admitted] >>
+CONJ_TAC >-
+ (RW_TAC bool_ss [map_line_admitted] >>
+  Cases_on `l1 = l'` THEN FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >>
+  `FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [map_line_admitted] >>
+  RW_TAC bool_ss [FLOOKUP_DEF]) >>
+RW_TAC bool_ss [map_box_admitted] >>
+FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >>
+`FLOOKUP G (INR (l1',l2')) = SOME (INR (p1',p2'))` suffices_by METIS_TAC [map_box_admitted] >>
 RW_TAC bool_ss [FLOOKUP_DEF]
 QED
 
-Theorem soundness_proof_aux[local]:
- !G pl pr. valid_proof G pl pr ==> !a. soundness_prop G pl pr a
-Proof
-HO_MATCH_MP_TAC valid_proof_ind >> RW_TAC list_ss [] >| [
- PROVE_TAC [soundness_empty],
- PROVE_TAC [soundness_derivation],
- PROVE_TAC [soundness_box]
-]
-QED
-
 Theorem soundness_proof:
- !G pl pr p l j a. premises_admitted pl a ==>
-  map_line_admitted G a ==>
-  map_box_admitted G a ==>
-  valid_proof G pl pr ==>
-  MEM (entry_derivation (derivation_deriv l p (reason_justification j))) pr ==>
-  prop_sem p a
+ !G pl pr. valid_proof G pl pr ==> soundness_prop G pl pr
 Proof
- METIS_TAC [soundness_proof_aux,soundness_prop]
+ HO_MATCH_MP_TAC valid_proof_ind >> rw [] >| [
+  PROVE_TAC [soundness_empty],
+  PROVE_TAC [soundness_derivation],
+  PROVE_TAC [soundness_box]
+ ]
 QED
 
 Theorem soundness_claim:
@@ -385,7 +366,7 @@ Proof
  RW_TAC list_ss [] THEN FULL_SIMP_TAC list_ss [LAST_DEFAULT] THEN
  SUBGOAL_THEN ``MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (h::t)`` ASSUME_TAC THEN1
  (RW_TAC bool_ss [] THEN METIS_TAC [MEM_LAST]) THEN
- METIS_TAC [soundness_proof]
+ METIS_TAC [soundness_proof,soundness_prop]
 QED
 
 val _ = export_theory();
