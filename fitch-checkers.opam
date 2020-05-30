@@ -9,7 +9,7 @@ license: "MIT"
 
 synopsis: "Verified checkers for Fitch-style propositional logic proofs"
 
-build: ["dune" "build" "-p" name "-j" jobs]
+build: [make "checker" "-j%{jobs}%"]
 depends: [
   "dune" {>= "2.5"}
   "ocaml" {>= "4.05"}
