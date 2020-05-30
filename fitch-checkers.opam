@@ -1,23 +1,23 @@
 opam-version: "2.0"
-version: "dev"
 maintainer: "palmskog@gmail.com"
+version: "dev"
 
 homepage: "https://github.com/palmskog/fitch"
 dev-repo: "git+https://github.com/palmskog/fitch.git"
 bug-reports: "https://github.com/palmskog/fitch/issues"
 license: "MIT"
 
-synopsis: "Verified checker for Fitch-style propositional logic proofs"
+synopsis: "Verified checkers for Fitch-style propositional logic proofs"
 
-build: [make "checker" "-j%{jobs}%"]
+build: ["dune" "build" "-p" name "-j" jobs]
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "dune" {>= "2.5"}
+  "ocaml" {>= "4.05"}
   "coq" {>= "8.9" & < "8.12~"}
+  "coq-fitch" {= "dev"}
   "coq-ott" {>= "0.30"}
   "ott" {build & >= "0.30"}
   "menhir" {build & >= "20171013"}
-  "ocamlbuild" {build}
-  "ocamlfind" {build}
 ]
 
 authors: [	

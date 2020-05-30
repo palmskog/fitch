@@ -18,7 +18,7 @@ HOL4 definitions and proofs:
 
 Executable OCaml checkers:
 
-- [`OCaml 4.02.3`](https://ocaml.org) (or later)
+- [`OCaml 4.05`](https://ocaml.org) (or later)
 - [`menhir`](http://gallium.inria.fr/~fpottier/menhir/)
 - [`OCamlbuild`](https://github.com/ocaml/ocamlbuild)
 - [`ocamlfind`](https://ocaml.org)

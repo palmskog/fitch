@@ -1,6 +1,9 @@
+os: linux
+dist: bionic
+language: shell
+
 opam: &OPAM
-  language: minimal
-  sudo: required
+  language: shell
   services: docker
   install: |
     # Prepare the COQ container
@@ -11,7 +14,9 @@ opam: &OPAM
       echo \"Build triggered by ${TRAVIS_EVENT_TYPE}\"
       export PS4='+ \e[33;1m(\$0 @ line \$LINENO) \$\e[0m '
       set -ex  # -e = exit on failure; -x = trace for debug
+      opam pin remove dune
       opam update -y
+      for DEP in ${LOCAL_DEPS}; do opam pin add ${DEP} . -y -n -k path; done
       opam pin add ${PACKAGE} . -y -n -k path
       opam install ${PACKAGE} -y -j ${NJOBS} --deps-only
       opam config list
@@ -30,7 +35,7 @@ opam: &OPAM
   - docker stop COQ  # optional
   - echo -en 'travis_fold:end:script\\r'
 
-matrix:
+jobs:
   include:
 
   # Test supported versions of Coq via OPAM
@@ -42,5 +47,6 @@ matrix:
   - env:
     - COQ_IMAGE=coqorg/coq:8.10
     - PACKAGE=fitch-checkers.dev
+    - LOCAL_DEPS=coq-fitch.dev
     - NJOBS=2
     <<: *OPAM

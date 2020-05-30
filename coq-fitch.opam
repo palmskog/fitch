@@ -1,6 +1,6 @@
 opam-version: "2.0"
-version: "dev"
 maintainer: "palmskog@gmail.com"
+version: "dev"
 
 homepage: "https://github.com/palmskog/fitch"
 dev-repo: "git+https://github.com/palmskog/fitch.git"
@@ -14,9 +14,9 @@ as defined in the book Logic for Computer Science by Huth and Ryan.
 The checker is both executable inside Coq and after extraction to OCaml code.
 """
 
-build: [make "-j%{jobs}%"]
-install: [make "install"]
+build: ["dune" "build" "-p" name "-j" jobs]
 depends: [
+  "dune" {>= "2.5"}
   "coq" {>= "8.9" & < "8.12~"}
   "coq-ott" {>= "0.30"}
   "ott" {build & >= "0.30"}
@@ -28,7 +28,6 @@ tags: [
   "keyword:propositional logic"
   "logpath:Fitch"
 ]
-
 authors: [
   "Karl Palmskog"
 ]
