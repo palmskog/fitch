@@ -16,7 +16,6 @@ opam: &OPAM
       set -ex  # -e = exit on failure; -x = trace for debug
       opam pin remove dune
       opam update -y
-      for DEP in ${LOCAL_DEPS}; do opam pin add ${DEP} . -y -n -k path; done
       opam pin add ${PACKAGE} . -y -n -k path
       opam install ${PACKAGE} -y -j ${NJOBS} --deps-only
       opam config list
@@ -44,9 +43,8 @@ jobs:
     - PACKAGE=coq-fitch.dev
     - NJOBS=2
     <<: *OPAM
-  - env:
-    - COQ_IMAGE=coqorg/coq:8.10
-    - PACKAGE=fitch-checkers.dev
-    - LOCAL_DEPS=coq-fitch.dev
-    - NJOBS=2
-    <<: *OPAM
+ #- env:
+ #  - COQ_IMAGE=coqorg/coq:8.10
+ #  - PACKAGE=fitch-checkers.dev
+ #  - NJOBS=2
+ #  <<: *OPAM

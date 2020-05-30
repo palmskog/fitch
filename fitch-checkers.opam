@@ -14,12 +14,11 @@ depends: [
   "dune" {>= "2.5"}
   "ocaml" {>= "4.05"}
   "coq" {>= "8.9" & < "8.12~"}
-  "coq-fitch" {= "dev"}
   "coq-ott" {>= "0.30"}
   "ott" {build & >= "0.30"}
   "menhir" {build & >= "20171013"}
 ]
 
-authors: [	
+authors: [
   "Karl Palmskog"
 ]
