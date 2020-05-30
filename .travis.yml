@@ -41,6 +41,6 @@ matrix:
     <<: *OPAM
   - env:
     - COQ_IMAGE=coqorg/coq:8.10
-    - PACKAGE=checker.dev
+    - PACKAGE=fitch-checkers.dev
     - NJOBS=2
     <<: *OPAM

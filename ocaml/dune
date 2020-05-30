@@ -2,3 +2,30 @@
  (prelude fitch_decidable_extrocaml)
  (extracted_modules fitch_system)
  (theories Fitch))
+
+(ocamllex lexer prolog_lexer)
+
+(menhir (modules parser prolog_parser))
+
+(library
+ (name util)
+ (modules util))
+
+(library
+ (name fitch_system)
+ (flags :standard -w -3-27-32-39)
+ (modules fitch_system))
+
+(executable
+ (name checker)
+ (public_name fitch-checker)
+ (modules checker parser lexer)
+ (libraries util fitch_system)
+ (package fitch-checkers))
+
+(executable
+ (name prolog)
+ (public_name fitch-checker-prolog)
+ (modules prolog prolog_parser prolog_lexer)
+ (libraries util fitch_system)
+ (package fitch-checkers))

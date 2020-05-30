@@ -43,7 +43,7 @@ let rec string_of_entry = function
 | Coq_entry_box el -> "[" ^ "\n" ^ String.concat "\n" (List.map string_of_entry el) ^ "\n" ^ "]"
 | Coq_entry_invalid -> ""
 
-let rec string_of_claim = function
+let string_of_claim = function
 | Coq_claim_judgment_proof (Coq_judgment_follows (pl, p), el) ->
   String.concat ", " (List.map string_of_prop pl) ^ " |- " ^ (string_of_prop p) ^ "\n" ^
   String.concat "\n" (List.map string_of_entry el)
