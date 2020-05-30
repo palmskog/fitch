@@ -1,7 +1,7 @@
 include Makefile.ml-files
 
-$(FITCHML): coq/fitch_decidable_extrocaml.v coq/fitch_decidable.vo
-	$(COQC) $(COQDEBUG) $(COQFLAGS) $(COQLIBS) coq/fitch_decidable_extrocaml.v
+$(FITCHML): ocaml/fitch_decidable_extrocaml.v coq/fitch_decidable.vo
+	$(COQC) $(COQDEBUG) $(COQFLAGS) $(COQLIBS) ocaml/fitch_decidable_extrocaml.v
 
 coq/fitch.v: ott/fitch.ott
 	ott -o $@ -coq_expand_list_types false $<

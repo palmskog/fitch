@@ -15,4 +15,4 @@ Module FitchDecidableNat := FitchDecidable Nat_as_OT Nat_as_DUOT Map.
 
 Definition valid_claim_dec := @FitchDecidableNat.valid_claim_dec string string_dec.
 
-Extraction "ocaml/fitch_system.ml" valid_claim_dec.
+Extraction "fitch_system.ml" valid_claim_dec.
