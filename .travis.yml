@@ -43,8 +43,8 @@ jobs:
     - PACKAGE=coq-fitch.dev
     - NJOBS=2
     <<: *OPAM
- - env:
-   - COQ_IMAGE=coqorg/coq:8.10
-   - PACKAGE=fitch-checkers.dev
-   - NJOBS=2
-   <<: *OPAM
+  - env:
+    - COQ_IMAGE=coqorg/coq:8.10
+    - PACKAGE=fitch-checkers.dev
+    - NJOBS=2
+    <<: *OPAM
