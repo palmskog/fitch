@@ -1,0 +1,9 @@
+(coq.theory
+ (name Fitch)
+ (package coq-fitch)
+ (synopsis "Sound Fitch-style proof system in Coq for propositional logic"))
+
+(rule
+ (target fitch.v)
+ (deps ../ott/fitch.ott)
+ (action (run ott -o %{target} %{deps})))

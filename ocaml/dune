@@ -1,0 +1,4 @@
+(coq.extraction
+ (prelude fitch_decidable_extrocaml)
+ (extracted_modules fitch_system)
+ (theories Fitch))
