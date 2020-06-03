@@ -7,4 +7,3 @@ coq/fitch_decidable_example.v
 coq/fitch_decidable.v
 coq/fitch_metatheory_example.v
 coq/fitch.v
-ocaml/fitch_decidable_extrocaml.v

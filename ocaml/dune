@@ -1,7 +1,8 @@
 (coq.extraction
  (prelude fitch_decidable_extrocaml)
  (extracted_modules fitch_system)
- (theories Fitch))
+;(theories Fitch)
+)
 
 (ocamllex lexer prolog_lexer)
 
@@ -21,11 +22,11 @@
  (public_name fitch-checker)
  (modules checker parser lexer)
  (libraries util fitch_system)
- (package fitch-checkers))
+ (package coq-fitch-checkers))
 
 (executable
  (name prolog)
- (public_name fitch-checker-prolog)
+ (public_name fitch-prolog-checker)
  (modules prolog prolog_parser prolog_lexer)
  (libraries util fitch_system)
- (package fitch-checkers))
+ (package coq-fitch-checkers))

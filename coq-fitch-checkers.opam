@@ -9,15 +9,13 @@ license: "MIT"
 
 synopsis: "Verified checkers for Fitch-style propositional logic proofs"
 
-build: [make "checker" "-j%{jobs}%"]
+build: ["dune" "build" "-p" name "-j" jobs]
 depends: [
   "ocaml" {>= "4.05"}
+  "dune" {>= "2.5"}
   "coq" {>= "8.9" & < "8.12~"}
-  "coq-ott" {>= "0.30"}
-  "ott" {build & >= "0.30"}
+  "coq-fitch" {= version}
   "menhir" {build & >= "20171013"}
-  "ocamlbuild" {build}
-  "ocamlfind" {build}
 ]
 
 authors: [
