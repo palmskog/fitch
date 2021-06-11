@@ -115,8 +115,8 @@ Theorem soundness_ori1:
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ori1 l2))) ==>
   prop_sem p a
 Proof
- RW_TAC list_ss [map_line_admitted, valid_claim_cases] THEN
- FULL_SIMP_TAC list_ss [prop_sem, FLOOKUP_DEF] THEN METIS_TAC []
+ RW_TAC list_ss [map_line_admitted, valid_claim_cases] >>
+ FULL_SIMP_TAC list_ss [prop_sem, FLOOKUP_DEF] >> METIS_TAC []
 QED
 
 Theorem soundness_ori2:
@@ -124,8 +124,8 @@ Theorem soundness_ori2:
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_ori2 l2))) ==>
   prop_sem p a
 Proof
- RW_TAC list_ss [map_line_admitted, valid_claim_cases] THEN
- FULL_SIMP_TAC list_ss [prop_sem, FLOOKUP_DEF] THEN METIS_TAC []
+ RW_TAC list_ss [map_line_admitted, valid_claim_cases] >>
+ FULL_SIMP_TAC list_ss [prop_sem, FLOOKUP_DEF] >> METIS_TAC []
 QED
 
 Theorem soundness_impe:
@@ -160,8 +160,8 @@ Theorem soundness_negnegi:
   valid_derivation G pl (derivation_deriv l1 p (reason_justification (justification_negnegi l2))) ==>
   prop_sem p a
 Proof
- RW_TAC list_ss [map_line_admitted, valid_claim_cases] THEN
- FULL_SIMP_TAC list_ss [prop_sem, FLOOKUP_DEF] THEN METIS_TAC []
+ RW_TAC list_ss [map_line_admitted, valid_claim_cases] >>
+ FULL_SIMP_TAC list_ss [prop_sem, FLOOKUP_DEF] >> METIS_TAC []
 QED
 
 Theorem soundness_negnege:
@@ -253,7 +253,7 @@ Theorem justification_valid_in:
  !G pl pr. valid_proof G pl pr ==>
   !l p r. MEM (entry_derivation (derivation_deriv l p r)) pr ==> r <> reason_assumption
 Proof
- HO_MATCH_MP_TAC valid_proof_ind THEN RW_TAC list_ss []
+ HO_MATCH_MP_TAC valid_proof_ind >> RW_TAC list_ss []
 QED
 
 Definition soundness_prop:
@@ -277,7 +277,7 @@ Theorem soundness_derivation:
   soundness_prop G pl (entry_derivation (derivation_deriv l p (reason_justification j)) :: pr)
 Proof
  RW_TAC list_ss [soundness_prop] >- METIS_TAC [soundness_derivations] >>
- SUBGOAL_THEN ``map_line_admitted (FUPDATE (G:G) (INL l, INL p)) a`` ASSUME_TAC THEN RW_TAC list_ss [map_line_admitted]
+ SUBGOAL_THEN ``map_line_admitted (FUPDATE (G:G) (INL l, INL p)) a`` ASSUME_TAC >> RW_TAC list_ss [map_line_admitted]
  >- ( Cases_on `l = l''` >> RW_TAC list_ss [map_line_admitted] >>
       FULL_SIMP_TAC list_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE]
       >- METIS_TAC [soundness_derivations]
@@ -322,7 +322,7 @@ FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] 
 `map_line_admitted (G |+ (INL l1,INL p1)) a /\ map_box_admitted (G |+ (INL l1,INL p1)) a` suffices_by METIS_TAC [map_box_admitted] >>
 CONJ_TAC >-
  (RW_TAC bool_ss [map_line_admitted] >>
-  Cases_on `l1 = l'` THEN FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >>
+  Cases_on `l1 = l'` >> FULL_SIMP_TAC std_ss [FLOOKUP_DEF, FAPPLY_FUPDATE_THM, FDOM_FUPDATE, IN_INSERT] >>
   `FLOOKUP G (INL l') = SOME (INL p')` suffices_by METIS_TAC [map_line_admitted] >>
   RW_TAC bool_ss [FLOOKUP_DEF]) >>
 RW_TAC bool_ss [map_box_admitted] >>
@@ -351,22 +351,22 @@ Proof
   clause_name "vc_claim" /\
   LAST_DEFAULT proof entry_invalid =
    entry_derivation (derivation_deriv l prop (reason_justification j)) /\
-  valid_proof FEMPTY proplist proof)`` ASSUME_TAC THEN1 METIS_TAC [valid_claim_cases] THEN
- RW_TAC list_ss [] THEN
- SUBGOAL_THEN ``map_line_admitted (FEMPTY:num + num # num |-> prop + prop # prop) a`` ASSUME_TAC THEN1
- RW_TAC list_ss [map_line_admitted, FLOOKUP_DEF, FDOM_FEMPTY] THEN
- SUBGOAL_THEN ``map_box_admitted (FEMPTY:num + num # num |-> prop + prop # prop) a`` ASSUME_TAC THEN1
- RW_TAC list_ss [map_box_admitted, FLOOKUP_DEF, FDOM_FEMPTY] THEN
+  valid_proof FEMPTY proplist proof)`` ASSUME_TAC >- METIS_TAC [valid_claim_cases] >>
+ RW_TAC list_ss [] >>
+ SUBGOAL_THEN ``map_line_admitted (FEMPTY:num + num # num |-> prop + prop # prop) a`` ASSUME_TAC >-
+ RW_TAC list_ss [map_line_admitted, FLOOKUP_DEF, FDOM_FEMPTY] >>
+ SUBGOAL_THEN ``map_box_admitted (FEMPTY:num + num # num |-> prop + prop # prop) a`` ASSUME_TAC >-
+ RW_TAC list_ss [map_box_admitted, FLOOKUP_DEF, FDOM_FEMPTY] >>
 
- Cases_on `pr` THEN1
- (FULL_SIMP_TAC list_ss [LAST_DEFAULT] THEN
-  `entry_invalid <> entry_derivation (derivation_deriv l p (reason_justification j))` by RW_TAC list_ss [fetch "fitch" "entry_distinct"] THEN
- RW_TAC list_ss []) THEN
+ Cases_on `pr` >-
+ (FULL_SIMP_TAC list_ss [LAST_DEFAULT] >>
+  `entry_invalid <> entry_derivation (derivation_deriv l p (reason_justification j))` by RW_TAC list_ss [fetch "fitch" "entry_distinct"] >>
+ RW_TAC list_ss []) >>
  
- RW_TAC list_ss [] THEN FULL_SIMP_TAC list_ss [LAST_DEFAULT] THEN
- SUBGOAL_THEN ``MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (h::t)`` ASSUME_TAC THEN1
- (RW_TAC bool_ss [] THEN METIS_TAC [MEM_LAST]) THEN
+ RW_TAC list_ss [] >> FULL_SIMP_TAC list_ss [LAST_DEFAULT] >>
+ SUBGOAL_THEN ``MEM (entry_derivation (derivation_deriv l p (reason_justification j))) (h::t)`` ASSUME_TAC >-
+ (RW_TAC bool_ss [] >> METIS_TAC [MEM_LAST]) >>
  METIS_TAC [soundness_proof,soundness_prop]
 QED
 
-val _ = export_theory();
+val _ = export_theory ();

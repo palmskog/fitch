@@ -2,20 +2,6 @@ open preamble ml_translatorLib ml_translatorTheory ml_progLib ml_progTheory astP
 
 val _ = new_theory "fitchProg";
 
-fun get_current_prog () =
-let
-  val state = get_ml_prog_state()
-  val state_thm =
-    state |> ml_progLib.remove_snocs
-          |> ml_progLib.clean_state
-          |> get_thm
-  val current_prog =
-    state_thm
-    |> concl
-    |> strip_comb |> #2
-    |> el 2
-in current_prog end;
-
 val _ = translation_extends "MapProg";
 
 val _ = (use_full_type_names := false);
@@ -36,7 +22,7 @@ val _ = next_ml_names := ["valid_derivation_deriv_premise"];
 val _ = translate valid_derivation_deriv_premise_cake;
 
 val _ = next_ml_names := ["valid_derivation_deriv_lem"];
-val _ = translate valid_derivation_deriv_lem_cake;
+val _ = translate valid_derivation_deriv_lem;
 
 val _ = next_ml_names := ["valid_derivation_deriv_copy"];
 val _ = translate valid_derivation_deriv_copy_cake;
@@ -116,6 +102,21 @@ val _ = translate example_claim;
 val _ = ml_prog_update close_local_block;
 
 val _ = ml_prog_update (close_module NONE);
+
+fun get_current_prog () =
+ let
+   val state = get_ml_prog_state()
+   val state_thm =
+     state |> ml_progLib.remove_snocs
+           |> ml_progLib.clean_state
+           |> get_thm
+   val current_prog =
+     state_thm
+     |> concl
+     |> strip_comb |> #2
+     |> el 2
+ in current_prog end
+;
 
 val _ = astPP.enable_astPP ();
 val _ = Globals.max_print_depth := 100;

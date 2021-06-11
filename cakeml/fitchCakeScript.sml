@@ -6,13 +6,6 @@ Definition valid_derivation_deriv_premise_cake:
  valid_derivation_deriv_premise_cake pl p = MEMBER p pl
 End
 
-Definition valid_derivation_deriv_lem_cake:
- valid_derivation_deriv_lem_cake p =
-  case p of
-  | prop_or p1 (prop_neg p2) => p1 = p2
-  | _ => F
-End
-
 Definition valid_derivation_deriv_copy_cake:
  valid_derivation_deriv_copy_cake t l p =
   case lookup t (INL l) of
@@ -177,7 +170,7 @@ Definition valid_derivation_deriv_cake:
    | reason_justification j => 
      case j of
      | justification_premise =>  valid_derivation_deriv_premise_cake pl p
-     | justification_lem => valid_derivation_deriv_lem_cake p
+     | justification_lem => valid_derivation_deriv_lem p
      | justification_copy l => valid_derivation_deriv_copy_cake t l p
      | justification_andi l1 l2  => valid_derivation_deriv_andi_cake t l1 l2 p
      | justification_ande1 l => valid_derivation_deriv_ande1_cake t l p
@@ -205,7 +198,7 @@ Definition valid_proof_entry_list_cake:
       | entry_derivation (derivation_deriv l p reason_assumption) => F
       | entry_derivation (derivation_deriv l p (reason_justification j)) =>
 	if valid_entry_dec_cake t pl e then 
-	   valid_proof_entry_list_cake el' (insert t (INL l) (INL p)) pl
+	  valid_proof_entry_list_cake el' (insert t (INL l) (INL p)) pl
 	else F
       | entry_box pr => 
 	(case pr of 
@@ -218,21 +211,21 @@ Definition valid_proof_entry_list_cake:
 		 (case LAST_DEFAULT pr entry_invalid of
 		  | entry_derivation (derivation_deriv l' p' r') =>
 		    if valid_entry_dec_cake t pl e then
-			valid_proof_entry_list_cake el' (insert t (INR (l, l')) (INR (p, p'))) pl
+		      valid_proof_entry_list_cake el' (insert t (INR (l, l')) (INR (p, p'))) pl
 		    else F
 		  | _ => F)
 	       | reason_justification j => F)
 	     | _ => F))
       | entry_invalid => F))
-/\
-(valid_entry_dec_cake t pl e =
+  /\
+  (valid_entry_dec_cake t pl e =
     case e of
     | entry_derivation (derivation_deriv l p r) => 
        (case r of 
 	| reason_assumption => F
 	| reason_justification j => valid_derivation_deriv_cake t pl p r)
      | entry_box [] => F
-     | entry_box (e' :: el') => 
+     | entry_box (e'::el') => 
        (case e' of 
 	| entry_derivation (derivation_deriv l p reason_assumption) =>
 	  valid_proof_entry_list_cake el' (insert t (INL l) (INL p)) pl
@@ -267,32 +260,24 @@ End
 
 Definition valid_proof_entry_list_cake_soundness:
   valid_proof_entry_list_cake_soundness el t pl =
-   (map_ok t ==> 
-    valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl)
+   (map_ok t ==> valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl)
 End
 
 Definition valid_entry_dec_cake_soundness:
   valid_entry_dec_cake_soundness t pl e =
-    (map_ok t ==>
-    valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e)
+   (map_ok t ==> valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e)
 End
 
 Theorem valid_derivation_deriv_premise_eq:
- !pl p. valid_derivation_deriv_premise_cake pl p = valid_derivation_deriv_premise pl p
+ !pl p. valid_derivation_deriv_premise_cake pl p <=> valid_derivation_deriv_premise pl p
 Proof
  rw [valid_derivation_deriv_premise_cake,valid_derivation_deriv_premise,MEMBER_INTRO]
 QED
 
-Theorem valid_derivation_deriv_lem_eq:
- !p. valid_derivation_deriv_lem_cake p = valid_derivation_deriv_lem p
-Proof
- rw [valid_derivation_deriv_lem_cake,valid_derivation_deriv_lem]
-QED
-
 Theorem valid_derivation_deriv_copy_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_copy_cake t l p = 
-   valid_derivation_deriv_copy (to_fmap t) l p
+  (valid_derivation_deriv_copy_cake t l p <=>
+   valid_derivation_deriv_copy (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_copy_cake,valid_derivation_deriv_copy] \\
  rw [lookup_thm]
@@ -300,8 +285,8 @@ QED
 
 Theorem valid_derivation_deriv_andi_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_andi_cake t l1 l2 p = 
-   valid_derivation_deriv_andi (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_andi_cake t l1 l2 p <=> 
+   valid_derivation_deriv_andi (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_andi_cake,valid_derivation_deriv_andi] \\
  rw [lookup_thm]
@@ -309,8 +294,8 @@ QED
 
 Theorem valid_derivation_deriv_ande1_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_ande1_cake t l p = 
-   valid_derivation_deriv_ande1 (to_fmap t) l p
+  (valid_derivation_deriv_ande1_cake t l p <=>
+   valid_derivation_deriv_ande1 (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_ande1_cake,valid_derivation_deriv_ande1] \\
  rw [lookup_thm]
@@ -318,8 +303,8 @@ QED
 
 Theorem valid_derivation_deriv_ande2_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_ande2_cake t l p = 
-   valid_derivation_deriv_ande2 (to_fmap t) l p
+  (valid_derivation_deriv_ande2_cake t l p <=>
+   valid_derivation_deriv_ande2 (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_ande2_cake,valid_derivation_deriv_ande2] \\
  rw [lookup_thm]
@@ -327,8 +312,8 @@ QED
 
 Theorem valid_derivation_deriv_ori1_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_ori1_cake t l p = 
-   valid_derivation_deriv_ori1 (to_fmap t) l p
+  (valid_derivation_deriv_ori1_cake t l p <=>
+   valid_derivation_deriv_ori1 (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_ori1_cake,valid_derivation_deriv_ori1] \\
  rw [lookup_thm]
@@ -336,8 +321,8 @@ QED
 
 Theorem valid_derivation_deriv_ori2_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_ori2_cake t l p = 
-   valid_derivation_deriv_ori2 (to_fmap t) l p
+  (valid_derivation_deriv_ori2_cake t l p <=>
+   valid_derivation_deriv_ori2 (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_ori2_cake,valid_derivation_deriv_ori2] \\
  rw [lookup_thm]
@@ -345,8 +330,8 @@ QED
 
 Theorem valid_derivation_deriv_impe_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_impe_cake t l1 l2 p = 
-   valid_derivation_deriv_impe (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_impe_cake t l1 l2 p <=>
+   valid_derivation_deriv_impe (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_impe_cake,valid_derivation_deriv_impe] \\
  rw [lookup_thm]
@@ -354,8 +339,8 @@ QED
 
 Theorem valid_derivation_deriv_nege_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_nege_cake t l1 l2 p = 
-   valid_derivation_deriv_nege (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_nege_cake t l1 l2 p <=>
+   valid_derivation_deriv_nege (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_nege_cake,valid_derivation_deriv_nege] \\
  rw [lookup_thm]
@@ -363,8 +348,8 @@ QED
 
 Theorem valid_derivation_deriv_conte_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_conte_cake t l = 
-   valid_derivation_deriv_conte (to_fmap t) l
+  (valid_derivation_deriv_conte_cake t l <=>
+   valid_derivation_deriv_conte (to_fmap t) l)
 Proof
  rw [valid_derivation_deriv_conte_cake,valid_derivation_deriv_conte] \\
  rw [lookup_thm]
@@ -372,8 +357,8 @@ QED
 
 Theorem valid_derivation_deriv_negnegi_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_negnegi_cake t l p = 
-   valid_derivation_deriv_negnegi (to_fmap t) l p
+  (valid_derivation_deriv_negnegi_cake t l p <=>
+   valid_derivation_deriv_negnegi (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_negnegi_cake,valid_derivation_deriv_negnegi] \\
  rw [lookup_thm]
@@ -381,8 +366,8 @@ QED
 
 Theorem valid_derivation_deriv_negnege_eq:
  !t l p. map_ok t ==>
-  valid_derivation_deriv_negnege_cake t l p =   
-   valid_derivation_deriv_negnege (to_fmap t) l p   
+  (valid_derivation_deriv_negnege_cake t l p <=>
+   valid_derivation_deriv_negnege (to_fmap t) l p)
 Proof
  rw [valid_derivation_deriv_negnege_cake,valid_derivation_deriv_negnege] \\
  rw [lookup_thm]
@@ -390,8 +375,8 @@ QED
 
 Theorem valid_derivation_deriv_mt_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_mt_cake t l1 l2 p = 
-   valid_derivation_deriv_mt (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_mt_cake t l1 l2 p <=>
+   valid_derivation_deriv_mt (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_mt_cake,valid_derivation_deriv_mt] \\
  rw [lookup_thm]
@@ -399,8 +384,8 @@ QED
 
 Theorem valid_derivation_deriv_impi_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_impi_cake t l1 l2 p = 
-   valid_derivation_deriv_impi (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_impi_cake t l1 l2 p <=>
+   valid_derivation_deriv_impi (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_impi_cake,valid_derivation_deriv_impi] \\
  rw [lookup_thm]
@@ -408,8 +393,8 @@ QED
 
 Theorem valid_derivation_deriv_negi_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_negi_cake t l1 l2 p = 
-   valid_derivation_deriv_negi (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_negi_cake t l1 l2 p <=>
+   valid_derivation_deriv_negi (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_negi_cake,valid_derivation_deriv_negi] \\
  rw [lookup_thm]
@@ -417,8 +402,8 @@ QED
 
 Theorem valid_derivation_deriv_ore_eq:
  !t l1 l2 l3 l4 l5 p. map_ok t ==>
-  valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p = 
-   valid_derivation_deriv_ore (to_fmap t) l1 l2 l3 l4 l5 p
+  (valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p <=>
+   valid_derivation_deriv_ore (to_fmap t) l1 l2 l3 l4 l5 p)
 Proof
  rw [valid_derivation_deriv_ore_cake,valid_derivation_deriv_ore] \\
  rw [lookup_thm]
@@ -426,8 +411,8 @@ QED
 
 Theorem valid_derivation_deriv_pbc_eq:
  !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_pbc_cake t l1 l2 p = 
-   valid_derivation_deriv_pbc (to_fmap t) l1 l2 p
+  (valid_derivation_deriv_pbc_cake t l1 l2 p <=>
+   valid_derivation_deriv_pbc (to_fmap t) l1 l2 p)
 Proof
  rw [valid_derivation_deriv_pbc_cake,valid_derivation_deriv_pbc] \\
  rw [lookup_thm]
@@ -435,11 +420,10 @@ QED
 
 Theorem valid_derivation_deriv_eq:
   !t pl l p r. map_ok t ==> 
-  valid_derivation_deriv_cake t pl p r = valid_derivation_deriv (to_fmap t) pl p r
+  (valid_derivation_deriv_cake t pl p r <=> valid_derivation_deriv (to_fmap t) pl p r)
 Proof
   rw [valid_derivation_deriv_cake,valid_derivation_deriv] \\
   rw [valid_derivation_deriv_premise_eq] \\
-  rw [valid_derivation_deriv_lem_eq] \\
   rw [valid_derivation_deriv_copy_eq] \\
   rw [valid_derivation_deriv_andi_eq] \\
   rw [valid_derivation_deriv_ande1_eq] \\
@@ -463,30 +447,28 @@ Theorem valid_proof_entry_list_entry_cake_sound:
   (!el t pl. valid_proof_entry_list_cake_soundness el t pl) /\
   (!t pl e. valid_entry_dec_cake_soundness t pl e)
 Proof
- MATCH_MP_TAC valid_proof_entry_list_cake_ind \\ rw [] >-
- 
- (rw [valid_proof_entry_list_cake_soundness] \\
- once_rewrite_tac [valid_proof_entry_list_cake,valid_proof_entry_list] \\
- Cases_on `el'` \\ rw [] \\
- Cases_on `h` \\ rw [] >-
-  (Cases_on `d` \\ rw [] \\
-   Cases_on `r` \\ rw [] \\
-   fs [valid_entry_dec_cake_soundness] \\
+ MATCH_MP_TAC valid_proof_entry_list_cake_ind \\ rw [] >- 
+  (rw [valid_proof_entry_list_cake_soundness] \\
+   once_rewrite_tac [valid_proof_entry_list_cake,valid_proof_entry_list] \\
+   Cases_on `el'` \\ rw [] \\
+   Cases_on `h` \\ rw [] >-
+    (Cases_on `d` \\ rw [] \\
+     Cases_on `r` \\ rw [] \\
+     fs [valid_entry_dec_cake_soundness] \\
+     fs [valid_proof_entry_list_cake_soundness] \\
+     EQ_TAC \\ rw [] >-
+      (rw [GSYM insert_thm] \\
+       `map_ok (insert t (INL n) (INL p))` by rw [insert_thm] \\
+       METIS_TAC []) \\
+     rw [insert_thm]) \\
+   Cases_on `l` \\ rw [] \\
+   Cases_on `h` \\ rw [] \\ Cases_on `d` \\ rw [] \\
+   Cases_on `r` \\ rw [] \\ 
+   Cases_on `LAST_DEFAULT (entry_derivation (derivation_deriv n p reason_assumption)::t'') entry_invalid` \\ rw [] \\
+   Cases_on `d` \\ rw [] \\
+   fs [valid_entry_dec_cake_soundness] \\ 
    fs [valid_proof_entry_list_cake_soundness] \\
-   EQ_TAC \\ rw [] >-
-    (rw [GSYM insert_thm] \\
-     `map_ok (insert t (INL n) (INL p))` by rw [insert_thm] \\
-     METIS_TAC []) \\
-   rw [insert_thm]) \\
- Cases_on `l` \\ rw [] \\
- Cases_on `h` \\ rw [] \\ Cases_on `d` \\ rw [] \\
- Cases_on `r` \\ rw [] \\ 
- Cases_on `LAST_DEFAULT (entry_derivation (derivation_deriv n p reason_assumption)::t'') entry_invalid` \\ rw [] \\
- Cases_on `d` \\ rw [] \\
- fs [valid_entry_dec_cake_soundness] \\ 
- fs [valid_proof_entry_list_cake_soundness] \\
- METIS_TAC [insert_thm]) \\
-
+   METIS_TAC [insert_thm]) \\
  rw [valid_entry_dec_cake_soundness] \\
  once_rewrite_tac [valid_proof_entry_list_cake,valid_proof_entry_list] \\
  Cases_on `e` \\ rw [] >- 
@@ -500,7 +482,7 @@ QED
 
 Theorem valid_proof_entry_list_eq:
  !el t pl. map_ok t ==> 
-   valid_proof_entry_list_cake el t pl = valid_proof_entry_list el (to_fmap t) pl
+  (valid_proof_entry_list_cake el t pl <=> valid_proof_entry_list el (to_fmap t) pl)
 Proof
  rw [] \\
  `valid_proof_entry_list_cake_soundness el' t pl` suffices_by rw [valid_proof_entry_list_cake_soundness] \\
@@ -509,7 +491,7 @@ QED
 
 Theorem valid_entry_dec_eq:
  !t pl e. map_ok t ==> 
-  valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e
+  (valid_entry_dec_cake t pl e <=> valid_entry_dec (to_fmap t) pl e)
 Proof
  rw [] \\
  `valid_entry_dec_cake_soundness t pl e` suffices_by rw [valid_entry_dec_cake_soundness] \\
@@ -518,14 +500,14 @@ QED
 
 Theorem valid_proof_dec_eq:
  !t pl pr. map_ok t ==> 
-  valid_proof_dec_cake t pl pr = valid_proof_dec (to_fmap t) pl pr
+  (valid_proof_dec_cake t pl pr <=> valid_proof_dec (to_fmap t) pl pr)
 Proof
  rw [] \\
  rw [valid_proof_dec_cake,valid_proof_dec,valid_proof_entry_list_eq]
 QED
 
 Theorem valid_claim_dec_cmp_eq:
-  !cmp c. TotOrd cmp ==> valid_claim_dec_cmp_cake cmp c = valid_claim_dec c
+  !cmp c. TotOrd cmp ==> (valid_claim_dec_cmp_cake cmp c <=> valid_claim_dec c)
 Proof
  rw [] \\
  Cases_on `c` \\ Cases_on `j` \\
@@ -537,14 +519,13 @@ Proof
 QED
 
 Theorem valid_claim_dec_cmp_cake_sound:
- !cmp c. TotOrd cmp ==> 
-   valid_claim_dec_cmp_cake cmp c = valid_claim c
+ !cmp c. TotOrd cmp ==> (valid_claim_dec_cmp_cake cmp c <=> valid_claim c)
 Proof
  rw [valid_claim_dec_cmp_eq,valid_claim_dec_sound]
 QED
 
 Theorem valid_claim_dec_eq:
-  !c. valid_claim_dec_cake c = valid_claim_dec c
+  !c. (valid_claim_dec_cake c <=> valid_claim_dec c)
 Proof
   rw [valid_claim_dec_cake] \\
   MATCH_MP_TAC valid_claim_dec_cmp_eq \\
@@ -552,7 +533,7 @@ Proof
 QED
 
 Theorem valid_claim_dec_cake_sound:
- !c. valid_claim_dec_cake c = valid_claim c
+ !c. (valid_claim_dec_cake c <=> valid_claim c)
 Proof
  rw [valid_claim_dec_eq,valid_claim_dec_sound]
 QED
