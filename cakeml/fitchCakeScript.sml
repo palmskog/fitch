@@ -6,12 +6,6 @@ Definition valid_derivation_deriv_premise_cake:
  valid_derivation_deriv_premise_cake pl p = MEMBER p pl
 End
 
-Theorem valid_derivation_deriv_premise_eq:
- !pl p. valid_derivation_deriv_premise_cake pl p = valid_derivation_deriv_premise pl p
-Proof
- rw [valid_derivation_deriv_premise_cake,valid_derivation_deriv_premise,MEMBER_INTRO]
-QED
-
 Definition valid_derivation_deriv_lem_cake:
  valid_derivation_deriv_lem_cake p =
   case p of
@@ -19,27 +13,12 @@ Definition valid_derivation_deriv_lem_cake:
   | _ => F
 End
 
-Theorem valid_derivation_deriv_lem_eq:
- !p. valid_derivation_deriv_lem_cake p = valid_derivation_deriv_lem p
-Proof
- rw [valid_derivation_deriv_lem_cake,valid_derivation_deriv_lem]
-QED
-
 Definition valid_derivation_deriv_copy_cake:
  valid_derivation_deriv_copy_cake t l p =
   case lookup t (INL l) of
   | SOME (INL p')  => p = p'
   | _ => F
 End
-
-Theorem valid_derivation_deriv_copy_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_copy_cake t l p = 
-   valid_derivation_deriv_copy (to_fmap t) l p
-Proof
- rw [valid_derivation_deriv_copy_cake,valid_derivation_deriv_copy] \\
- rw [lookup_thm]
-QED
 
 Definition valid_derivation_deriv_andi_cake:
  valid_derivation_deriv_andi_cake t l1 l2 p =
@@ -51,15 +30,6 @@ Definition valid_derivation_deriv_andi_cake:
    | _ => F
 End
 
-Theorem valid_derivation_deriv_andi_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_andi_cake t l1 l2 p = 
-   valid_derivation_deriv_andi (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_andi_cake,valid_derivation_deriv_andi] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_ande1_cake:
  valid_derivation_deriv_ande1_cake t l p =
    case lookup t (INL l) of
@@ -67,30 +37,12 @@ Definition valid_derivation_deriv_ande1_cake:
    | _ => F
 End
 
-Theorem valid_derivation_deriv_ande1_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_ande1_cake t l p = 
-   valid_derivation_deriv_ande1 (to_fmap t) l p
-Proof
- rw [valid_derivation_deriv_ande1_cake,valid_derivation_deriv_ande1] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_ande2_cake:
  valid_derivation_deriv_ande2_cake t l p =
    case lookup t (INL l) of
    | SOME (INL (prop_and p1 p2)) => p = p2
    | _ => F
 End
-
-Theorem valid_derivation_deriv_ande2_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_ande2_cake t l p = 
-   valid_derivation_deriv_ande2 (to_fmap t) l p
-Proof
- rw [valid_derivation_deriv_ande2_cake,valid_derivation_deriv_ande2] \\
- rw [lookup_thm]
-QED
 
 Definition valid_derivation_deriv_ori1_cake:
  valid_derivation_deriv_ori1_cake t l p =
@@ -102,15 +54,6 @@ Definition valid_derivation_deriv_ori1_cake:
   | _ => F
 End
 
-Theorem valid_derivation_deriv_ori1_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_ori1_cake t l p = 
-   valid_derivation_deriv_ori1 (to_fmap t) l p
-Proof
- rw [valid_derivation_deriv_ori1_cake,valid_derivation_deriv_ori1] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_ori2_cake:
  valid_derivation_deriv_ori2_cake t l p =
    case p of
@@ -121,15 +64,6 @@ Definition valid_derivation_deriv_ori2_cake:
    | _ => F
 End
 
-Theorem valid_derivation_deriv_ori2_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_ori2_cake t l p = 
-   valid_derivation_deriv_ori2 (to_fmap t) l p
-Proof
- rw [valid_derivation_deriv_ori2_cake,valid_derivation_deriv_ori2] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_impe_cake:
  valid_derivation_deriv_impe_cake t l1 l2 p =
    case lookup t (INL l1) of
@@ -139,15 +73,6 @@ Definition valid_derivation_deriv_impe_cake:
       | _ => F)
    | _ => F
 End
-
-Theorem valid_derivation_deriv_impe_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_impe_cake t l1 l2 p = 
-   valid_derivation_deriv_impe (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_impe_cake,valid_derivation_deriv_impe] \\
- rw [lookup_thm]
-QED
 
 Definition valid_derivation_deriv_nege_cake:
   valid_derivation_deriv_nege_cake t l1 l2 p =
@@ -162,30 +87,12 @@ Definition valid_derivation_deriv_nege_cake:
      | _ => F
 End
 
-Theorem valid_derivation_deriv_nege_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_nege_cake t l1 l2 p = 
-   valid_derivation_deriv_nege (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_nege_cake,valid_derivation_deriv_nege] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_conte_cake:
  valid_derivation_deriv_conte_cake t l =
    case lookup t (INL l) of
    | SOME (INL prop_cont)  => T     
    | _ => F
 End
-
-Theorem valid_derivation_deriv_conte_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_conte_cake t l = 
-   valid_derivation_deriv_conte (to_fmap t) l
-Proof
- rw [valid_derivation_deriv_conte_cake,valid_derivation_deriv_conte] \\
- rw [lookup_thm]
-QED
 
 Definition valid_derivation_deriv_negnegi_cake:
   valid_derivation_deriv_negnegi_cake t l p =
@@ -197,30 +104,12 @@ Definition valid_derivation_deriv_negnegi_cake:
     | _ => F
 End
 
-Theorem valid_derivation_deriv_negnegi_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_negnegi_cake t l p = 
-   valid_derivation_deriv_negnegi (to_fmap t) l p
-Proof
- rw [valid_derivation_deriv_negnegi_cake,valid_derivation_deriv_negnegi] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_negnege_cake:
  valid_derivation_deriv_negnege_cake t l p =
   case lookup t (INL l) of
   | SOME (INL (prop_neg (prop_neg p'))) => p' = p
   | _ => F
 End
-
-Theorem valid_derivation_deriv_negnege_eq:
- !t l p. map_ok t ==>
-  valid_derivation_deriv_negnege_cake t l p =   
-   valid_derivation_deriv_negnege (to_fmap t) l p   
-Proof
- rw [valid_derivation_deriv_negnege_cake,valid_derivation_deriv_negnege] \\
- rw [lookup_thm]
-QED
 
 Definition valid_derivation_deriv_mt_cake:
   valid_derivation_deriv_mt_cake t l1 l2 p =
@@ -237,15 +126,6 @@ Definition valid_derivation_deriv_mt_cake:
     | _ => F
 End
 
-Theorem valid_derivation_deriv_mt_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_mt_cake t l1 l2 p = 
-   valid_derivation_deriv_mt (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_mt_cake,valid_derivation_deriv_mt] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_impi_cake:
   valid_derivation_deriv_impi_cake t l1 l2 p =
     case p of
@@ -256,15 +136,6 @@ Definition valid_derivation_deriv_impi_cake:
     | _ => F
 End
 
-Theorem valid_derivation_deriv_impi_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_impi_cake t l1 l2 p = 
-   valid_derivation_deriv_impi (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_impi_cake,valid_derivation_deriv_impi] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_negi_cake:
  valid_derivation_deriv_negi_cake t l1 l2 p =
    case p of
@@ -274,15 +145,6 @@ Definition valid_derivation_deriv_negi_cake:
       | _ => F)
    | _ => F
 End
-
-Theorem valid_derivation_deriv_negi_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_negi_cake t l1 l2 p = 
-   valid_derivation_deriv_negi (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_negi_cake,valid_derivation_deriv_negi] \\
- rw [lookup_thm]
-QED
 
 Definition valid_derivation_deriv_ore_cake:
   valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p =
@@ -300,15 +162,6 @@ Definition valid_derivation_deriv_ore_cake:
     | _ => F
 End
 
-Theorem valid_derivation_deriv_ore_eq:
- !t l1 l2 l3 l4 l5 p. map_ok t ==>
-  valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p = 
-   valid_derivation_deriv_ore (to_fmap t) l1 l2 l3 l4 l5 p
-Proof
- rw [valid_derivation_deriv_ore_cake,valid_derivation_deriv_ore] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_pbc_cake:
   valid_derivation_deriv_pbc_cake t l1 l2 p =
    case lookup t (INR (l1,l2)) of
@@ -317,66 +170,31 @@ Definition valid_derivation_deriv_pbc_cake:
    | _ => F
 End
 
-Theorem valid_derivation_deriv_pbc_eq:
- !t l1 l2 p. map_ok t ==>
-  valid_derivation_deriv_pbc_cake t l1 l2 p = 
-   valid_derivation_deriv_pbc (to_fmap t) l1 l2 p
-Proof
- rw [valid_derivation_deriv_pbc_cake,valid_derivation_deriv_pbc] \\
- rw [lookup_thm]
-QED
-
 Definition valid_derivation_deriv_cake:
-  valid_derivation_deriv_cake t pl p r =
-    case r of
-    | reason_assumption => F
-    | reason_justification j => 
-      case j of
-      | justification_premise =>  valid_derivation_deriv_premise_cake pl p
-      | justification_lem => valid_derivation_deriv_lem_cake p
-      | justification_copy l => valid_derivation_deriv_copy_cake t l p
-      | justification_andi l1 l2  => valid_derivation_deriv_andi_cake t l1 l2 p
-      | justification_ande1 l => valid_derivation_deriv_ande1_cake t l p
-      | justification_ande2 l => valid_derivation_deriv_ande2_cake t l p
-      | justification_ori1 l => valid_derivation_deriv_ori1_cake t l p
-      | justification_ori2 l => valid_derivation_deriv_ori2_cake t l p
-      | justification_impe l1 l2 => valid_derivation_deriv_impe_cake t l1 l2 p
-      | justification_nege l1 l2 => valid_derivation_deriv_nege_cake t l1 l2 p
-      | justification_conte l => valid_derivation_deriv_conte_cake t l
-      | justification_negnegi l => valid_derivation_deriv_negnegi_cake t l p
-      | justification_negnege l => valid_derivation_deriv_negnege_cake t l p
-      | justification_mt l1 l2 => valid_derivation_deriv_mt_cake t l1 l2 p
-      | justification_impi l1 l2 => valid_derivation_deriv_impi_cake t l1 l2 p
-      | justification_negi l1 l2 => valid_derivation_deriv_negi_cake t l1 l2 p
-      | justification_ore l1 l2 l3 l4 l5 => valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p
-      | justification_pbc l1 l2 => valid_derivation_deriv_pbc_cake t l1 l2 p
+ valid_derivation_deriv_cake t pl p r =
+   case r of
+   | reason_assumption => F
+   | reason_justification j => 
+     case j of
+     | justification_premise =>  valid_derivation_deriv_premise_cake pl p
+     | justification_lem => valid_derivation_deriv_lem_cake p
+     | justification_copy l => valid_derivation_deriv_copy_cake t l p
+     | justification_andi l1 l2  => valid_derivation_deriv_andi_cake t l1 l2 p
+     | justification_ande1 l => valid_derivation_deriv_ande1_cake t l p
+     | justification_ande2 l => valid_derivation_deriv_ande2_cake t l p
+     | justification_ori1 l => valid_derivation_deriv_ori1_cake t l p
+     | justification_ori2 l => valid_derivation_deriv_ori2_cake t l p
+     | justification_impe l1 l2 => valid_derivation_deriv_impe_cake t l1 l2 p
+     | justification_nege l1 l2 => valid_derivation_deriv_nege_cake t l1 l2 p
+     | justification_conte l => valid_derivation_deriv_conte_cake t l
+     | justification_negnegi l => valid_derivation_deriv_negnegi_cake t l p
+     | justification_negnege l => valid_derivation_deriv_negnege_cake t l p
+     | justification_mt l1 l2 => valid_derivation_deriv_mt_cake t l1 l2 p
+     | justification_impi l1 l2 => valid_derivation_deriv_impi_cake t l1 l2 p
+     | justification_negi l1 l2 => valid_derivation_deriv_negi_cake t l1 l2 p
+     | justification_ore l1 l2 l3 l4 l5 => valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p
+     | justification_pbc l1 l2 => valid_derivation_deriv_pbc_cake t l1 l2 p
 End
-
-Theorem valid_derivation_deriv_eq:
-  !t pl l p r. map_ok t ==> 
-  valid_derivation_deriv_cake t pl p r = valid_derivation_deriv (to_fmap t) pl p r
-Proof
-  rw [valid_derivation_deriv_cake,valid_derivation_deriv] \\
-  rw [valid_derivation_deriv_premise_eq] \\
-  rw [valid_derivation_deriv_lem_eq] \\
-  rw [valid_derivation_deriv_copy_eq] \\
-  rw [valid_derivation_deriv_andi_eq] \\
-  rw [valid_derivation_deriv_ande1_eq] \\
-  rw [valid_derivation_deriv_ande2_eq] \\
-  rw [valid_derivation_deriv_ori1_eq] \\
-  rw [valid_derivation_deriv_ori2_eq] \\
-  rw [valid_derivation_deriv_impe_eq] \\
-  rw [valid_derivation_deriv_nege_eq] \\
-  rw [valid_derivation_deriv_conte_eq] \\
-  rw [valid_derivation_deriv_negnegi_eq] \\
-  rw [valid_derivation_deriv_negnege_eq] \\
-  rw [valid_derivation_deriv_mt_eq] \\
-  rw [valid_derivation_deriv_impi_eq] \\
-  rw [valid_derivation_deriv_negi_eq] \\
-  rw [valid_derivation_deriv_ore_eq] \\
-  rw [valid_derivation_deriv_pbc_eq] \\
-  Cases_on `r` \\ rw [] \\ Cases_on `j` \\ rw []
-QED
 
 Definition valid_proof_entry_list_cake:
   (valid_proof_entry_list_cake el t pl =
@@ -428,6 +246,25 @@ Termination
  | INR (_,_,b)  => entry_size b)`
 End
 
+Definition valid_proof_dec_cake:
+ valid_proof_dec_cake t pl pr = valid_proof_entry_list_cake pr t pl
+End
+
+Definition valid_claim_dec_cmp_cake:
+ valid_claim_dec_cmp_cake cmp c =
+  case c of
+  | claim_judgment_proof (judgment_follows pl p) pr =>
+    case LAST_DEFAULT pr entry_invalid of
+    | entry_derivation (derivation_deriv l p' reason_assumption) => F
+    | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
+      if p = p' then valid_proof_dec_cake (empty cmp) pl pr else F
+    | _ => F
+End
+
+Definition valid_claim_dec_cake:
+  valid_claim_dec_cake c = valid_claim_dec_cmp_cake dyadic_cmp_num c
+End
+
 Definition valid_proof_entry_list_cake_soundness:
   valid_proof_entry_list_cake_soundness el t pl =
    (map_ok t ==> 
@@ -439,6 +276,188 @@ Definition valid_entry_dec_cake_soundness:
     (map_ok t ==>
     valid_entry_dec_cake t pl e = valid_entry_dec (to_fmap t) pl e)
 End
+
+Theorem valid_derivation_deriv_premise_eq:
+ !pl p. valid_derivation_deriv_premise_cake pl p = valid_derivation_deriv_premise pl p
+Proof
+ rw [valid_derivation_deriv_premise_cake,valid_derivation_deriv_premise,MEMBER_INTRO]
+QED
+
+Theorem valid_derivation_deriv_lem_eq:
+ !p. valid_derivation_deriv_lem_cake p = valid_derivation_deriv_lem p
+Proof
+ rw [valid_derivation_deriv_lem_cake,valid_derivation_deriv_lem]
+QED
+
+Theorem valid_derivation_deriv_copy_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_copy_cake t l p = 
+   valid_derivation_deriv_copy (to_fmap t) l p
+Proof
+ rw [valid_derivation_deriv_copy_cake,valid_derivation_deriv_copy] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_andi_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_andi_cake t l1 l2 p = 
+   valid_derivation_deriv_andi (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_andi_cake,valid_derivation_deriv_andi] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_ande1_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_ande1_cake t l p = 
+   valid_derivation_deriv_ande1 (to_fmap t) l p
+Proof
+ rw [valid_derivation_deriv_ande1_cake,valid_derivation_deriv_ande1] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_ande2_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_ande2_cake t l p = 
+   valid_derivation_deriv_ande2 (to_fmap t) l p
+Proof
+ rw [valid_derivation_deriv_ande2_cake,valid_derivation_deriv_ande2] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_ori1_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_ori1_cake t l p = 
+   valid_derivation_deriv_ori1 (to_fmap t) l p
+Proof
+ rw [valid_derivation_deriv_ori1_cake,valid_derivation_deriv_ori1] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_ori2_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_ori2_cake t l p = 
+   valid_derivation_deriv_ori2 (to_fmap t) l p
+Proof
+ rw [valid_derivation_deriv_ori2_cake,valid_derivation_deriv_ori2] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_impe_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_impe_cake t l1 l2 p = 
+   valid_derivation_deriv_impe (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_impe_cake,valid_derivation_deriv_impe] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_nege_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_nege_cake t l1 l2 p = 
+   valid_derivation_deriv_nege (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_nege_cake,valid_derivation_deriv_nege] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_conte_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_conte_cake t l = 
+   valid_derivation_deriv_conte (to_fmap t) l
+Proof
+ rw [valid_derivation_deriv_conte_cake,valid_derivation_deriv_conte] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_negnegi_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_negnegi_cake t l p = 
+   valid_derivation_deriv_negnegi (to_fmap t) l p
+Proof
+ rw [valid_derivation_deriv_negnegi_cake,valid_derivation_deriv_negnegi] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_negnege_eq:
+ !t l p. map_ok t ==>
+  valid_derivation_deriv_negnege_cake t l p =   
+   valid_derivation_deriv_negnege (to_fmap t) l p   
+Proof
+ rw [valid_derivation_deriv_negnege_cake,valid_derivation_deriv_negnege] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_mt_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_mt_cake t l1 l2 p = 
+   valid_derivation_deriv_mt (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_mt_cake,valid_derivation_deriv_mt] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_impi_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_impi_cake t l1 l2 p = 
+   valid_derivation_deriv_impi (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_impi_cake,valid_derivation_deriv_impi] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_negi_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_negi_cake t l1 l2 p = 
+   valid_derivation_deriv_negi (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_negi_cake,valid_derivation_deriv_negi] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_ore_eq:
+ !t l1 l2 l3 l4 l5 p. map_ok t ==>
+  valid_derivation_deriv_ore_cake t l1 l2 l3 l4 l5 p = 
+   valid_derivation_deriv_ore (to_fmap t) l1 l2 l3 l4 l5 p
+Proof
+ rw [valid_derivation_deriv_ore_cake,valid_derivation_deriv_ore] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_pbc_eq:
+ !t l1 l2 p. map_ok t ==>
+  valid_derivation_deriv_pbc_cake t l1 l2 p = 
+   valid_derivation_deriv_pbc (to_fmap t) l1 l2 p
+Proof
+ rw [valid_derivation_deriv_pbc_cake,valid_derivation_deriv_pbc] \\
+ rw [lookup_thm]
+QED
+
+Theorem valid_derivation_deriv_eq:
+  !t pl l p r. map_ok t ==> 
+  valid_derivation_deriv_cake t pl p r = valid_derivation_deriv (to_fmap t) pl p r
+Proof
+  rw [valid_derivation_deriv_cake,valid_derivation_deriv] \\
+  rw [valid_derivation_deriv_premise_eq] \\
+  rw [valid_derivation_deriv_lem_eq] \\
+  rw [valid_derivation_deriv_copy_eq] \\
+  rw [valid_derivation_deriv_andi_eq] \\
+  rw [valid_derivation_deriv_ande1_eq] \\
+  rw [valid_derivation_deriv_ande2_eq] \\
+  rw [valid_derivation_deriv_ori1_eq] \\
+  rw [valid_derivation_deriv_ori2_eq] \\
+  rw [valid_derivation_deriv_impe_eq] \\
+  rw [valid_derivation_deriv_nege_eq] \\
+  rw [valid_derivation_deriv_conte_eq] \\
+  rw [valid_derivation_deriv_negnegi_eq] \\
+  rw [valid_derivation_deriv_negnege_eq] \\
+  rw [valid_derivation_deriv_mt_eq] \\
+  rw [valid_derivation_deriv_impi_eq] \\
+  rw [valid_derivation_deriv_negi_eq] \\
+  rw [valid_derivation_deriv_ore_eq] \\
+  rw [valid_derivation_deriv_pbc_eq] \\
+  Cases_on `r` \\ rw [] \\ Cases_on `j` \\ rw []
+QED
 
 Theorem valid_proof_entry_list_entry_cake_sound:
   (!el t pl. valid_proof_entry_list_cake_soundness el t pl) /\
@@ -497,11 +516,6 @@ Proof
  rw [valid_proof_entry_list_entry_cake_sound]
 QED
 
-Definition valid_proof_dec_cake:
-  valid_proof_dec_cake t pl pr =
-    valid_proof_entry_list_cake pr t pl
-End
-
 Theorem valid_proof_dec_eq:
  !t pl pr. map_ok t ==> 
   valid_proof_dec_cake t pl pr = valid_proof_dec (to_fmap t) pl pr
@@ -509,18 +523,6 @@ Proof
  rw [] \\
  rw [valid_proof_dec_cake,valid_proof_dec,valid_proof_entry_list_eq]
 QED
-
-Definition valid_claim_dec_cmp_cake:
-  valid_claim_dec_cmp_cake cmp c =
-  case c of
-  | claim_judgment_proof (judgment_follows pl p) pr =>
-    case LAST_DEFAULT pr entry_invalid of
-    | entry_derivation (derivation_deriv l p' reason_assumption) => F
-    | entry_derivation (derivation_deriv l p' (reason_justification j)) =>
-      if p = p' then valid_proof_dec_cake (empty cmp) pl pr
-      else F
-    | _ => F
-End
 
 Theorem valid_claim_dec_cmp_eq:
   !cmp c. TotOrd cmp ==> valid_claim_dec_cmp_cake cmp c = valid_claim_dec c
@@ -540,10 +542,6 @@ Theorem valid_claim_dec_cmp_cake_sound:
 Proof
  rw [valid_claim_dec_cmp_eq,valid_claim_dec_sound]
 QED
-
-Definition valid_claim_dec_cake:
-  valid_claim_dec_cake c = valid_claim_dec_cmp_cake dyadic_cmp_num c
-End
 
 Theorem valid_claim_dec_eq:
   !c. valid_claim_dec_cake c = valid_claim_dec c
