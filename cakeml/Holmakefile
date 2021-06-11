@@ -1,6 +1,12 @@
-CAKEMLDIR = /path/to/cakeml
-INCLUDES = ../hol $(CAKEMLDIR)/misc $(CAKEMLDIR)/semantics $(CAKEMLDIR)/semantics/proofs\
-					 $(CAKEMLDIR)/basis/pure $(CAKEMLDIR)/basis\
-					 $(CAKEMLDIR)/translator $(CAKEMLDIR)/characteristic
+CAKEMLDIR = ../../cakeml
+INCLUDES = $(FITCHDIR)/hol \
+ $(CAKEMLDIR)/misc \
+ $(CAKEMLDIR)/semantics \
+ $(CAKEMLDIR)/semantics/proofs \
+ $(CAKEMLDIR)/basis/pure \
+ $(CAKEMLDIR)/basis \
+ $(CAKEMLDIR)/translator \
+ $(CAKEMLDIR)/characteristic
+
 all: $(DEFAULT_TARGETS)
 .PHONY: all

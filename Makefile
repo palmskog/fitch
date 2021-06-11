@@ -24,8 +24,11 @@ Makefile.coq:
 hol/fitchScript.sml: ott/fitch.ott
 	cd hol && ott -o fitchScript.sml ../ott/fitch.ott
 
-hol: hol/fitchMetaScript.sml hol/fitchScript.sml hol/ottScript.sml hol/ottLib.sig hol/ottLib.sml
-	Holmake -I hol
+hol: hol/fitchScript.sml
+	Holmake -r -I hol
+
+cakeml: hol/fitchScript.sml
+	Holmake -r -I cakeml
 
 $(FITCHML): Makefile.coq
 	$(MAKE) -f Makefile.coq $@
@@ -55,5 +58,5 @@ clean: Makefile.coq
 	rm -f hol/fitchScript.sml
 	cd hol && Holmake clean
 
-.PHONY: default clean checker prolog hol $(FITCHML)
+.PHONY: default clean checker prolog hol cakeml $(FITCHML)
 .NOTPARALLEL: $(FITCHML)
