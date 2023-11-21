@@ -55,7 +55,6 @@ clean: Makefile.coq
 	$(OCAMLBUILD) -clean
 	rm -f Makefile.coq Makefile.coq.conf
 	rm -f doc/fitch_defs.tex doc/fitch.tex
-	rm -f hol/fitchScript.sml
 	cd hol && Holmake clean
 
 .PHONY: default clean checker prolog hol cakeml $(FITCHML)

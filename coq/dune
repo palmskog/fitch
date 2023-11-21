@@ -6,4 +6,5 @@
 (rule
  (target fitch.v)
  (deps ../ott/fitch.ott)
- (action (run ott -o %{target} %{deps})))
+ (action (run ott -o %{target} %{deps}))
+ (mode fallback))
