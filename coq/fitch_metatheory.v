@@ -499,8 +499,8 @@ injection H_dyad_eq => H_eq_l6 H_eq_l7.
 rewrite H_eq_l6 H_eq_l7 in H_mm'.
 apply map_find_add in H_mm'.
 injection H_mm' => H_eq_prop7 H_eq_prop6.
-apply IH with (l6 := l7) (j5 := j6) (prop5 := prop7) => //; last by rewrite H_eq_l6 -H_eq_prop7.
-  move => l1 prop1 H_m1 {H_eq}.
+apply IH with (l5 := l7) (j5 := j6) (prop5 := prop7) => //.
+- move => l1 prop1 H_m1 {H_eq}.
   case (UOT.eq_dec l1 l5) => H_eq.
     move: H_m1.
     rewrite H_eq => H_m1.
@@ -514,6 +514,7 @@ move => l1 l2 prop1 prop2 H_mm12 H_prop1.
 apply not_in_map_dyad in H_mm12.
 rewrite /map_box_admitted in H_mm.
 by apply H_mm with (l6 := l1) (l7 := l2) (prop6 := prop1) (prop7 := prop2) in H_mm12.
+by rewrite H_eq_l6 -H_eq_prop7.
 Qed.
 
 Lemma soundness_proof : forall (G5 : G) (proof5 : proof) (proplist5 : proplist),

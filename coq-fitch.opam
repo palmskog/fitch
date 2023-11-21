@@ -17,9 +17,8 @@ The checker is both executable inside Coq and after extraction to OCaml code.
 build: ["dune" "build" "-p" name "-j" jobs]
 depends: [
   "dune" {>= "2.5"}
-  "coq" {>= "8.9" & < "8.12~"}
-  "coq-ott" {>= "0.30"}
-  "ott" {build & >= "0.30"}
+  "coq" {>= "8.16"}
+  "coq-ott" {>= "0.33"}
 ]
 
 tags: [

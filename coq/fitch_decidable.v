@@ -44,21 +44,21 @@ Program Fixpoint prop_eq_dec (prop1 prop2 : prop) : { prop1 = prop2 }+{ prop1 <>
   | _, _ => right _ _
   end.
 Next Obligation.
-  move: H.
+  move: n0.
   set s1 := eq_refl prop21.
   set s2 := eq_refl prop22.
   move => H.
   by case (H s1 s2).
 Defined.
 Next Obligation.
-  move: H.
+  move: n0.
   set s1 := eq_refl prop21.
   set s2 := eq_refl prop22.
   move => H.
   by case (H s1 s2).
 Defined.
 Next Obligation.
-  move: H.
+  move: n0.
   set s1 := eq_refl prop21.
   set s2 := eq_refl prop22.
   move => H.
@@ -132,7 +132,7 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vd; inversion H_vd; subst.
- by case (H prop5).
+ by case (n0 prop5).
 Defined.
 
 Program Definition valid_derivation_deriv_andi_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -161,11 +161,11 @@ Next Obligation.
 Defined.
 Next Obligation.
   move => H_vp; inversion H_vp; subst.
-  by case (H prop').
+  by case (n0 prop').
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop0).
+ by case (n0 prop0).
 Defined.
 
 Program Definition valid_derivation_deriv_ande1_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) :
@@ -189,8 +189,8 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in H.
- by case (H prop5 prop').
+ rewrite H2 in n0.
+ by case (n0 prop5 prop').
 Defined.
 
 Program Definition valid_derivation_deriv_ande2_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) :
@@ -214,8 +214,8 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in H.
- by case (H prop0 prop5).
+ rewrite H2 in n0.
+ by case (n0 prop0 prop5).
 Defined.
 
 Program Definition valid_derivation_deriv_ori1_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) :
@@ -242,11 +242,11 @@ Next Obligation.
 Defined.
 Next Obligation.  
   subst; move => H_vp; inversion H_vp; subst.
-  by case (H prop6).
+  by case (n0 prop6).
 Defined.
 Next Obligation.  
   subst; move => H_vp; inversion H_vp; subst.
-  by case (H prop0 prop').
+  by case (n0 prop0 prop').
 Defined.
 
 Program Definition valid_derivation_deriv_ori2_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) :
@@ -272,12 +272,12 @@ Next Obligation.
  by case H_eq_dec.
 Defined.
 Next Obligation.
- move => H_vp; inversion H_vp; subst; rewrite H3 in H.
- by case (H prop7).
+ move => H_vp; inversion H_vp; subst; rewrite H2 in n0.
+ by case (n0 prop7).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop0 prop').
+ by case (n0 prop0 prop').
 Defined.
 
 Program Definition valid_derivation_deriv_impe_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -300,23 +300,23 @@ Next Obligation.
 Defined.
 Next Obligation.    
   move => H_vp; inversion H_vp; subst.
-  rewrite H7 in Heq_anonymous1.
+  rewrite H6 in Heq_anonymous1.
   injection Heq_anonymous1 => Heq1 Heq2.
-  rewrite H4 in Heq_anonymous2.
+  rewrite H3 in Heq_anonymous2.
   injection Heq_anonymous2 => Heq.
   subst.
-  move: H.
+  move: n0.
   case (prop_eq_dec _ _) =>  Heq1 //.
   case (prop_eq_dec _ _) =>  Heq2 // Heq.
   by case (Heq Heq1 Heq2).
 Defined.
 Next Obligation.
   move => H_vp; inversion H_vp; subst.
-  by case (H prop' prop5).
+  by case (n0 prop' prop5).
 Defined.
 Next Obligation.
   move => H_vp; inversion H_vp; subst.
-  by case (H prop').
+  by case (n0 prop').
 Defined.
 
 Program Definition valid_derivation_deriv_nege_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -351,13 +351,13 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H6 in H.
- by case (H prop5).
+ rewrite H5 in n0.
+ by case (n0 prop5).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H4 in H.
- by case (H prop5).
+ rewrite H3 in n0.
+ by case (n0 prop5).
 Defined.
 Next Obligation.
   by move => H_vp; inversion H_vp; subst.
@@ -375,7 +375,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   move => H_vp; inversion H_vp; subst.
-  by rewrite H3 in H.
+  by rewrite H2 in n0.
 Defined.
 
 Program Definition valid_derivation_deriv_negnegi_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) :
@@ -403,12 +403,12 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in H.
- by case (H prop6).
+ rewrite H2 in n0.
+ by case (n0 prop6).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop0).
+ by case (n0 prop0).
 Defined.
 
 Program Definition valid_derivation_deriv_negnege_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 : l) :
@@ -432,8 +432,8 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in H.
- by case (H prop5).
+ rewrite H2 in n0.
+ by case (n0 prop5).
 Defined.
 
 Program Definition valid_derivation_deriv_mt_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -472,8 +472,8 @@ Next Obligation.
 Defined.
 Next Obligation.
   move => H_vp; inversion H_vp; subst.
-  rewrite H7 in H.
-  by case (H prop').
+  rewrite H6 in n0.
+  by case (n0 prop').
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
@@ -482,11 +482,11 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop6 prop').
+ by case (n0 prop6 prop').
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop0).
+ by case (n0 prop0).
 Defined.
 
 Program Definition valid_derivation_deriv_impi_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -509,18 +509,18 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in Heq_anonymous1.
- injection Heq_anonymous1 => Heq Heq' {Heq_anonymous1 H3}; subst.
- move: H; case (prop_eq_dec _ _) => Heq //; case (prop_eq_dec _ _) => Heq' // H.
+ rewrite H2 in Heq_anonymous1.
+ injection Heq_anonymous1 => Heq Heq' {Heq_anonymous1 H2}; subst.
+ move: n0; case (prop_eq_dec _ _) => Heq //; case (prop_eq_dec _ _) => Heq' // H.
  by case (H Heq Heq').
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop6 prop7).
+ by case (n0 prop6 prop7).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop0 prop').
+ by case (n0 prop0 prop').
 Defined.
 
 Program Definition valid_derivation_deriv_negi_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -547,12 +547,12 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in H.
- by case (H prop6).
+ rewrite H2 in n0.
+ by case (n0 prop6).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H prop0).
+ by case (n0 prop0).
 Defined.
 
 Program Definition valid_derivation_deriv_ore_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 l8 l9 l10 : l) :
@@ -583,34 +583,34 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H5 in Heq_anonymous2; injection Heq_anonymous2 => Heq1 Heq1'.
- rewrite H11 in Heq_anonymous4; injection Heq_anonymous4 => Heq2 Heq2'.
- subst; move: H.
+ rewrite H4 in Heq_anonymous2; injection Heq_anonymous2 => Heq1 Heq1'.
+ rewrite H10 in Heq_anonymous4; injection Heq_anonymous4 => Heq2 Heq2'.
+ subst; move: n0.
  case (prop_eq_dec _ _) => Heq //; case (prop_eq_dec _ _) => Heq' // H.
  by case (H Heq Heq').
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H11 in H.
- by case (H prop' prop9).
+ rewrite H10 in n0.
+ by case (n0 prop' prop9).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H10 in Heq_anonymous1; injection Heq_anonymous1 => Heq1 Heq1'.
- rewrite H5 in Heq_anonymous2; injection Heq_anonymous2 => Heq2 Heq2'.
- subst; move: H.
+ rewrite H9 in Heq_anonymous1; injection Heq_anonymous1 => Heq1 Heq1'.
+ rewrite H4 in Heq_anonymous2; injection Heq_anonymous2 => Heq2 Heq2'.
+ subst; move: n0.
  case (prop_eq_dec _ _) => Heq //; case (prop_eq_dec _ _) => Heq' // H.
  by case (H Heq Heq').
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H10 in H.
- by case (H prop0 prop5).
+ rewrite H9 in n0.
+ by case (n0 prop0 prop5).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H5 in H.
- by case: (H prop0 prop').
+ rewrite H4 in n0.
+ by case: (n0 prop0 prop').
 Defined.
 
 Program Definition valid_derivation_deriv_pbc_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (l6 l7 : l) :
@@ -634,8 +634,8 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- rewrite H3 in H.
- by case (H prop5).
+ rewrite H2 in n0.
+ by case (n0 prop5).
 Defined.
 
 Program Definition valid_derivation_deriv_dec (G5 : G) (proplist5 : proplist) (l5 : l) (prop5 : prop) (reason5 : reason) :
@@ -885,7 +885,7 @@ Next Obligation.
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp; subst.
- by case (H l5 prop5 reason_assumption).
+ by case (n0 l5 prop5 reason_assumption).
 Defined.
 Next Obligation.
  by move => H_vp; inversion H_vp. 
@@ -929,7 +929,7 @@ Next Obligation.
  by rewrite H1 in Heq_anonymous; congruence.
 Defined.
 Next Obligation.
- by apply vc_claim with (l6 := l5) (justification6 := justification5).
+ by apply vc_claim with (l5 := l5) (justification5 := justification5).
 Defined.
 Next Obligation.
  move => H_vp; inversion H_vp.

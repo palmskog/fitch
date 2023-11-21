@@ -8,13 +8,12 @@ Requirements
 
 Coq definitions and proofs:
 
-- [`Coq 8.9`](https://coq.inria.fr) (or later)
-- [`Ott 0.30`](https://github.com/ott-lang/ott) (and its auxiliary Coq library)
+- [Coq](https://coq.inria.fr) (8.16 or later)
+- [Coq Ott library](https://github.com/ott-lang/ott) (0.33 or later)
 
 HOL4 definitions and proofs:
 
 - [`HOL4 Kananaskis-13`](https://hol-theorem-prover.org)
-- [`Ott 0.30`](https://github.com/ott-lang/ott)
 
 Executable OCaml checkers:
 
@@ -31,17 +30,17 @@ Executable CakeML checker:
 Building Coq definitions and proofs
 -----------------------------------
 
-Make sure the `ott` program is in the `PATH`, and Ott's Coq auxiliary library has been installed in Coq's `user-contrib` library directory. One easy way to install Ott and its Coq library is via [OPAM](http://opam.ocaml.org/doc/Install.html):
+Make sure Ott's Coq auxiliary library has been installed in Coq's `user-contrib` library directory. One easy way to install Ott and its Coq library is via [opam](http://opam.ocaml.org/doc/Install.html):
 ```
 opam repo add coq-released https://coq.inria.fr/opam/released
-opam install ott coq-ott
+opam install coq-ott
 ```
 Then, run `make`. This will compile the Coq syntax and relational definitions and check all proofs.
 
 Building HOL4 definitions and proofs
 ------------------------------------
 
-Make sure the `ott` program is in the `PATH`. Then, run `make hol`. This will compile the HOL4 syntax and relational definitions and check all proofs.
+Run `make hol`. This will compile the HOL4 syntax and relational definitions and check all proofs.
 
 Building the OCaml checkers
 ---------------------------
@@ -64,4 +63,4 @@ For convenience, a pretty-printed [version](https://gist.github.com/palmskog/a98
 Documentation
 -------------
 
-To generate a document (`fitch.pdf`) describing the proof system and proofs, run `make fitch.pdf` (requires LaTeX).
+To generate a document (`fitch.pdf`) describing the proof system and proofs, run `make fitch.pdf` (requires LaTeX and Ott).

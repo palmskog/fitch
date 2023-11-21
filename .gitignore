@@ -26,12 +26,8 @@ fitch_defs.aux
 doc/fitch.tex
 doc/fitch_defs.tex
 doc/fitch_listing.tex
-coq/fitch.v
 ocaml/fitch_system.ml
 ocaml/fitch_system.mli
-hol/ottTheory.sig
-hol/ottTheory.sml
-hol/fitchScript.sml
 hol/*Theory.sig
 hol/*Theory.sml
 cakeml/*Theory.sig

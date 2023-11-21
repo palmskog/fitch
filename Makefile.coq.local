@@ -7,4 +7,4 @@ coq/fitch.v: ott/fitch.ott
 	ott -o $@ -coq_expand_list_types false $<
 
 clean::
-	rm -f $(FITCHML) coq/fitch.v
+	rm -f $(FITCHML)
